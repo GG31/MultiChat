@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name='keywords' content='WebRTC, HTML5, JavaScript' />
+<meta name='description' content='WebRTC Reference App' />
+<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+
+<base target='_blank'>
+
+<title>WebRTC client</title>
+
+<!-- <link rel='stylesheet' href='css/main.css' /> -->
+
+</head>
+
+<body onload="initialize()">
+
+<div id='container'>
+
+  <div id='videos'>
+    <video id='localVideo' autoplay muted></video>
+    <video id='remoteVideo' autoplay></video>
+  </div>
+
+  <div id='textareas'>
+		<textarea id="dataChannelSend" disabled placeholder="Press Start, enter some text, then press Send."></textarea>
+		<textarea id="dataChannelReceive" disabled></textarea>
+	</div>
+
+  <button id="sendButton" disabled>Send</button>
+<br/>
+
+</div>
+
+<div id='container'>
+	<h1> Coucou </h1>
+     <title>HTML5 + Geolocalisation + Google Maps API Reverse Geocoding</title>
+    
+    <p id="msg">Click the button to get your coordinates:</p>
+    <p id="address"></p>
+ 
+    <button onclick="getLocation()">Where am I ?</button>
+      <div id="map_canvas" style="width: 500px; height: 300px"></div>
+</div>
+
+      <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    
+    <script>
+       var displayCoords, myAddress; 
+  
+       function getLocation() {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          } else {
+          displayCoords.innerHTML="Geolocation API not supported by your browser.";
+       }
+     }
+  
+  
+      // Called when position is available
+    function showPosition(position) {
+        displayCoords.innerHTML="Latitude: " + position.coords.latitude + 
+            "<br />Longitude: " + position.coords.longitude;    
+        showOnGoogleMap(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+ 
+    }
+ 
+       var geocoder;
+      var map;
+      var infowindow = new google.maps.InfoWindow();
+      var marker;
+      
+      function initialize() {
+        displayCoords=document.getElementById("msg");
+        myAddress = document.getElementById("address");
+        
+        geocoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(34.0144, -6.83);
+        var mapOptions = {
+          zoom: 8,
+          center: latlng,
+          mapTypeId: 'roadmap'
+        }
+        map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions); 
+      }
+ 
+    function showOnGoogleMap(latlng) {
+ 
+        geocoder.geocode({'latLng': latlng}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            if (results[1]) {
+              map.setZoom(11);
+              marker = new google.maps.Marker({
+                  position: latlng,
+                  map: map
+              });
+              infowindow.setContent(results[1].formatted_address);
+              infowindow.open(map, marker);
+              
+              // Display address as text in the page
+              myAddress.innerHTML="Adress: " + results[1].formatted_address;
+            } else {
+              alert('No results found');
+            }
+          } else {
+            alert('Geocoder failed due to: ' + status);
+          }
+        });
+      }     
+    </script>
+
+<script src='/socket.io/socket.io.js'></script>
+<script src='js/lib/adapter.js'></script>
+<script src='js/main.js'></script>
+
+</body>
+</html>
