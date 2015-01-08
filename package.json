@@ -1,24 +1,29 @@
 {
-  "name": "codelab",
+  "name": "multichat",
   "version": "0.0.1",
-  "description": "WebRTC codelab",
+  "description": "WebRTC multichat",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/webrtc/codelab"
+    "url": "git@github.com:mperron06/MultiChat.git"
   },
   "keywords": [
     "webrtc",
-    "codelab"
+    "multichat"
   ],
   "author": "webrtc",
   "license": "MIT",
   "dependencies": {
     "node-static": "~0.7.1",
     "socket.io": "~0.9.16",
-    "express": "~3.4.0"
-  }
+    "express": "~3.4.0",
+    "mongodb": "~2.0"
+  },
+  "bugs": {
+    "url": "https://github.com/mperron06/MultiChat/issues"
+  },
+  "homepage": "https://github.com/mperron06/MultiChat"
 }
