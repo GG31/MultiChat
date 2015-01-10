@@ -2,9 +2,12 @@
 <html>
 <head>
 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
 <meta name='description' content='WebRTC Reference App' />
 <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+
+<link rel="stylesheet" type="text/css" href="css/main.css">
 
 <base target='_blank'>
 
@@ -16,32 +19,56 @@
 
 <body onload="initialize()">
 
-<div id='container'>
-
-  <div id='videos'>
-    <video id='localVideo' autoplay muted></video>
-    <video id='remoteVideo' autoplay></video>
-  </div>
-
-  <div id='textareas'>
-		<textarea id="dataChannelSend" disabled placeholder="Press Start, enter some text, then press Send."></textarea>
-		<textarea id="dataChannelReceive" disabled></textarea>
-	</div>
-
-  <button id="sendButton" disabled>Send</button>
-<br/>
-
+<div id="header">
+   <h1> Bienvenue dans la salle!!</h1>
 </div>
 
 <div id='container'>
-	<h1> Coucou </h1>
-     <title>HTML5 + Geolocalisation + Google Maps API Reverse Geocoding</title>
-    
-    <p id="msg">Click the button to get your coordinates:</p>
-    <p id="address"></p>
- 
-    <button onclick="getLocation()">Where am I ?</button>
-      <div id="map_canvas" style="width: 500px; height: 300px"></div>
+   <div id="col-left">   
+      <div id="profils">
+         <div id="pseudo">
+            <h2>Bob</h2>
+         </div>
+         <div id='videos'>
+            <video id='remoteVideo' autoplay></video>
+         </div>
+      </div>
+      <div id="historical-container">
+         <p>Historique</p>
+      </div>
+   </div>
+   <div id="col-center">
+      <div id='active-video'>
+         <video id='activeVideo' autoplay></video>
+      </div>
+      <div id="col-center-bottom">
+         <div id="map-container">
+            <p id="msg">Click the button to get your coordinates:</p>
+            <p id="address"></p>
+          
+            <button onclick="getLocation()">Where am I ?</button>
+            <div id="map_canvas"></div>
+            
+         </div>   
+         <div id="local-video">
+            <video id='localVideo' autoplay muted></video>
+         </div>      
+      </div>
+   </div>
+   <div id="col-right">
+      <div id="common-repository">
+         <p>Répertoire</p>
+      </div>
+      <div id="chat-container">
+         <div id='textareas'>
+		      <textarea id="dataChannelSend" disabled placeholder="Press Start, enter some text, then press Send."></textarea>
+		      <textarea id="dataChannelReceive" disabled></textarea>
+	      </div>
+
+         <button id="sendButton" disabled>Send</button>
+        
+      </div>      
+   </div>
 </div>
 
       <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>

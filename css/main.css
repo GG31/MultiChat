@@ -1,0 +1,25 @@
+/** main.css **/
+#col-left{
+   width: 20%;
+   float:left;
+}
+#col-center{
+   width: 50%;
+   float:left;
+}
+#local-video, #map-container{
+   width: 50%;
+   float:left;
+}
+#col-right{
+   width: 30%;
+   float: left;
+}
+video{
+   width: 95%;
+}
+#map_canvas{
+   /*width: 500px; */
+   width : 95%;
+   height: 300px;
+}
