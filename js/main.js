@@ -15,6 +15,8 @@ var pc;
 var remoteStream;
 var turnReady;
 
+var username = "";
+
 // Configuration des serveurs stun...
 var pc_config = webrtcDetectedBrowser === 'firefox' ?
   {'iceServers':[{'url':'stun:23.21.150.121'}]} : // number IP
@@ -35,6 +37,7 @@ var sdpConstraints = {'mandatory': {
 /////////////////////////////////////////////
 
 // Permet d'indiquer une "room" dans le path
+console.log("LOL " + location.pathname);
 var room = location.pathname.substring(1);
 if (room === '') {
 //  room = prompt('Enter room name:');
@@ -47,10 +50,16 @@ if (room === '') {
 // server dans server.js on verra que si on est le premier client connecté
 // on recevra un message "created", sinon un message "joined"
 var socket = io.connect();
+socket.on('connect', function(){
+	// call the server-side function 'adduser' and send one parameter (value of prompt)
+	username = prompt("What's your name?");
+	socket.emit('adduser', room, username);
+});
 
 if (room !== '') {
   console.log('Create or join room', room);
   socket.emit('create or join', room);
+  socket.emit('sendMsg', username, room, "MESSAGE");
 }
 
 // Si on reçoit le message "created" alors on est l'initiateur du call
@@ -85,7 +94,11 @@ socket.on('log', function (array){
 });
 
 ////////////////////////////////////////////////
-
+socket.on('updatechat', function (username, data) {
+   //à écrire dans la conversation : data // username = SERVER, data = msg
+	//$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+});
+////////////////////////////////////////////////
 // Envoi de message générique, le serveur broadcaste à tout le monde
 // par défaut (ce sevrait être que dans la salle courante...)
 // Il est important de regarder dans le code de ce fichier quand on envoit
