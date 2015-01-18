@@ -14,9 +14,9 @@
 <title>WebRTC client</title>
 
 <!-- <link rel='stylesheet' href='css/main.css' /> -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 </head>
-
 <body onload="initialize()">
 
 <div id="header">
@@ -32,9 +32,18 @@
          <div id='videos'>
             <video id='remoteVideo' autoplay></video>
          </div>
+         <div id="pseudo">
+            <h2>Marie</h2>
+         </div>
+         <div id='videos'>
+            <video id='remoteVideo' autoplay></video>
+         </div>
       </div>
       <div id="historical-container">
-         <p>Historique</p>
+         <h3>Historique</h3>
+         <div id="historical-container-area">
+         
+         </div>
       </div>
    </div>
    <div id="col-center">
@@ -43,10 +52,12 @@
       </div>
       <div id="col-center-bottom">
          <div id="map-container">
+         <!--
             <p id="msg">Click the button to get your coordinates:</p>
             <p id="address"></p>
           
             <button onclick="getLocation()">Where am I ?</button>
+        -->
             <div id="map_canvas"></div>
             
          </div>   
@@ -57,15 +68,42 @@
    </div>
    <div id="col-right">
       <div id="common-repository">
-         <p>Répertoire</p>
+         <h3>Répertoire</h3>
+         <div id="common-repository-area">
+            <ul>
+               <li>Fichier 11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</li>
+               <li>Fichier 2</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+               <li>Fichier 3</li>
+            </ul>
+         </div>
       </div>
       <div id="chat-container">
          <div id='textareas'>
-		      <textarea id="dataChannelSend" disabled placeholder="Press Start, enter some text, then press Send."></textarea>
-		      <textarea id="dataChannelReceive" disabled></textarea>
+		      <!-- <textarea id="dataChannelReceive" disabled></textarea> 
+		         // ne peut pas mettre de style dans un textarea...
+		      -->
+		      <div id="dataChannelReceive" disabled></div> <!-- Attention, ne reçoit plus de message-->
+		      <input type="text" id="dataChannelSend" disabled placeholder="Enter some text, then press Send.">
+            <input type="submit" id="sendButton" value="Send" disabled>
 	      </div>
 
-         <button id="sendButton" disabled>Send</button>
         
       </div>      
    </div>
@@ -74,71 +112,84 @@
       <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     
     <script>
-       var displayCoords, myAddress; 
-  
-       function getLocation() {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-          } else {
-          displayCoords.innerHTML="Geolocation API not supported by your browser.";
-       }
-     }
-  
-  
-      // Called when position is available
-    function showPosition(position) {
-        displayCoords.innerHTML="Latitude: " + position.coords.latitude + 
-            "<br />Longitude: " + position.coords.longitude;    
-        showOnGoogleMap(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
- 
-    }
- 
-       var geocoder;
-      var map;
-      var infowindow = new google.maps.InfoWindow();
-      var marker;
+    
       
-      function initialize() {
-        displayCoords=document.getElementById("msg");
-        myAddress = document.getElementById("address");
-        
-        geocoder = new google.maps.Geocoder();
-        var latlng = new google.maps.LatLng(34.0144, -6.83);
-        var mapOptions = {
-          zoom: 8,
-          center: latlng,
-          mapTypeId: 'roadmap'
+      
+      
+      // Default position
+    var centerpos = new google.maps.LatLng(48.579400,7.7519);
+
+    // default options for the google map
+    var optionsGmaps = {
+        center:centerpos,
+        navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 15
+    };
+
+    // Init map
+    var map = new google.maps.Map(document.getElementById("map_canvas"), optionsGmaps);
+
+    if(navigator.geolocation) {
+
+        // callback function, called by getCurrentPosition() in case of success
+        function drawPosition(position) {
+
+            var infopos = "Position: ";
+            infopos += "Lat : "+position.coords.latitude + ", ";
+            infopos += "Long: "+position.coords.longitude+", ";
+            infopos += "Alt : "+position.coords.altitude +"<br>";
+            //document.getElementById("address").innerHTML = infopos;
+
+            // Make new object LatLng for Google Maps
+            var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+            // Add a marker at position
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                title:"You are here"
+            });
+
+            map.panTo(latlng);
+
         }
-        map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions); 
-      }
- 
-    function showOnGoogleMap(latlng) {
- 
-        geocoder.geocode({'latLng': latlng}, function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-            if (results[1]) {
-              map.setZoom(11);
-              marker = new google.maps.Marker({
-                  position: latlng,
-                  map: map
-              });
-              infowindow.setContent(results[1].formatted_address);
-              infowindow.open(map, marker);
-              
-              // Display address as text in the page
-              myAddress.innerHTML="Adress: " + results[1].formatted_address;
-            } else {
-              alert('No results found');
+
+        // callback function, called by getCurrentPosition() in case of error
+        function errorPosition(error) {
+            var info = "Error during geolocation : ";
+            switch(error.code) {
+                case error.TIMEOUT:
+                    info += "Timeout !";
+                    break;
+                case error.PERMISSION_DENIED:
+                    info += "You did not give access to the geolocation API";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    info += "Position could not be determined";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    info += "Unknown error";
+                    break;
             }
-          } else {
-            alert('Geocoder failed due to: ' + status);
-          }
-        });
-      }     
+            //document.getElementById("address").innerHTML = info;
+        }
+
+        navigator.geolocation.getCurrentPosition(drawPosition,errorPosition);
+
+    } else {
+
+        alert("Geolocation API not supported by your browser");
+
+    }
     </script>
+
 <script src='/socket.io/socket.io.js'></script>
 <script src='js/lib/adapter.js'></script>
 <script src='js/main.js'></script>
+<script src='js/size.js'></script>
+
+
 
 </body>
 </html>
