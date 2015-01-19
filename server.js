@@ -1,37 +1,21 @@
-var static = require('node-static');
-var http = require('http');
-var file = new(static.Server)();
-var express = require('express');
-var app = express();
-var server = http.createServer(function (req, res) {
-  file.serve(req, res);
-});
-
-app.use(express.static(__dirname + '/'));
-
 var MongoClient = require('mongodb').MongoClient;
 
-/*app.use(function (req, res, next){
-   res.locals.scripts = ['./js/test.js'];
-   next();
-}); 
-*/
-console.log("ae");
-app.get('/room:name',function (req, res) {  
-  console.log("poi ");
-  res.sendfile(__dirname + '/index.html');  
-  
+var express = require('express')
+  , http = require('http');
+
+var app = express();
+
+app.use('/room/',  express.static(__dirname + '/'));
+app.configure(function(){
+  app.use(express.logger('dev'));
+  app.use(express.methodOverride());
+  app.use(app.router);
 });
 
-app.listen(2013);
-/*app.all('/room/', function(req, res){
- 	res.sendfile(__dirname + "/index.html");
- });*/
-/*app.get('/', function (req, res) {  
+app.get('/room/:name', function (req, res) {  
   res.sendfile(__dirname + '/index.html');  
-});*/
-
- //app.listen(2013);
+});
+var server = app.listen(2013);
 
 // M.Buffa. Rappel des trois syntaxes de socket.io
 // socket = un tuyau relié à un client. C'est un objet unique par client.
@@ -50,6 +34,7 @@ app.listen(2013);
 deleteAll("user");
 deleteAll("message");
 var nbClientMax = 4;
+
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket){
 
@@ -111,11 +96,6 @@ io.sockets.on('connection', function (socket){
       insertMessage(username, room, date, text);
 	});
 });
-
-/*app.get('/room/:name/', function (req, res) {
-    //get(res, req.params.name);
-    console.log(":P");
-});*/
 
 function insertMessage(user, room, date, text) {
    var newMsg = {

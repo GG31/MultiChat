@@ -42,12 +42,11 @@ var sdpConstraints = {'mandatory': {
 // on recevra un message "created", sinon un message "joined"
 var socket = io.connect();
 // Permet d'indiquer une "room" dans le path
-var room = location.pathname.split(':')[1];
-console.log("LOL " + room);
+var room = location.pathname.split('/')[2];
+console.log("In room " + room);
 if (room === '') {
   room = prompt('Enter room name:');
   socket.emit('create or join', room);
-  //room = 'foo';
 } else {
   //M'envoyer le nom de la room
   socket.emit('create or join', room);

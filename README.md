@@ -13,3 +13,6 @@ Install mongodb
 ```
 sudo apt-get install mongodb
 ```
+
+Pour accéder à une room : 
+http://localhost:2013/room/roomname
