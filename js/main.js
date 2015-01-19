@@ -1,5 +1,5 @@
 'use strict';
-
+console.log('debut main');
 var sendChannel;
 var sendButton = document.getElementById("sendButton");
 var sendTextarea = document.getElementById("dataChannelSend");
@@ -37,13 +37,13 @@ var sdpConstraints = {'mandatory': {
 /////////////////////////////////////////////
 
 // Permet d'indiquer une "room" dans le path
-console.log("LOL " + location.pathname);
-var room = location.pathname.substring(1);
+var room = location.pathname.split(':')[1];
+console.log("LOL " + room);
 if (room === '') {
 //  room = prompt('Enter room name:');
   room = 'foo';
 } else {
-  //
+  //M'envoyer le nom de la room
 }
 
 // Demande de connexion au serveur de sockets. Si on regarde le code du

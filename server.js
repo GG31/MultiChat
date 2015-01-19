@@ -5,8 +5,9 @@ var express = require('express');
 var app = express();
 var server = http.createServer(function (req, res) {
   file.serve(req, res);
-}).listen(2013);
-app.use(express.static(__dirname + '/js'));
+});
+
+app.use(express.static(__dirname + '/'));
 
 var MongoClient = require('mongodb').MongoClient;
 
@@ -14,11 +15,15 @@ var MongoClient = require('mongodb').MongoClient;
    res.locals.scripts = ['./js/test.js'];
    next();
 }); 
-
-app.get('/room/:name/',function (req, res) {  
+*/
+console.log("ae");
+app.get('/room:name',function (req, res) {  
+  console.log("poi ");
   res.sendfile(__dirname + '/index.html');  
-});*/
+  
+});
 
+app.listen(2013);
 /*app.all('/room/', function(req, res){
  	res.sendfile(__dirname + "/index.html");
  });*/
