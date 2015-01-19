@@ -94,20 +94,18 @@ io.sockets.on('connection', function (socket){
 	   insertUser(username, room);
 	   // echo to room 1 that a person has connected to their room
 	   var text = username + ' has connected to this room';
-	   sendAndRegisterMessage('SERVER', room, text);
+	   socket.broadcast.to(room).emit('updatechat', 'SERVER', text);
+      var date = new Date(Date.now());
+      insertMessage(username, room, date, text);
 	});
 	
 	socket.on('sendMsg', function(username, room, text){
 	   // echo to room 1 the message of username
-		sendAndRegisterMessage(username, room, text);
+		socket.broadcast.to(room).emit('updatechat', username, text);
+	   var date = new Date(Date.now());
+      insertMessage(username, room, date, text);
 	});
 });
-
-function sendAndRegisterMessage(username, room, text) {
-   socket.broadcast.to(room).emit('updatechat', username, text);
-	var date = new Date(Date.now());
-   insertMessage(username, room, date, text);
-}
 
 /*app.get('/room/:name/', function (req, res) {
     //get(res, req.params.name);
