@@ -1,5 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 
+
 var express = require('express')
   , http = require('http');
 
@@ -12,10 +13,24 @@ app.configure(function(){
   app.use(app.router);
 });
 
+
+
+var db;
+var server;
+var io;
+// Initialize connection once
+MongoClient.connect("mongodb://127.0.0.1:27017/multichat", function(err, database) {
+  if(err) {
+   console.log("error");
+   throw err;
+  }
+
+  db = database;
+});
+ 
 app.get('/room/:name', function (req, res) {  
   res.sendfile(__dirname + '/index.html');  
 });
-var server = app.listen(2013);
 
 // M.Buffa. Rappel des trois syntaxes de socket.io
 // socket = un tuyau relié à un client. C'est un objet unique par client.
@@ -31,10 +46,10 @@ var server = app.listen(2013);
 // 													 de la salle
 // io.sockets.in(nom de la salle).emit(...) = tous les clients de la salle y compris
 // 											  le client courant.
-deleteAll("user");
-deleteAll("message");
+//deleteAll("user");
+//deleteAll("message");
 var nbClientMax = 4;
-
+server = app.listen(2013);
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket){
 
@@ -89,6 +104,11 @@ io.sockets.on('connection', function (socket){
       insertMessage(username, room, date, text);
 	});
 	
+	socket.on('getusers', function(room){
+	   var users = getUsers(room);
+	   socket.emit('');
+	});
+	
 	socket.on('sendMsg', function(username, room, text){
 	   // echo to room 1 the message of username
 		socket.broadcast.to(room).emit('updatechat', username, text);
@@ -124,58 +144,41 @@ function insertUser(user, room) {
 }
 
 function insert(collection, document) {
-  MongoClient.connect('mongodb://127.0.0.1:27017/multichat', function (err, db) {
-     if (err) {
-         throw err;
-     }
-     var collection = db.collection("\""+collection+"\"");
-     collection.insert(document);
-  });
+   var collection = db.collection("\""+collection+"\"");
+   collection.insert(document);
 }
 
 function deleteUser(userId) {
-   MongoClient.connect('mongodb://127.0.0.1:27017/multichat', function (err, db) {
-     if (err) {
-         throw err;
-     }
-     var collection = db.collection("\""+collection+"\"");
-     collection.remove({_id : userId});
-  });
+   var collection = db.collection("\""+collection+"\"");
+   collection.remove({_id : userId});
 }
 
 function deleteAll(collection) {
-   MongoClient.connect('mongodb://127.0.0.1:27017/multichat', function (err, db, collection) {
-     if (err) {
-         throw err;
-     }
-     var collection = db.collection("\""+collection+"\"");
-     collection.remove({});
-  });
+   var collection = db.collection("\""+collection+"\"");
+   collection.remove({});
+}
+
+function getUsers(room) {
 }
 
 function get(collection) {
-   MongoClient.connect('mongodb://127.0.0.1:27017/multichat', function (err, db, collection) {
-     if (err) {
+   var collection = db.collection("\""+collection+"\"");
+   var result = collection.find();
+   result.toArray(function (err, results) {
+      if (err) {
          throw err;
-     }
-     var collection = db.collection("\""+collection+"\"");
-     var result = collection.find();
-     result.toArray(function (err, results) {
-        if (err) {
-            throw err;
-        }
-        if (results.length === 0) {
-           //res.statusCode = 404;
-           //return res.send('Error 404: No users found');
-           console.log('Error 404: No users found');
-         }
-         var users = JSON.stringify(results);
-         console.log('plop ' + users);
-         /*res.type('text/plain');
-         res.send(users);
-         db.close();
-         */
-     });
- });
+      }
+      if (results.length === 0) {
+         //res.statusCode = 404;
+         //return res.send('Error 404: No users found');
+         console.log('Error 404: No users found');
+      }
+      var users = JSON.stringify(results);
+      console.log('plop ' + users);
+      /*res.type('text/plain');
+      res.send(users);
+      db.close();
+      */
+   });
 }
 
