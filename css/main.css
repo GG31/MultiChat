@@ -1,7 +1,11 @@
 /** main.css **/
+h1 {
+    text-align: center;
+}
 #col-left{
-   width: 20%;
+   width: 19%;
    float:left;
+   padding-right: 1%;
 }
 #col-center{
    width: 50%;
@@ -18,8 +22,41 @@
 video{
    width: 95%;
 }
+#activeVideo{
+   width: 68%;
+   display: block;
+   margin: 0 auto;
+}
+#remoteVideo{
+   width: 30%;
+}
+#activeVideo{
+   height: 300px;
+}
 #map_canvas{
    /*width: 500px; */
    width : 95%;
-   height: 300px;
+}
+#common-repository{
+   margin-bottom: 10px;
+}
+#common-repository-area, #dataChannelReceive, #historical-container-area{
+   border: 1px solid;
+   overflow:auto;
+}
+
+#profils{
+   background-color: grey;
+}
+
+#dataChannelReceive {
+   width : 98%;
+}
+#dataChannelSend {
+   margin-top:5px;
+   width : 98%;
+}
+#sendButton{
+   float: right;
+   margin : 1%;
 }
