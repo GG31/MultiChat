@@ -1,5 +1,5 @@
 'use strict';
-console.log('debut main');
+
 var sendChannel;
 var sendButton = document.getElementById("sendButton");
 var sendTextarea = document.getElementById("dataChannelSend");
@@ -44,24 +44,27 @@ var socket = io.connect();
 // Permet d'indiquer une "room" dans le path
 var room = location.pathname.split('/')[2];
 console.log("In room " + room);
-if (room === '') {
+/*if (room == '') {
   room = prompt('Enter room name:');
   socket.emit('create or join', room);
 } else {
   //M'envoyer le nom de la room
   socket.emit('create or join', room);
-}
+}*/
 
 socket.on('connect', function(){
-	// call the server-side function 'adduser' and send one parameter (value of prompt)
 	username = prompt("What's your name?");
 	socket.emit('adduser', room, username);
+	console.log("username " + username);
 });
 
-if (room !== '') {
+if (room != '') {
   console.log('Create or join room', room);
-  socket.emit('create or join', room);
-  socket.emit('sendMsg', username, room, "MESSAGE");
+  socket.emit('create or join', room, username);
+  //socket.emit('sendMsg', username, room, "MESSAGE");
+} else {
+   room = prompt('Enter room name:');
+   socket.emit('create or join', room, username);
 }
 
 // Si on reçoit le message "created" alors on est l'initiateur du call
@@ -75,7 +78,7 @@ socket.on('full', function (room){
   console.log('Room ' + room + ' is full');
 });
 
-// Jamais appelé, à mon avis une trace de la version nxn
+// Appelé quand un nouveau client rejoint la room
 socket.on('join', function (room){
   console.log('Another peer made a request to join room ' + room);
   console.log('This peer is the initiator of room ' + room + '!');

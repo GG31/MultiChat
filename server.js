@@ -77,9 +77,11 @@ io.sockets.on('connection', function (socket){
 			socket.join(room);
 			socket.emit('created', room);
 			insertRoom(room);
+			socket.room = room;
 		} else if (numClients < nbClientMax) {
 			io.sockets.in(room).emit('join', room);
 			socket.join(room);
+			socket.room = room;
 			socket.emit('joined', room);
 		} else { // max nbClientMax clients
 			socket.emit('full', room);
@@ -95,7 +97,8 @@ io.sockets.on('connection', function (socket){
 
    // when the client emits 'adduser', this listens and executes
 	socket.on('adduser', function(room, username){
-	   console.log("in adduser " + username + " " + room);
+	   log("in adduser " + username + " " + room);
+	   socket.username = username;
 	   insertUser(username, room);
 	   // echo to room 1 that a person has connected to their room
 	   var text = username + ' has connected to this room';
