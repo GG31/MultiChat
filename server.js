@@ -94,14 +94,14 @@ io.sockets.on('connection', function (socket){
 	
 	socket.on('newMessage', function(text){
 	   // echo to room 1 the message of username
-		io.sockets.in(room).emit('updatechat', socket.username, socket.room);
+		io.sockets.in(socket.room).emit('updatechat', socket.username, socket.room);
 	   var date = new Date(Date.now());
       insertMessage(socket.username, socket.room, date, text);
 	});
 	
 	socket.on('newLog', function(text){
 	   // echo to room 1 the message of username
-		io.sockets.in(room).emit('updatehistory', text);
+		io.sockets.in(socket.room).emit('updatehistory', text);
 	   var date = new Date(Date.now());
       insertLog(socket.room, date, text);
 	});
