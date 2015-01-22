@@ -20,3 +20,28 @@ function initializeServerConstraints(){
     return [pc_config,pc_constraints,sdpConstraints];
 }
 
+function initializeSocket(){
+    // Demande de connexion au serveur de sockets. Si on regarde le code du
+    // server dans server.js on verra que si on est le premier client connecté
+    // on recevra un message "created", sinon un message "joined"
+    var socket = io.connect();
+    setOnMethods(socket);
+    return socket;
+}
+
+function initRoomCheck(){
+    var room = getRoom();
+    var socket = getSocket();
+    
+    console.log("In room " + room);
+    if (room != '') {
+      console.log('Create or join room', room);
+      socket.emit('create or join', room, username);
+      //socket.emit('sendMsg', username, room, "MESSAGE");
+    } else {
+       room = prompt('Enter room name:');
+       socket.emit('create or join', room, username);
+    }
+    
+    setRoom(room);
+}
