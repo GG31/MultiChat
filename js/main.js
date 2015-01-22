@@ -17,24 +17,49 @@ var turnReady;
 
 var username = "";
 
-// Configuration des serveurs stun...
-var pc_config = webrtcDetectedBrowser === 'firefox' ?
-  {'iceServers':[{'url':'stun:23.21.150.121'}]} : // number IP
-  {'iceServers': [{'url': 'stun:stun.l.google.com:19302'}]};
+var room = location.pathname.split('/')[2];
 
-// Peer connection constraints
-var pc_constraints = {
-  'optional': [
-    {'DtlsSrtpKeyAgreement': true},
-    {'RtpDataChannels': true}
-  ]};
+/* ****************************************************************
+Constraints
+**************************************************************** */
+var constraints = initializeServerConstraints();
+var pc_config = constraints[0];
+var pc_constraints = constraints[1];
+var sdpConstraints = constraints[2];
 
-// Set up audio and video regardless of what devices are present.
-var sdpConstraints = {'mandatory': {
-  'OfferToReceiveAudio':true,
-  'OfferToReceiveVideo':true }};
+/* ****************************************************************
+Getters
+**************************************************************** */
+function getRoom(){
+    return room;
+}
+function getUsername(){
+    return username;
+}
+function getIsInitiator(){
+    return isInitiator;
+}
+function getIsStarted(){
+    return isStarted;
+}
+function getIsChannelReady(){
+    return isChannelReady;
+}
 
-/////////////////////////////////////////////
+/* ****************************************************************
+Setters
+**************************************************************** */
+function setIsInitiator(initiator){
+    isInitiator = initiator;
+}
+function setIsStarted(started){
+
+    isStarted = started;
+}
+function setIsChannelReady(ready){
+    isChannelReady = ready;
+}
+
 
 
 // Demande de connexion au serveur de sockets. Si on regarde le code du
@@ -42,7 +67,6 @@ var sdpConstraints = {'mandatory': {
 // on recevra un message "created", sinon un message "joined"
 var socket = io.connect();
 // Permet d'indiquer une "room" dans le path
-var room = location.pathname.split('/')[2];
 console.log("In room " + room);
 /*if (room == '') {
   room = prompt('Enter room name:');
@@ -51,12 +75,6 @@ console.log("In room " + room);
   //M'envoyer le nom de la room
   socket.emit('create or join', room);
 }*/
-
-socket.on('connect', function(){
-	username = prompt("What's your name?");
-	socket.emit('adduser', room, username);
-	console.log("username " + username);
-});
 
 if (room != '') {
   console.log('Create or join room', room);
@@ -67,43 +85,6 @@ if (room != '') {
    socket.emit('create or join', room, username);
 }
 
-// Si on reçoit le message "created" alors on est l'initiateur du call
-socket.on('created', function (room){
-  console.log('Created room ' + room);
-  isInitiator = true;
-});
-
-// On a essayé de rejoindre une salle qui est déjà pleine (avec deux personnes)
-socket.on('full', function (room){
-  console.log('Room ' + room + ' is full');
-});
-
-// Appelé quand un nouveau client rejoint la room
-socket.on('join', function (room){
-  console.log('Another peer made a request to join room ' + room);
-  console.log('This peer is the initiator of room ' + room + '!');
-  isChannelReady = true;
-});
-
-// Si on reçoit le message "joined" alors on a rejoint une salle existante
-// on est pas l'initiateur, il y a déjà quelqu'un (l'appelant), donc
-// on est prêt à communiquer...
-socket.on('joined', function (room){
-  console.log('This peer has joined room ' + room);
-  isChannelReady = true;
-});
-
-// Appelé par le serveur pour faire des traces chez les clients connectés
-socket.on('log', function (array){
-  console.log.apply(console, array);
-});
-
-////////////////////////////////////////////////
-socket.on('updatechat', function (username, data) {
-   //à écrire dans la conversation : data // username = SERVER, data = msg
-	//$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
-});
-////////////////////////////////////////////////
 // Envoi de message générique, le serveur broadcaste à tout le monde
 // par défaut (ce sevrait être que dans la salle courante...)
 // Il est important de regarder dans le code de ce fichier quand on envoit
