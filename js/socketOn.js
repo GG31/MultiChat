@@ -8,6 +8,7 @@ function setOnMethods(socket){
     // Si on reçoit le message "created" alors on est l'initiateur du call
     socket.on('created', function (room){
       console.log('Created room ' + room);
+      roomCreationLog(room);
       setIsInitiator(true);
     });
 
@@ -28,6 +29,8 @@ function setOnMethods(socket){
     // on est prêt à communiquer...
     socket.on('joined', function (room){
       console.log('This peer has joined room ' + room);
+      roomJoinedLog(room);
+      getFullHistory();
       setIsChannelReady(true);
     });
 
@@ -39,8 +42,9 @@ function setOnMethods(socket){
     socket.on('updatechat', function (username, data) {
        //à écrire dans la conversation : data // username = SERVER, data = msg
         //$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+        appendNewChat(username,data);
     });
-
+    
     // Récépeiton de message générique.
     socket.on('message', function (message){
       console.log('Received message:', message);
@@ -79,4 +83,12 @@ function setOnMethods(socket){
       }
     });
 
+    socket.on('updateHistory', function(text){
+        appendNewElementToHistory(text);
+    });
+    
+    socket.on('fullHistory',function(arrayHistory){
+        createHistory(arrayHistory);
+    });
+    
 }
