@@ -92,13 +92,35 @@ io.sockets.on('connection', function (socket){
 	   socket.emit('');
 	});
 	
-	socket.on('newMessage', function(username, room, text){
+	socket.on('newMessage', function(text){
 	   // echo to room 1 the message of username
-		io.sockets.in(room).emit('updatechat', username, text);
+		io.sockets.in(room).emit('updatechat', socket.username, socket.room);
 	   var date = new Date(Date.now());
-      insertMessage(username, room, date, text);
+      insertMessage(socket.username, socket.room, date, text);
+	});
+	
+	socket.on('newLog', function(text){
+	   // echo to room 1 the message of username
+		io.sockets.in(room).emit('updatehistory', text);
+	   var date = new Date(Date.now());
+      insertLog(socket.room, date, text);
+	});
+	
+	socket.on('getFullHistory', function(){
+	   // echo to room 1 the message of username
+	   var data = getLog(socket.room);
+		socket.emit('fullHistory', data);
 	});
 });
+
+function insertLog(room, date, text) {
+   var newLog = {
+      date : date,
+      text : text,
+      room_id : room
+   };
+   insert('log', newMsg);
+}
 
 function insertMessage(user, room, date, text) {
    var newMsg = {
@@ -145,6 +167,12 @@ function getUsers(room) {
    /*var collection = db.collection("user");
    var users = collection.find({room_id : room}, {name:1, _id:0})
    return JSON.stringify(users);*/
+}
+
+function getLog(room) {
+   var collection = db.collection("log");
+   var result = collection.find({room_id:room}).sort( { date: 1 } );
+   return JSON.stringify(result);
 }
 
 function get(collection) {
