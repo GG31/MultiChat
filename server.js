@@ -119,7 +119,7 @@ function insertLog(room, date, text) {
       text : text,
       room_id : room
    };
-   insert('log', newMsg);
+   insert('log', newLog);
 }
 
 function insertMessage(user, room, date, text) {
