@@ -1,110 +1,108 @@
 'use strict';
 
 var sendChannel;
+var constraints = {video: true};
+
+/* ****************************************************************
+DOM elements
+**************************************************************** */
 var sendButton = document.getElementById("sendButton");
 var sendTextarea = document.getElementById("dataChannelSend");
 var receiveTextarea = document.getElementById("dataChannelReceive");
-
 sendButton.onclick = sendData;
 
+/* ****************************************************************
+Boolean checks
+**************************************************************** */
 var isChannelReady;
 var isInitiator;
 var isStarted;
+
+/* ****************************************************************
+Streaming vars
+**************************************************************** */
 var localStream;
 var pc;
 var remoteStream;
 var turnReady;
+var localVideo = document.querySelector('#localVideo');
+var remoteVideo = document.querySelector('#remoteVideo');
 
+/* ****************************************************************
+User info
+**************************************************************** */
 var username = "";
-
-// Configuration des serveurs stun...
-var pc_config = webrtcDetectedBrowser === 'firefox' ?
-  {'iceServers':[{'url':'stun:23.21.150.121'}]} : // number IP
-  {'iceServers': [{'url': 'stun:stun.l.google.com:19302'}]};
-
-// Peer connection constraints
-var pc_constraints = {
-  'optional': [
-    {'DtlsSrtpKeyAgreement': true},
-    {'RtpDataChannels': true}
-  ]};
-
-// Set up audio and video regardless of what devices are present.
-var sdpConstraints = {'mandatory': {
-  'OfferToReceiveAudio':true,
-  'OfferToReceiveVideo':true }};
-
-/////////////////////////////////////////////
-
-
-// Demande de connexion au serveur de sockets. Si on regarde le code du
-// server dans server.js on verra que si on est le premier client connecté
-// on recevra un message "created", sinon un message "joined"
-var socket = io.connect();
-// Permet d'indiquer une "room" dans le path
 var room = location.pathname.split('/')[2];
-console.log("In room " + room);
-/*if (room == '') {
-  room = prompt('Enter room name:');
-  socket.emit('create or join', room);
-} else {
-  //M'envoyer le nom de la room
-  socket.emit('create or join', room);
-}*/
+var socket;
 
-socket.on('connect', function(){
-	username = prompt("What's your name?");
-	socket.emit('adduser', room, username);
-	socket.emit('getusers', room);
-	console.log("username " + username);
-});
-
-if (room != '') {
-  console.log('Create or join room', room);
-  socket.emit('create or join', room, username);
-  //socket.emit('sendMsg', username, room, "MESSAGE");
-} else {
-   room = prompt('Enter room name:');
-   socket.emit('create or join', room, username);
+/* ****************************************************************
+Getters
+**************************************************************** */
+function getRoom(){
+    return room;
+}
+function getUsername(){
+    return username;
+}
+function getIsInitiator(){
+    return isInitiator;
+}
+function getIsStarted(){
+    return isStarted;
+}
+function getIsChannelReady(){
+    return isChannelReady;
+}
+function getSocket(){
+    return socket;
+}
+function getLocalVideo(){
+    return localVideo;
+}
+function getremoteVideo(){
+    return remoteVideo;
+}
+function getConstraints(){
+    return constraints;
 }
 
-// Si on reçoit le message "created" alors on est l'initiateur du call
-socket.on('created', function (room){
-  console.log('Created room ' + room);
-  isInitiator = true;
-});
+/* ****************************************************************
+Setters
+**************************************************************** */
+function setIsInitiator(initiator){
+    isInitiator = initiator;
+}
+function setIsStarted(started){
 
-// On a essayé de rejoindre une salle qui est déjà pleine (avec deux personnes)
-socket.on('full', function (room){
-  console.log('Room ' + room + ' is full');
-});
+    isStarted = started;
+}
+function setIsChannelReady(ready){
+    isChannelReady = ready;
+}
+function setSocket(s){
+    socket = s;
+}
+function setLocalStream(stream){
+    localStream = stream;
+}
+function setRoom(r){
+    room = r;
+}
+function setConstraints(c){
+    constraints = c;
+}
 
-// Appelé quand un nouveau client rejoint la room
-socket.on('join', function (room){
-  console.log('Another peer made a request to join room ' + room);
-  console.log('This peer is the initiator of room ' + room + '!');
-  isChannelReady = true;
-});
+/* ****************************************************************
+Initialization
+**************************************************************** */
+var initConstraints = initializeServerConstraints();
+var pc_config = initConstraints[0];
+var pc_constraints = initConstraints[1];
+var sdpConstraints = initConstraints[2];
 
-// Si on reçoit le message "joined" alors on a rejoint une salle existante
-// on est pas l'initiateur, il y a déjà quelqu'un (l'appelant), donc
-// on est prêt à communiquer...
-socket.on('joined', function (room){
-  console.log('This peer has joined room ' + room);
-  isChannelReady = true;
-});
+var socket = initializeSocket();
+initRoomCheck();
 
-// Appelé par le serveur pour faire des traces chez les clients connectés
-socket.on('log', function (array){
-  console.log.apply(console, array);
-});
-
-////////////////////////////////////////////////
-socket.on('updatechat', function (username, data) {
-   //à écrire dans la conversation : data // username = SERVER, data = msg
-	//$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
-});
-////////////////////////////////////////////////
 // Envoi de message générique, le serveur broadcaste à tout le monde
 // par défaut (ce sevrait être que dans la salle courante...)
 // Il est important de regarder dans le code de ce fichier quand on envoit
@@ -113,70 +111,6 @@ function sendMessage(message){
 	console.log('Sending message: ', message);
   socket.emit('message', message);
 }
-
-// Récépeiton de message générique.
-socket.on('message', function (message){
-  console.log('Received message:', message);
-
-
-  if (message === 'got user media') {
-    // On ouvre peut-être la connexion p2p
-  	maybeStart();
-  } else if (message.type === 'offer') {
-
-    if (!isInitiator && !isStarted) {
-      // on a recu une "offre" on ouvre peut être la connexion so on
-      // est pas appelant et si on ne l'a pas déjà ouverte...
-      maybeStart();
-    }
-
-    // si on reçoit une offre, on va initialiser dans la connexion p2p
-    // la "remote Description", avec le message envoyé par l'autre pair 
-    // (et recu ici)
-    pc.setRemoteDescription(new RTCSessionDescription(message));
-
-    // On envoie une réponse à l'offre.
-    doAnswer();
-  } else if (message.type === 'answer' && isStarted) {
-    // On a reçu une réponse à l'offre envoyée, on initialise la 
-    // "remote description" du pair.
-    pc.setRemoteDescription(new RTCSessionDescription(message));
-  } else if (message.type === 'candidate' && isStarted) {
-    // On a recu un "ice candidate" et la connexion p2p est déjà ouverte
-    // On ajoute cette candidature à la connexion p2p. 
-    var candidate = new RTCIceCandidate({sdpMLineIndex:message.label,
-      candidate:message.candidate});
-    pc.addIceCandidate(candidate);
-  } else if (message === 'bye' && isStarted) {
-    handleRemoteHangup();
-  }
-});
-
-////////////////////////////////////////////////////
-
-var localVideo = document.querySelector('#localVideo');
-var remoteVideo = document.querySelector('#remoteVideo');
-
-function handleUserMedia(stream) {
-  localStream = stream;
-  attachMediaStream(localVideo, stream);
-  console.log('Adding local stream.');
-
-  // On envoie un message à tout le monde disant qu'on a bien
-  // overt la connexion video avec la web cam.
-  sendMessage('got user media');
-
-  // Si on est l'appelant on essaie d'ouvrir la connexion p2p
-  if (isInitiator) {
-    maybeStart();
-  }
-}
-
-function handleUserMediaError(error){
-  console.log('getUserMedia error: ', error);
-}
-
-var constraints = {video: true};
 
 getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 console.log('Getting user media with constraints', constraints);
