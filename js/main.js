@@ -55,6 +55,7 @@ console.log("In room " + room);
 socket.on('connect', function(){
 	username = prompt("What's your name?");
 	socket.emit('adduser', room, username);
+	socket.emit('getusers', room);
 	console.log("username " + username);
 });
 

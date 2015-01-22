@@ -1,32 +1,23 @@
 var MongoClient = require('mongodb').MongoClient;
-
-
-var express = require('express')
-  , http = require('http');
+var mongodb = require('mongodb')
+var serverMongo = new mongodb.Server('127.0.0.1', 27017, {auto_reconnect: true});
+var db = new mongodb.Db('multichat', serverMongo);
+db.open(function(){});
+var express = require('express');
+var http = require('http');
 
 var app = express();
 
 app.use('/room/',  express.static(__dirname + '/'));
 app.configure(function(){
+  app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.methodOverride());
   app.use(app.router);
 });
 
-
-
-var db;
 var server;
 var io;
-// Initialize connection once
-MongoClient.connect("mongodb://127.0.0.1:27017/multichat", function(err, database) {
-  if(err) {
-   console.log("error");
-   throw err;
-  }
-
-  db = database;
-});
  
 app.get('/room/:name', function (req, res) {  
   res.sendfile(__dirname + '/index.html');  
@@ -46,9 +37,7 @@ app.get('/room/:name', function (req, res) {
 // 													 de la salle
 // io.sockets.in(nom de la salle).emit(...) = tous les clients de la salle y compris
 // 											  le client courant.
-//deleteAll("user");
-//deleteAll("message");
-var nbClientMax = 4;
+var nbClientMax = 5;
 server = app.listen(2013);
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket){
@@ -70,9 +59,6 @@ io.sockets.on('connection', function (socket){
 	socket.on('create or join', function (room) {
 		var numClients = io.sockets.clients(room).length;
 
-		log('Room ' + room + ' has ' + numClients + ' client(s)');
-		log('Request to create or join room', room);
-
 		if (numClients == 0){
 			socket.join(room);
 			socket.emit('created', room);
@@ -86,18 +72,10 @@ io.sockets.on('connection', function (socket){
 		} else { // max nbClientMax clients
 			socket.emit('full', room);
 		}
-		//socket.emit('emit(): client ' + socket.id + ' joined room ' + room);
-		//socket.broadcast.emit('broadcast(): client ' + socket.id + ' joined room ' + room);
-		//insertMessage("user1", room, "ISODate(\"2014-02-10T10:50:42.389Z\")", "blablabla");
-		//insertRoom(room);
-		//get("room");
-      //insertUser("bob", room);
-      //get("room");
 	});
 
    // when the client emits 'adduser', this listens and executes
 	socket.on('adduser', function(room, username){
-	   log("in adduser " + username + " " + room);
 	   socket.username = username;
 	   insertUser(username, room);
 	   // echo to room 1 that a person has connected to their room
@@ -108,13 +86,15 @@ io.sockets.on('connection', function (socket){
 	});
 	
 	socket.on('getusers', function(room){
-	   var users = getUsers(room);
+	   //get("user");
+	   //var users = getUsers(room);
+	   //log('get users ' + users);
 	   socket.emit('');
 	});
 	
-	socket.on('sendMsg', function(username, room, text){
+	socket.on('newMessage', function(username, room, text){
 	   // echo to room 1 the message of username
-		socket.broadcast.to(room).emit('updatechat', username, text);
+		io.sockets.in(room).emit('updatechat', username, text);
 	   var date = new Date(Date.now());
       insertMessage(username, room, date, text);
 	});
@@ -162,6 +142,9 @@ function deleteAll(collection) {
 }
 
 function getUsers(room) {
+   /*var collection = db.collection("user");
+   var users = collection.find({room_id : room}, {name:1, _id:0})
+   return JSON.stringify(users);*/
 }
 
 function get(collection) {
