@@ -103,7 +103,6 @@ var sdpConstraints = initConstraints[2];
 var socket = initializeSocket();
 initRoomCheck();
 
-
 // Envoi de message générique, le serveur broadcaste à tout le monde
 // par défaut (ce sevrait être que dans la salle courante...)
 // Il est important de regarder dans le code de ce fichier quand on envoit
