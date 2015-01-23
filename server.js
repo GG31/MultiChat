@@ -72,6 +72,9 @@ io.sockets.on('connection', function (socket){
 		} else { // max nbClientMax clients
 			socket.emit('full', room);
 		}
+		//insertLog(room, new Date(Date.now()), "text of log");
+		//get('log');
+		console.log("yolé " + getLog(room));
 	});
 
    // when the client emits 'adduser', this listens and executes
@@ -108,7 +111,8 @@ io.sockets.on('connection', function (socket){
 	
 	socket.on('getFullHistory', function(){
 	   // echo to room 1 the message of username
-	   var data = getLog(socket.room);
+	   var data = "";
+	   getLog(socket.room);
 		socket.emit('fullHistory', data);
 	});
 });
@@ -149,17 +153,17 @@ function insertUser(user, room) {
 }
 
 function insert(collection, document) {
-   var collection = db.collection("\""+collection+"\"");
+   var collection = db.collection(collection);
    collection.insert(document);
 }
 
 function deleteUser(userId) {
-   var collection = db.collection("\""+collection+"\"");
+   var collection = db.collection(collection);
    collection.remove({_id : userId});
 }
 
 function deleteAll(collection) {
-   var collection = db.collection("\""+collection+"\"");
+   var collection = db.collection(collection);
    collection.remove({});
 }
 
@@ -170,13 +174,27 @@ function getUsers(room) {
 }
 
 function getLog(room) {
+   //var collection = db.collection("log");
+   //var result = collection.find({room_id:room}, {date:1, text:1, room_id:0, _id:0}).sort( { date: 1 } );
    var collection = db.collection("log");
-   var result = collection.find({room_id:room}).sort( { date: 1 } );
-   return JSON.stringify(result);
+   var result = collection.find({room_id:room}, {_id:0, room_id:0}).sort({date:1});
+   result.toArray(function (err, results) {
+      if (err) {
+         throw err;
+      }
+      if (results.length === 0) {
+         //res.statusCode = 404;
+         //return res.send('Error 404: No users found');
+         console.log('Error 404: No log found');
+      }
+      var users = JSON.stringify(results);
+      console.log("data : " + users);
+   });
+   return result;
 }
 
 function get(collection) {
-   var collection = db.collection("\""+collection+"\"");
+   var collection = db.collection(collection);
    var result = collection.find();
    result.toArray(function (err, results) {
       if (err) {

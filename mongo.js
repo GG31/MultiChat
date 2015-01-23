@@ -1,14 +1,19 @@
-var MongoClient = require('mongodb').MongoClient
-  , assert = require('assert');
+var Db = require('mongodb').Db;
+var Connection = require('mongodb').Connection;
+var Server = require('mongodb').Server;
+var BSON = require('mongodb').BSON;
+var ObjectID = require('mongodb').ObjectID;
 
-// Connection URL
-var url = 'mongodb://localhost:27017/multichat';
-// Use connect method to connect to the Server
-MongoClient.connect(url, function(err, db) {
-  assert.equal(null, err);
-  console.log("Connected correctly to server");
+Provider = function(host, port) {
+  this.db= new Db('node-mongo-blog', new Server(host, port, {auto_reconnect: true}, {}));
+  this.db.open(function(){});
+};
 
-  db.close();
-});
+Provider.prototype.getCollection= function(callback) {
+  this.db.collection('log', function(error, article_collection) {
+    if( error ) callback(error);
+    else callback(null, article_collection);
+  });
+};
 
-
+exports.Provider = Provider;
