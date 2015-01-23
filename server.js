@@ -1,11 +1,5 @@
-var MongoClient = require('mongodb').MongoClient;
-var mongodb = require('mongodb')
-var serverMongo = new mongodb.Server('127.0.0.1', 27017, {auto_reconnect: true});
-var db = new mongodb.Db('multichat', serverMongo);
-db.open(function(){});
 var express = require('express');
 var http = require('http');
-
 var app = express();
 
 app.use('/room/',  express.static(__dirname + '/'));
@@ -23,25 +17,12 @@ app.get('/room/:name', function (req, res) {
   res.sendfile(__dirname + '/index.html');  
 });
 
-// M.Buffa. Rappel des trois syntaxes de socket.io
-// socket = un tuyau relié à un client. C'est un objet unique par client.
-//      Donc si on fait socket.n = 3; c'est comme si on ajoutait une propriété
-// 		"n" à la session dédiée au client connecté. 
-// socket.emit(type_message, data) = envoie un message juste au client connecté
-// socket.broadcast.emit(type_message, data1, data2) = envoie à tous les clients
-// 		sauf au client connecté
-// io.sockets.emit(type_message, data1, data2) = envoie à tous les clients y compris
-// 		au client connecté.
-// 	Variantes avec les "room" :
-// 	socket.broadcast.to(nom de la salle).emit(...) = tous sauf client courant, mais
-// 													 de la salle
-// io.sockets.in(nom de la salle).emit(...) = tous les clients de la salle y compris
-// 											  le client courant.
 var nbClientMax = 5;
 server = app.listen(2013);
 var io = require('socket.io').listen(server);
-io.sockets.on('connection', function (socket){
 
+io.sockets.on('connection', function (socket){
+   var mongo = require('./mongo.js').setOnMethods(socket);
 	// Permet d'envoyer des traces au client distant
 	function log(){
 		var array = [">>> "];
@@ -72,9 +53,6 @@ io.sockets.on('connection', function (socket){
 		} else { // max nbClientMax clients
 			socket.emit('full', room);
 		}
-		//insertLog(room, new Date(Date.now()), "text of log");
-		//get('log');
-		console.log("yolé " + getLog(room));
 	});
 
    // when the client emits 'adduser', this listens and executes
@@ -86,13 +64,6 @@ io.sockets.on('connection', function (socket){
 	   socket.broadcast.to(room).emit('updatechat', 'SERVER', text);
       var date = new Date(Date.now());
       insertMessage(username, room, date, text);
-	});
-	
-	socket.on('getusers', function(room){
-	   //get("user");
-	   //var users = getUsers(room);
-	   //log('get users ' + users);
-	   socket.emit('');
 	});
 	
 	socket.on('newMessage', function(text){
@@ -110,107 +81,11 @@ io.sockets.on('connection', function (socket){
 	});
 	
 	socket.on('getFullHistory', function(){
-	   // echo to room 1 the message of username
-	   var data = "";
+	   // emit the history of the room to the client connected
 	   getLog(socket.room);
 		socket.emit('fullHistory', data);
 	});
+	
+	
 });
-
-function insertLog(room, date, text) {
-   var newLog = {
-      date : date,
-      text : text,
-      room_id : room
-   };
-   insert('log', newLog);
-}
-
-function insertMessage(user, room, date, text) {
-   var newMsg = {
-      date : date,
-      sender : user,
-      text : text,
-      room_id : room
-   };
-   insert('message', newMsg);
-}
-
-function insertRoom(room) {
-   var newRoom = {
-      _id : room,
-      name : room
-   };
-   insert('room', newRoom);
-}
-
-function insertUser(user, room) {
-   var newUser = {
-        name : user,
-        room_id : room
-   };
-   insert('user', newUser);
-}
-
-function insert(collection, document) {
-   var collection = db.collection(collection);
-   collection.insert(document);
-}
-
-function deleteUser(userId) {
-   var collection = db.collection(collection);
-   collection.remove({_id : userId});
-}
-
-function deleteAll(collection) {
-   var collection = db.collection(collection);
-   collection.remove({});
-}
-
-function getUsers(room) {
-   /*var collection = db.collection("user");
-   var users = collection.find({room_id : room}, {name:1, _id:0})
-   return JSON.stringify(users);*/
-}
-
-function getLog(room) {
-   //var collection = db.collection("log");
-   //var result = collection.find({room_id:room}, {date:1, text:1, room_id:0, _id:0}).sort( { date: 1 } );
-   var collection = db.collection("log");
-   var result = collection.find({room_id:room}, {_id:0, room_id:0}).sort({date:1});
-   result.toArray(function (err, results) {
-      if (err) {
-         throw err;
-      }
-      if (results.length === 0) {
-         //res.statusCode = 404;
-         //return res.send('Error 404: No users found');
-         console.log('Error 404: No log found');
-      }
-      var users = JSON.stringify(results);
-      console.log("data : " + users);
-   });
-   return result;
-}
-
-function get(collection) {
-   var collection = db.collection(collection);
-   var result = collection.find();
-   result.toArray(function (err, results) {
-      if (err) {
-         throw err;
-      }
-      if (results.length === 0) {
-         //res.statusCode = 404;
-         //return res.send('Error 404: No users found');
-         console.log('Error 404: No users found');
-      }
-      var users = JSON.stringify(results);
-      console.log('plop ' + users);
-      /*res.type('text/plain');
-      res.send(users);
-      db.close();
-      */
-   });
-}
 
