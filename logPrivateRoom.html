@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name='keywords' content='WebRTC, HTML5, JavaScript' />
+<meta name='description' content='WebRTC Reference App' />
+<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+
+<link rel="stylesheet" type="text/css" href="css/main.css">
+
+<base target='_blank'>
+
+<title>WebRTC client</title>
+
+<!-- <link rel='stylesheet' href='css/main.css' /> -->
+<script src='js/lib/jquery-1.11.2.min.js'></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script src="js/app.js"></script>
+
+</head>
+<body onload="initialize()" ng-app="multichat" ng-controller="IndexCtrl" >
+
+<div class='container'>
+   <div class="row-top">
+      <div id="log-header">
+         <h1> Bienvenue dans la salle privée {{roomName}}</h1>
+      </div>
+   </div>
+   <div class="row-body">
+      <div class="row-body-container">
+      <form action="">
+         <h3>Merci de vous identifier</h3><br>
+         <div class="padding-room">Login :  <input type="text" name="logRoom" value=""></div><br>
+         <div class="padding-room">Mot de passe :  <input type="text" name="pwdRoom" value=""></div><br>
+         <p class="error">* Mot de passe incorrect</p>
+         <div class="padding-room"><input type="submit" value="Connexion" align="right"></div>
+      </form>
+      </div>
+   </div>
+</div>
+    
+<script src='/socket.io/socket.io.js'></script>
+<script src='js/lib/adapter.js'></script>
+
+<script src='js/scripts_init.js'></script>
+<script src='js/chatManagement.js'></script>
+<script src='js/historyManagement.js'></script>
+<script src='js/socketOn.js'></script>
+<script src='js/mediaHandlers.js'></script>
+<script src='js/main.js'></script>
+<script src='js/size.js'></script>
+
+
+
+</body>
+</html>

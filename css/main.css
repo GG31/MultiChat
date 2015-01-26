@@ -3,7 +3,7 @@ body{
     margin:0px;
     padding:0px;
 }
-h1 {
+#header h1 {
    color: #4c4c4c;
    text-align: center;
    margin:0px;
@@ -69,11 +69,19 @@ video, img{
    width : 95%;
 }
 #common-repository{
-   margin-bottom: 10px;
+   margin-bottom: 8px;
 }
-#common-repository-area, #dataChannelReceive, #historical-container-area{
+#common-repository-area, #dataChannelReceive{
    background-color: #b2b2b2;
    border: 1px solid #7f7f7f;
+   overflow:auto;
+}
+#historical-container-area{
+   background-color: #b2b2b2;
+   border: 1px solid #ffffff;
+   overflow:auto;
+}
+#profils-container{
    overflow:auto;
 }
 
@@ -111,5 +119,30 @@ video, img{
    color: brown;
    font-weight: bold;
 }
-
-
+/********** newPrivateRoom ***********/
+.row-top{
+   border-right: 2px solid #4c4c4c;
+   overflow:auto;
+   background-color:#001916; 
+   padding:1%;
+   margin:0px;
+}
+#new-header h1, #log-header h1{
+   text-align: center;
+   margin:0px;
+   padding-top:10px;
+   padding-bottom:20px;
+   color: white; 
+}
+.row-body-container{
+   width: 20%;
+   border: 2px solid #b2b2b2;
+   background-color:#e5e5e5; 
+   padding:1%;
+   margin:0px auto;
+   margin-top: 10%;
+}
+.error{
+   color: red;
+   display: none;
+}

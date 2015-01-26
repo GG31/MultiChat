@@ -21,14 +21,16 @@
 </head>
 <body onload="initialize()" ng-app="multichat" ng-controller="IndexCtrl" >
 
-<div id='container'>
+<div class='container'>
    <div id="col-left">   
       <!-- liste de tous les utilisateurs connectes -->  
       <h2>{{profils.pseudo}}</h2> <!-- TEST -->
-      <div id="profils" ng-repeat="profil in profils">
-         <div id="pseudo">
-            <h4>{{profil.pseudo}}</h4>
-            <video id='remoteVideo' autoplay>{{profil.video}}</video>
+      <div id="profils-container">
+         <div id="profils" ng-repeat="profil in profils">
+            <div id="pseudo">
+               <h4>{{profil.pseudo}}</h4>
+               <video id='remoteVideo' autoplay>{{profil.video}}</video>
+            </div>
          </div>
       </div>
       <!-- historique des anciens chat -->
@@ -41,7 +43,7 @@
    </div>
    <div id="col-center">
       <div id="header">
-         <h1> Welcome in the room {{roomName}}</h1>
+         <h1> Bienvenue dans la salle {{roomName}}</h1>
       </div>
       <div id='active-video'>
          <h4 id='video-left'>{{pseudoActif}}</h4>
