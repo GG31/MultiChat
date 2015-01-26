@@ -83,7 +83,7 @@ io.sockets.on('connection', function (socket){
 	socket.on('getFullHistory', function(){
 	   // emit the history of the room to the client connected
 	   getLog(socket.room);
-		socket.emit('fullHistory', data);
+		//socket.emit('fullHistory', data);
 	});
 	
 	
