@@ -9,7 +9,7 @@ verifyBan = function(req, res) {
    var doc = collection.findOne({_id:req.params.name}, {_id:0, bannedIP:1},function(err, item) {
       if (item != null) {
          var bannedIP = JSON.stringify(item.bannedIP);
-         if (bannedIP.indexOf(req.socket.localAddress)) {
+         if (bannedIP != undefined && bannedIP.indexOf(req.socket.localAddress)) {
             res.send("You are banned");
          } else {
             res.sendfile(__dirname + '/index.html');  
