@@ -45,6 +45,16 @@ module.exports.setOnMethods = function(socket) {
       };
       insert('room', newRoom);
    },
+   
+   insertPrivateRoom = function (room, pass) {
+      var newRoom = {
+         _id : room,
+         pass : pass,
+         name : room,
+         bannedIP : [],
+      };
+      insert('room', newRoom);
+   },
 
    insertUser = function (user, room) {
       var newUser = {
@@ -58,7 +68,29 @@ module.exports.setOnMethods = function(socket) {
       var collection = db.collection(collection);
       collection.insert(document);
    },
-
+   
+   setPass = function (room, pass) {
+      var collection = db.collection("room");
+      collection.update({name:room},{$set:{pass:pass}})
+      get("room");
+   },
+   
+   addBannedIP = function(room, ip) {
+      var collection = db.collection("room");
+      collection.update({_id:room}, {$push:{bannedIP:ip}})
+   }
+   
+   isBanned = function(room, ip) {
+      var collection = db.collection("room");
+      var doc = collection.findOne({_id:room}, {_id:0, bannedIP:1});
+      if (doc) {
+         if ($.inArray(ip, doc.bannedIP)) {
+            return true;
+         }
+         return false;
+      }
+   }
+   
    deleteUser = function (userId) {
       var collection = db.collection(collection);
       collection.remove({_id : userId});

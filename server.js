@@ -16,6 +16,9 @@ var io;
 app.get('/room/:name', function (req, res) {  
   res.sendfile(__dirname + '/index.html');  
 });
+app.get('/privateroom/:name', function (req, res) {  
+  res.sendfile(__dirname + '/index.html');  
+});
 
 var nbClientMax = 5;
 server = app.listen(2013);
@@ -39,13 +42,13 @@ io.sockets.on('connection', function (socket){
 
 	socket.on('create or join', function (room) {
 		var numClients = io.sockets.clients(room).length;
-
+      var ipClient = socket.handshake.address;
 		if (numClients == 0){
 			socket.join(room);
 			socket.emit('created', room);
 			insertRoom(room);
 			socket.room = room;
-		} else if (numClients < nbClientMax) {
+		} else if (numClients < nbClientMax && !isBanned(room, ipClient)) {
 			io.sockets.in(room).emit('join', room);
 			socket.join(room);
 			socket.room = room;
@@ -54,6 +57,10 @@ io.sockets.on('connection', function (socket){
 			socket.emit('full', room);
 		}
 	});
+	
+	socket.on('set pass room', function (room, pass) {
+		setPass(room, pass);
+	});
 
    // when the client emits 'adduser', this listens and executes
 	socket.on('adduser', function(room, username){
@@ -61,7 +68,7 @@ io.sockets.on('connection', function (socket){
 	   insertUser(username, room);
 	   // echo to room 1 that a person has connected to their room
 	   var text = username + ' has connected to this room';
-	   socket.broadcast.to(room).emit('updatechat', 'SERVER', text);
+	   //socket.broadcast.to(room).emit('updatechat', 'SERVER', text);
       var date = new Date(Date.now());
       insertMessage(username, room, date, text);
 	});
@@ -75,7 +82,7 @@ io.sockets.on('connection', function (socket){
 	
 	socket.on('newLog', function(text){
 	   // echo to room 1 the message of username
-		io.sockets.in(socket.room).emit('updatehistory', text);
+		io.sockets.in(socket.room).emit('updateHistory', text);
 	   var date = new Date(Date.now());
       insertLog(socket.room, date, text);
 	});
@@ -86,6 +93,9 @@ io.sockets.on('connection', function (socket){
 		//socket.emit('fullHistory', data);
 	});
 	
-	
+	socket.on('banIP', function(ip){
+	   // add banned ip to db
+	   addBannedIP(socket.room, ip);
+	});
 });
 
