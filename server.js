@@ -12,20 +12,14 @@ app.configure(function(){
 
 var server;
 var io;
- 
-app.get('/room/:name', function (req, res) {  
-  res.sendfile(__dirname + '/index.html');  
-});
-app.get('/privateroom/:name', function (req, res) {  
-  res.sendfile(__dirname + '/index.html');  
-});
+var mongo = require('./mongo.js');
 
 var nbClientMax = 5;
 server = app.listen(2013);
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket){
-   var mongo = require('./mongo.js').setOnMethods(socket);
+   mongo.setOnMethods(socket);
 	// Permet d'envoyer des traces au client distant
 	function log(){
 		var array = [">>> "];
@@ -47,7 +41,7 @@ io.sockets.on('connection', function (socket){
 			socket.join(room);
 			socket.emit('created', room);
 			socket.room = room;
-			insertRoom(room, ipClient);		
+			insertRoom(room, ipClient.address);	
 		} else if (numClients < nbClientMax) {/*TODO Verify ipClient is not banned*/
 			io.sockets.in(room).emit('join', room);
 			socket.join(room);
@@ -95,7 +89,15 @@ io.sockets.on('connection', function (socket){
 	
 	socket.on('banIP', function(ip){
 	   // add banned ip to db if the creator emit banIP
-	   banIP(socket.room, socket.handshake.address, ip);
+	   //banIP(socket.room, socket.handshake.address.address, "127.0.0.1");
+	   banIP(socket.room, socket.handshake.address.address, ip);
 	});
+});
+
+app.get('/room/:name', function (req, res) {  
+  verifyBan(req, res);
+});
+app.get('/privateroom/:name', function (req, res) {  
+  res.sendfile(__dirname + '/index.html');  
 });
 
