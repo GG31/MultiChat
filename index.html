@@ -15,7 +15,6 @@
 
 <!-- <link rel='stylesheet' href='css/main.css' /> -->
 <script src='js/lib/jquery-1.11.2.min.js'></script>
-<script src="js/app.js"></script>
 
 <script src='/socket.io/socket.io.js'></script>
 <script src='js/lib/adapter.js'></script>
@@ -38,8 +37,8 @@
       <div id="profils-container">
       <!--
             <div id="profil">
-               <h4 class="color4">{{profil.pseudo}}</h4>
-               <video class='remoteVideo' autoplay>{{profil.video}}</video>
+               <h4 class="color4">profil.pseudo</h4>
+               <video class='remoteVideo' autoplay>profil.video</video>
             </div>
        --> 
       </div>
@@ -64,36 +63,29 @@
          <script>setInfoToDom("#roomRoom",getRoom());</script>
       </div>
       <div id='active-video'>
-         <h4 id='video-left'><!--{{pseudoActif}}--></h4>
+         <h4 id='video-left'><!--pseudoActif--></h4>
          <video id='activeVideo' autoplay></video>
          <div id='video-right'></div>
       </div>
       <div id="col-center-bottom">
          <div id="map-container">
-         <!--
-            <p id="msg">Click the button to get your coordinates:</p>
-            <p id="address"></p>
-          
-            <button onclick="getLocation()">Where am I ?</button>
-        -->
-            <div id="map_canvas"></div>
-            
+            <div id="map_canvas"></div>            
          </div>   
          <div id="local-video">
-            <video id='localVideo' autoplay muted></video>
+            <video id='localVideo' autoplay></video>
          </div>      
       </div>
    </div>
    <div id="col-right">
       <div id="common-repository">
          <h3>Répertoire</h3>
-         <div id="common-repository-area">
-            <!--             
-            <ul>
+         <div id="common-repository-area">       
+            <ul id="common-repository-ul">
+            <!--      
                <li>file.txt</li>
                <li>file.txt</li>
-            </ul>
             -->
+            </ul>
          </div>
       </div>
       <div id="chat-container">
