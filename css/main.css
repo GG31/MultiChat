@@ -40,6 +40,7 @@ body{
    width: 20%;
    float: right;
 }
+/** Vidéos */
 video, img{
    /*width: 95%;*/
    width: 80%;
@@ -52,7 +53,7 @@ video, img{
    margin: 0 auto;
    padding-bottom:5px;
 }
-#remoteVideo{
+.remoteVideo{
    width: 65%;
    display: block;
    margin: 0 auto;
@@ -92,7 +93,7 @@ video, img{
    margin-top:5px;
    width : 98%;
 }
-#sendButton{
+#submitButton{
    float: right;
    margin-top : 5px;
 }
@@ -149,7 +150,6 @@ video, img{
 
 .transfer{
    color:black;
-   font-weight: bold;
 }
 .connect{
    color: green;
@@ -157,6 +157,16 @@ video, img{
 .disconnect{
    color: red;
 }
-#historical-container-area div{
-   color: black;
+.date{
+   color:black;
+   text-align:right;
+   font-weight: bold;
+   font-style: italic;
+}
+
+ul {
+   list-style-type: none;
+}
+li:before {
+   content: '- ';
 }

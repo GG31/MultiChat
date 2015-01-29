@@ -23,3 +23,14 @@ function getHTMLDate(d){
 function getHTMLToday(){
     return "<div class='date'>"+getFormatedToday()+"</div>"
 }
+
+/*
+ * This function fill a DOM element represented by its JQuery selector (domElem) with the given value
+ */
+function setInfoToDom(domElem,value){
+    $(domElem).html(value);
+}
+
+function mirror(emitName,data){
+    getSocket().emit(emitName,data);
+}

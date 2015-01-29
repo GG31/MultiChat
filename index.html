@@ -15,68 +15,76 @@
 
 <!-- <link rel='stylesheet' href='css/main.css' /> -->
 <script src='js/lib/jquery-1.11.2.min.js'></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
-<script src="js/app.js"></script>
+
+<script src='/socket.io/socket.io.js'></script>
+<script src='js/lib/adapter.js'></script>
+
+<script src='js/misc.js'></script>
+<script src='js/scripts_init.js'></script>
+<script src='js/chatManagement.js'></script>
+<script src='js/historyManagement.js'></script>
+<script src='js/socketOn.js'></script>
+<script src='js/mediaHandlers.js'></script>
+<script src='js/main.js'></script>
+<script src='js/size.js'></script>
 
 </head>
-<body onload="initialize()" ng-app="multichat" ng-controller="IndexCtrl" >
+<body>
 
 <div class='container'>
    <div id="col-left">   
-      <!-- liste de tous les utilisateurs connectes -->  
-      <h2>{{profils.pseudo}}</h2> <!-- TEST -->
+      <!-- liste de tous les utilisateurs connectes -->
       <div id="profils-container">
-         <div id="profils" ng-repeat="profil in profils">
-            <div id="pseudo">
-               <h4>{{profil.pseudo}}</h4>
-               <video id='remoteVideo' autoplay>{{profil.video}}</video>
+      <!--
+            <div id="profil">
+               <h4 class="color4">profil.pseudo</h4>
+               <video class='remoteVideo' autoplay>profil.video</video>
             </div>
-         </div>
+       --> 
       </div>
       <!-- historique -->
       <div id="historical-container">
          <h3>Historique</h3>
          <div id="historical-container-area">
             <!--
-               <div>dd/mm/yy hh:mm - <p class="transfer">User send the file "file.txt"</p></div>
-		         <div>dd/mm/yy hh:mm - <p class="connect">User has connected to this room</p></div>
-		         <div>dd/mm/yy hh:mm - <p class="disconnect">User has disconnected to this room</p></div>
+               <div class="date">dd/mm/yy hh:mm</div>
+               <div class="transfer">User send the file "file.txt"</div>
+		         <div class="date">dd/mm/yy hh:mm</div>
+		         <div class="connect">User has connected to this room</div>
+		         <div class="date">dd/mm/yy hh:mm</div>
+		         <div class="disconnect">User has disconnected to this room</div>
             -->
          </div>
       </div>
    </div>
    <div id="col-center">
       <div id="header">
-         <h1> Bienvenue dans la salle {{roomName}}</h1>
+         <h1> Bienvenue dans la salle <span id="roomRoom"></span></h1>
+         <script>setInfoToDom("#roomRoom",getRoom());</script>
       </div>
       <div id='active-video'>
-         <h4 id='video-left'>{{pseudoActif}}</h4>
+         <h4 id='video-left'><!--pseudoActif--></h4>
          <video id='activeVideo' autoplay></video>
          <div id='video-right'></div>
       </div>
       <div id="col-center-bottom">
          <div id="map-container">
-         <!--
-            <p id="msg">Click the button to get your coordinates:</p>
-            <p id="address"></p>
-          
-            <button onclick="getLocation()">Where am I ?</button>
-        -->
-            <div id="map_canvas"></div>
-            
+            <div id="map_canvas"></div>            
          </div>   
          <div id="local-video">
-            <video id='localVideo' autoplay muted></video>
+            <video id='localVideo' autoplay></video>
          </div>      
       </div>
    </div>
    <div id="col-right">
       <div id="common-repository">
          <h3>Répertoire</h3>
-         <div id="common-repository-area">
-            <!-- <div>file.txt</div> -->
-            <ul ng-repeat="file in files">
-               <li>{{file.title}}</li>
+         <div id="common-repository-area">       
+            <ul id="common-repository-ul">
+            <!--      
+               <li>file.txt</li>
+               <li>file.txt</li>
+            -->
             </ul>
          </div>
       </div>
@@ -97,7 +105,7 @@
 		         </table>
 		      </div>
 		      <input type="text" id="dataChannelSend" disabled placeholder="Enter some text, then press Send.">
-            <input type="submit" id="sendButton" value="Send" disabled>
+		       <button id="submitButton" onclick="sendNewChat();">Send</button> 
 	      </div>          
       </div>      
    </div>
@@ -173,18 +181,7 @@
 
     }
     </script>
-    
-<script src='/socket.io/socket.io.js'></script>
-<script src='js/lib/adapter.js'></script>
 
-<script src='js/misc.js'></script>
-<script src='js/scripts_init.js'></script>
-<script src='js/chatManagement.js'></script>
-<script src='js/historyManagement.js'></script>
-<script src='js/socketOn.js'></script>
-<script src='js/mediaHandlers.js'></script>
-<script src='js/main.js'></script>
-<script src='js/size.js'></script>
 
 
 
