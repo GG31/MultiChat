@@ -13,12 +13,18 @@ function appendNewElementToHistory(text){
 }
 
 function getFullHistory(){
+    console.log("ask for full history");
     socket.emit('getFullHistory');
+    console.log("asked");
 }
 
 function roomJoinedLog(room){
     var text = "<div class='connect'>" + getUsername() + " has joined room "+ room + "</div>";
     storeLog(text,room);
+}
+
+function uploadFileLog(fileName){
+    var text = "<div class='transfer'>" + getUsername() + " has uploaded "+ fileName + "</div>";
 }
 
 function createHistory(arrayHistory){
