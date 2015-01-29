@@ -94,6 +94,6 @@ function setOnMethods(socket){
     
     socket.on('newFile',function(fileName){
         appendFile(fileName);
-    }
+    });
     
 }

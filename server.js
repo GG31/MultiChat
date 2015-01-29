@@ -95,7 +95,8 @@ io.sockets.on('connection', function (socket){
 });
 
 app.get('/room/:name', function (req, res) {  
-  verifyBan(req, res);
+  //verifyBan(req, res);
+  res.sendfile(__dirname + '/index.html');  
 });
 app.get('/privateroom/:name', function (req, res) {  
   res.sendfile(__dirname + '/index.html');  
