@@ -30,3 +30,7 @@ function getHTMLToday(){
 function setInfoToDom(domElem,value){
     $(domElem).html(value);
 }
+
+function mirror(emitName,data){
+    getSocket().emit(emitName,data);
+}
