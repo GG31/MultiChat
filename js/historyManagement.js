@@ -23,6 +23,10 @@ function roomJoinedLog(room){
     storeLog(text,room);
 }
 
+function uploadFileLog(fileName){
+    var text = "<div class='transfer'>" + getUsername() + " has uploaded "+ fileName + "</div>";
+}
+
 function createHistory(arrayHistory){
     var htmlHistory = "";
     for(var i = 0 ; i < arrayHistory.length ; i++) htmlHistory+="<p>"+arrayHistory[i]+"</p>";

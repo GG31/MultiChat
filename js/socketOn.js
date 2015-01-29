@@ -92,4 +92,8 @@ function setOnMethods(socket){
         createHistory(arrayHistory);
     });
     
+    socket.on('newFile',function(fileName){
+        appendFile(fileName);
+    }
+    
 }
