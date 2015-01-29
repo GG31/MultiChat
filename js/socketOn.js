@@ -84,7 +84,9 @@ function setOnMethods(socket){
     });
 
     socket.on('updateHistory', function(text){
+        console.log("update history called");
         appendNewElementToHistory(text);
+        console.log("done.");
     });
     
     socket.on('fullHistory',function(arrayHistory){
