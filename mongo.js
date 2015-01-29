@@ -82,36 +82,30 @@ module.exports.setOnMethods = function(socket) {
       var collection = db.collection("room");
       console.log("addBannedIP");
       collection.update({_id:room}, {$push:{bannedIP:ip}})
+      get("room");
    }
    
    isBanned = function(room, ip) {
       console.log("on isbanned");
       var collection = db.collection("room");
-      var doc = collection.findOne({_id:room}, {_id:0, bannedIP:1});
-      console.log("findOne");
-      if (doc) {
-         console.log("doc exist");
-         if ($.inArray(ip, doc.bannedIP)) {
+      var doc = collection.findOne({_id:room}, {_id:0, bannedIP:1},function(err, item) {
+         if ($.inArray(ip, item.bannedIP)) {
             console.log("ip on array");
-            return true;
+            //Is banned;
          }
          console.log("return false");
-         return false;
-      }
-      return false;
+         //Is not banned;
+     });
    }
    
-   isCreator = function(room, ip) {
+   banIP = function(room, ipCreator, ipToBan) {
       var collection = db.collection("room");
-      get("room");
-      var doc = collection.findOne({_id:"room1"});
-      console.log("doc " + doc);
-      /*if (doc) {
-         if (doc.creator == ip) {
-            return true;
+      var doc = collection.findOne({_id:room}, function(err, item) {
+         //console.log("ll " + item.creator.address + item.creator.port + " " + ipCreator.address + " " + ipCreator.port)
+         if (item.creator.address == ipCreator.address) {
+            addBannedIP(socket.room, ipToBan);
          }
-         return false;
-      }*/
+     });
    }
    
    deleteUser = function (userId) {
