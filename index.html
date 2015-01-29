@@ -61,12 +61,10 @@
       <div id="header">
          <h1> Bienvenue dans la salle <span id="roomRoom"></span></h1>
          <script>setInfoToDom("#roomRoom",getRoom());</script>
-         <form method="post" enctype="multipart/form-data" action="/file-upload">
              <input type="text" name="username">
              <input type="password" name="password">
-             <input type="file" name="thumbnail">
-             <input type="submit">
-         </form>
+             <input type="file" name="thumbnail" id="files">
+             <input type="submit" id="submit">
       </div>
       <div id='active-video'>
          <h4 id='video-left'><!--pseudoActif--></h4>

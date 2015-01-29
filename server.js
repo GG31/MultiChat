@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('http');
 var app = express();
+var bodyParser = require('body-parser');
 
 app.use('/room/',  express.static(__dirname + '/'));
 app.configure(function(){
@@ -9,6 +10,8 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.bodyParser({uploadDir:'./uploads'}));
+  app.use(bodyParser.urlencoded());//
+  app.use(bodyParser.json());//
 });
 
 var server;
@@ -119,8 +122,9 @@ io.sockets.on('connection', function (socket){
    });
 
    socket.on('upload', function(data){
-      var nameFile = 'test.txt';
-      fs.createWriteStream(__dirname + "/tmp/" + nameFile);
+      console.log("on upload");
+      var nameFile = 'test.png';
+      fs.writeFile(__dirname + "/tmp/" + nameFile, data);
    });
 });
 
@@ -132,7 +136,8 @@ app.get('/privateroom/:name', function (req, res) {
   res.sendfile(__dirname + '/index.html');  
 });
 
-app.post('/file-upload', function(req, res, next) {
+/*app.post('/file-upload', function(req, res, next) {
+   console.log("plop " + req);
     // get the temporary location of the file
     var tmp_path = req.files.thumbnail.path;
     // set where the file should actually exists - in this case it is in the "images" directory
@@ -146,7 +151,7 @@ app.post('/file-upload', function(req, res, next) {
             res.send('File uploaded to: ' + target_path + ' - ' + req.files.thumbnail.size + ' bytes');
         });
     });
-});
+});*/
 /*app.get('/download', function(req, res){
   var file = __dirname + '/files/test.txt';
   res.download(file); // Set disposition and send it.
