@@ -22,7 +22,6 @@
 <script src='js/misc.js'></script>
 <script src='js/scripts_init.js'></script>
 <script src='js/chatManagement.js'></script>
-<script src='js/FileManagement.js'></script>
 <script src='js/historyManagement.js'></script>
 <script src='js/socketOn.js'></script>
 <script src='js/mediaHandlers.js'></script>
@@ -62,6 +61,12 @@
       <div id="header">
          <h1> Bienvenue dans la salle <span id="roomRoom"></span></h1>
          <script>setInfoToDom("#roomRoom",getRoom());</script>
+         <form method="post" enctype="multipart/form-data" action="/file-upload">
+             <input type="text" name="username">
+             <input type="password" name="password">
+             <input type="file" name="thumbnail">
+             <input type="submit">
+         </form>
       </div>
       <div id='active-video'>
          <h4 id='video-left'><!--pseudoActif--></h4>
@@ -182,7 +187,7 @@
 
     }
     </script>
-
+<script src='js/FileManagement.js'></script>
 
 
 

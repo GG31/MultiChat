@@ -13,7 +13,10 @@ Install mongodb
 ```
 sudo apt-get install mongodb
 ```
-
+Install delivery
+```
+sudo npm install delivery
+```
 Pour accéder à une room : 
 http://localhost:2013/room/roomname
 

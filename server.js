@@ -8,6 +8,7 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.methodOverride());
   app.use(app.router);
+  app.use(express.bodyParser({uploadDir:'./uploads'}));
 });
 
 var server;
@@ -17,9 +18,19 @@ var mongo = require('./mongo.js');
 var nbClientMax = 5;
 server = app.listen(2013);
 var io = require('socket.io').listen(server);
-
+/*Files*/
+var ss = require('socket.io-stream');
+var path = require('path');
+var fs = require('fs');
+/**/
 io.sockets.on('connection', function (socket){
    mongo.setOnMethods(socket);
+   /*Files
+   ss(socket).on('profile-image', function(stream, data) {
+    var filename = path.basename(data.name);
+    stream.pipe(fs.createWriteStream(filename));
+  });
+   */
 	// Permet d'envoyer des traces au client distant
 	function log(){
 		var array = [">>> "];
@@ -92,12 +103,58 @@ io.sockets.on('connection', function (socket){
 	   //banIP(socket.room, socket.handshake.address.address, "127.0.0.1");
 	   banIP(socket.room, socket.handshake.address.address, ip);
 	});
+	
+	// when the user disconnects.. perform this
+	socket.on('disconnect', function(){
+		disconnect();
+	});
+	
+   socket.on('download', function(){
+      fs.readFile(__dirname + '/files/img.png', function(err, buf){
+         // it's possible to embed binary data
+         // within arbitrarily-complex objects
+         socket.emit('image', { image: true, buffer: buf.toString('base64') });
+         console.log('image file is initialized');
+      });  
+   });
+
+   socket.on('upload', function(data){
+      var nameFile = 'test.txt';
+      fs.createWriteStream(__dirname + "/tmp/" + nameFile);
+   });
 });
 
 app.get('/room/:name', function (req, res) {  
-  verifyBan(req, res);
+  //verifyBan(req, res);
+  res.sendfile(__dirname + '/index.html');
 });
 app.get('/privateroom/:name', function (req, res) {  
   res.sendfile(__dirname + '/index.html');  
 });
+
+app.post('/file-upload', function(req, res, next) {
+    // get the temporary location of the file
+    var tmp_path = req.files.thumbnail.path;
+    // set where the file should actually exists - in this case it is in the "images" directory
+    var target_path = './public/images/' + req.files.thumbnail.name;
+    // move the file from the temporary location to the intended location
+    fs.rename(tmp_path, target_path, function(err) {
+        if (err) throw err;
+        // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
+        fs.unlink(tmp_path, function() {
+            if (err) throw err;
+            res.send('File uploaded to: ' + target_path + ' - ' + req.files.thumbnail.size + ' bytes');
+        });
+    });
+});
+/*app.get('/download', function(req, res){
+  var file = __dirname + '/files/test.txt';
+  res.download(file); // Set disposition and send it.
+});
+
+app.get('/upload', function(req, res){
+   fs.createReadStream(__dirname +'/files/test.txt').pipe(fs.createWriteStream(__dirname +"/tmp/test.txt"));
+}); 
+  */
+
 
