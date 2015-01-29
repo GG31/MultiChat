@@ -146,3 +146,17 @@ video, img{
    color: red;
    display: none;
 }
+
+.transfer{
+   color:black;
+   font-weight: bold;
+}
+.connect{
+   color: green;
+}
+.disconnect{
+   color: red;
+}
+#historical-container-area div{
+   color: black;
+}

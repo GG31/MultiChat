@@ -1,14 +1,15 @@
 function storeLog(text,room){
-    socket.emit('newLog',text);
+    socket.emit('newLog',getHTMLToday() + text);
+    console.log("new log emit");
 }
 
 function roomCreationLog(room){
-    var text = getUsername() + " has created room "+ room;
+    var text = "<div class='connect'>" + getUsername() + " has created room "+ room + "</div>";
     storeLog(text,room);
 }
 
 function appendNewElementToHistory(text){
-    $('#historical-container-area').append("<p>"+text+"</p>");
+    $('#historical-container-area').append(text);
 }
 
 function getFullHistory(){
@@ -16,7 +17,7 @@ function getFullHistory(){
 }
 
 function roomJoinedLog(room){
-    var text = getUsername() + " has joined room "+ room;
+    var text = "<div class='connect'>" + getUsername() + " has joined room "+ room + "</div>";
     storeLog(text,room);
 }
 

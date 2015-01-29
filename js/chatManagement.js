@@ -6,6 +6,10 @@ function sendNewChat(){
 }
 
 function appendNewChat(user,newMessage){
-    $('#chat-table').append("<tr>"+"<td class='"+classes[classIndex]+"'>"+user+"&nbsp;:</td>"+"<td>"+newMessage+"</td>"+"</tr>");
+    $('#chat-table').append("<div class='"+classes[classIndex]+"'>"+user+"&nbsp;:</div>"+"<div class='"+classes[classIndex]+"-paragraph'>"+newMessage+"</div>");
     classIndex = (classIndex + 1)%classes.length;
+}
+
+function appendServerMessage(user,newMessage,className){
+    $('#chat-table').append("<div class='"+className+"'>"+user+"&nbsp;:&nbsp;"+newMessage+"</div>");
 }
