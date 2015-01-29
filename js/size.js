@@ -24,11 +24,8 @@ $(document).ready(function(){
       document.getElementById("col-left").style.height= (height_col)+"px";
       document.getElementById("col-center").style.height= (height_col)+"px";
       document.getElementById("col-right").style.height= (height_col)+"px";
-        
     });
     $("#localVideo").webcam({
-	   /*width: 320,
-	   height: 240,*/
 	   mode: "callback",
 	   swffile: "/download/jscam_canvas_only.swf",
 	   onTick: function() {},
