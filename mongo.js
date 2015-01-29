@@ -4,6 +4,22 @@ var serverMongo = new mongodb.Server('127.0.0.1', 27017, {auto_reconnect: true})
 var db = new mongodb.Db('multichat', serverMongo);
 db.open(function(){});
 
+verifyBan = function(req, res) {
+   var collection = db.collection("room");
+   var doc = collection.findOne({_id:req.params.name}, {_id:0, bannedIP:1},function(err, item) {
+      if (item != null) {
+         var bannedIP = JSON.stringify(item.bannedIP);
+         if (bannedIP.indexOf(req.socket.localAddress)) {
+            res.send("You are banned");
+         } else {
+            res.sendfile(__dirname + '/index.html');  
+         }
+      } else {
+         res.sendfile(__dirname + '/index.html');  
+      }
+  });
+}   
+
 module.exports.setOnMethods = function(socket) {
    getLog = function (room) {
       var collection = db.collection("log");
@@ -46,7 +62,6 @@ module.exports.setOnMethods = function(socket) {
          bannedIP : [],
       };
       insert('room', newRoom);
-      console.log("end insertRoom")
    },
    
    insertPrivateRoom = function (room, pass) {
@@ -80,16 +95,13 @@ module.exports.setOnMethods = function(socket) {
    
    addBannedIP = function(room, ip) {
       var collection = db.collection("room");
-      console.log("addBannedIP");
       collection.update({_id:room}, {$push:{bannedIP:ip}})
-      get("room");
    }
    
    isBanned = function(room, ip) {
-      console.log("on isbanned");
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, {_id:0, bannedIP:1},function(err, item) {
-         if ($.inArray(ip, item.bannedIP)) {
+         if (item.bannedIP.contains(ip)) {
             console.log("ip on array");
             //Is banned;
          }
@@ -101,8 +113,7 @@ module.exports.setOnMethods = function(socket) {
    banIP = function(room, ipCreator, ipToBan) {
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, function(err, item) {
-         //console.log("ll " + item.creator.address + item.creator.port + " " + ipCreator.address + " " + ipCreator.port)
-         if (item.creator.address == ipCreator.address) {
+         if (item.creator == ipCreator) {
             addBannedIP(socket.room, ipToBan);
          }
      });
@@ -134,5 +145,4 @@ module.exports.setOnMethods = function(socket) {
          console.log('plop ' + users);
       });
    }
-
 }
