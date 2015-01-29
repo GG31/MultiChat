@@ -13,7 +13,9 @@ function appendNewElementToHistory(text){
 }
 
 function getFullHistory(){
+    console.log("ask for full history");
     socket.emit('getFullHistory');
+    console.log("asked");
 }
 
 function roomJoinedLog(room){
