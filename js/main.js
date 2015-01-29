@@ -36,9 +36,6 @@ var socket;
 /* ****************************************************************
 Getters
 **************************************************************** */
-function getRoom(){
-    return room;
-}
 function getUsername(){
     return username;
 }
@@ -83,9 +80,6 @@ function setSocket(s){
 function setLocalStream(stream){
     localStream = stream;
 }
-function setRoom(r){
-    room = r;
-}
 function setConstraints(c){
     constraints = c;
 }
@@ -99,7 +93,6 @@ var pc_constraints = initConstraints[1];
 var sdpConstraints = initConstraints[2];
 
 var socket = initializeSocket();
-initRoomCheck();
 
 // Envoi de message générique, le serveur broadcaste à tout le monde
 // par défaut (ce sevrait être que dans la salle courante...)
