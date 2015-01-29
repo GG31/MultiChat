@@ -38,12 +38,15 @@ module.exports.setOnMethods = function(socket) {
       insert('message', newMsg);
    },
 
-   insertRoom = function (room) {
+   insertRoom = function (room, ipCreator) {
       var newRoom = {
          _id : room,
-         name : room
+         name : room,
+         creator : ipCreator,
+         bannedIP : [],
       };
       insert('room', newRoom);
+      console.log("end insertRoom")
    },
    
    insertPrivateRoom = function (room, pass) {
@@ -77,18 +80,38 @@ module.exports.setOnMethods = function(socket) {
    
    addBannedIP = function(room, ip) {
       var collection = db.collection("room");
+      console.log("addBannedIP");
       collection.update({_id:room}, {$push:{bannedIP:ip}})
    }
    
    isBanned = function(room, ip) {
+      console.log("on isbanned");
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, {_id:0, bannedIP:1});
+      console.log("findOne");
       if (doc) {
+         console.log("doc exist");
          if ($.inArray(ip, doc.bannedIP)) {
+            console.log("ip on array");
+            return true;
+         }
+         console.log("return false");
+         return false;
+      }
+      return false;
+   }
+   
+   isCreator = function(room, ip) {
+      var collection = db.collection("room");
+      get("room");
+      var doc = collection.findOne({_id:"room1"});
+      console.log("doc " + doc);
+      /*if (doc) {
+         if (doc.creator == ip) {
             return true;
          }
          return false;
-      }
+      }*/
    }
    
    deleteUser = function (userId) {
