@@ -1,7 +1,6 @@
 $(document).ready(function(){
  
    $(window).resize(function(){
-      console.log('coucou');
  
       var width = $(window).width();
       var height = $(window).height();
@@ -13,12 +12,8 @@ $(document).ready(function(){
       var height_box = height_col/4;
       var height_profil = height_col*(3/5);
       var height_map = document.getElementById("localVideo").offsetHeight;
-        /*$('body').prepend('<div>' +  width + " px de        large sur " + height + ' px de haut </div>');*/
         
       document.getElementById("common-repository-area").style.height= height_dir+"px";
-      /*
-      document.getElementById("common-repository").style.width= '98%';
-      document.getElementById("textareas").style.width= '98%';*/
       document.getElementById("dataChannelReceive").style.height= height_conv+"px";
       document.getElementById("map_canvas").style.height= height_box+"px";
       document.getElementById("historical-container-area").style.height= height_box+"px";

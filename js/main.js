@@ -6,10 +6,8 @@ var constraints = {video: true};
 /* ****************************************************************
 DOM elements
 **************************************************************** */
-var sendButton = document.getElementById("sendButton");
 var sendTextarea = document.getElementById("dataChannelSend");
 var receiveTextarea = document.getElementById("dataChannelReceive");
-sendButton.onclick = sendData;
 
 /* ****************************************************************
 Boolean checks
