@@ -30,7 +30,6 @@ $(document).ready(function(){
       document.getElementById("col-center").style.height= (height_col)+"px";
       document.getElementById("col-right").style.height= (height_col)+"px";
         
-      Console.log('finCoucou');
     });
     $("#localVideo").webcam({
 	   /*width: 320,
