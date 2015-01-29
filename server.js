@@ -43,11 +43,18 @@ io.sockets.on('connection', function (socket){
 	socket.on('create or join', function (room) {
 		var numClients = io.sockets.clients(room).length;
       var ipClient = socket.handshake.address;
+      //console.log("ipClient " + ipClient);
 		if (numClients == 0){
 			socket.join(room);
 			socket.emit('created', room);
-			insertRoom(room);
 			socket.room = room;
+			insertRoom(room, ipClient);
+			//console.log("is creator " + isCreator(socket.room, socket.handshake.address));
+			/*if (isCreator(socket.room, socket.handshake.address)) {
+	         addBannedIP(socket.room, ipClient);
+	      }
+			console.log("isbanned " + isBanned(room, ipClient))*/
+			
 		} else if (numClients < nbClientMax && !isBanned(room, ipClient)) {
 			io.sockets.in(room).emit('join', room);
 			socket.join(room);
@@ -75,7 +82,7 @@ io.sockets.on('connection', function (socket){
 	
 	socket.on('newMessage', function(text){
 	   // echo to room 1 the message of username
-		io.sockets.in(socket.room).emit('updatechat', socket.username, socket.room);
+		io.sockets.in(socket.room).emit('updatechat', socket.username, text);
 	   var date = new Date(Date.now());
       insertMessage(socket.username, socket.room, date, text);
 	});
@@ -95,7 +102,9 @@ io.sockets.on('connection', function (socket){
 	
 	socket.on('banIP', function(ip){
 	   // add banned ip to db
-	   addBannedIP(socket.room, ip);
+	   if (isCreator(socket.room, socket.handshake.address)) {
+	      addBannedIP(socket.room, ip);
+	   }
 	});
 });
 
