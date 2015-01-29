@@ -43,19 +43,12 @@ io.sockets.on('connection', function (socket){
 	socket.on('create or join', function (room) {
 		var numClients = io.sockets.clients(room).length;
       var ipClient = socket.handshake.address;
-      //console.log("ipClient " + ipClient);
 		if (numClients == 0){
 			socket.join(room);
 			socket.emit('created', room);
 			socket.room = room;
-			insertRoom(room, ipClient);
-			//console.log("is creator " + isCreator(socket.room, socket.handshake.address));
-			/*if (isCreator(socket.room, socket.handshake.address)) {
-	         addBannedIP(socket.room, ipClient);
-	      }
-			console.log("isbanned " + isBanned(room, ipClient))*/
-			
-		} else if (numClients < nbClientMax && !isBanned(room, ipClient)) {
+			insertRoom(room, ipClient);		
+		} else if (numClients < nbClientMax) {/*TODO Verify ipClient is not banned*/
 			io.sockets.in(room).emit('join', room);
 			socket.join(room);
 			socket.room = room;
@@ -101,10 +94,8 @@ io.sockets.on('connection', function (socket){
 	});
 	
 	socket.on('banIP', function(ip){
-	   // add banned ip to db
-	   if (isCreator(socket.room, socket.handshake.address)) {
-	      addBannedIP(socket.room, ip);
-	   }
+	   // add banned ip to db if the creator emit banIP
+	   banIP(socket.room, socket.handshake.address, ip);
 	});
 });
 
