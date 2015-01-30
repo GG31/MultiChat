@@ -132,6 +132,29 @@ module.exports.setOnMethods = function(socket) {
 		socket.leave(socket.room);
    }
    
+   insertFile = function (room, fileName, originName) {
+      var newFile = {
+           _id : fileName,
+           room_id : room,
+           originName : originName,
+      };
+      insert('file', newFile);
+   }
+   
+   getFile = function (room, file_id) {
+      /*var collection = db.collection("file");
+      var result = collection.find({room_id:room, _id:file_id}, {_id:0, room_id:0}).sort({date:1});
+      result.toArray(function (err, results) {
+         if (err) {
+            throw err;
+         }
+         if (results.length === 0) {
+            console.log('Error 404: No log found');
+         }
+         socket.emit('fullHistory', JSON.stringify(results));
+      });*/
+   }
+   
    deleteUser = function (userId) {
       var collection = db.collection(collection);
       collection.remove({_id : userId});

@@ -1,48 +1,3 @@
-/*function readFilesAndDisplayPreview(files) {
-    // Loop through the FileList and render image files as thumbnails.
-    // Only process image files.
-      if (files[0].type.match('image.*')) {
-      
-      var reader = new FileReader();
-      //capture the file information.
-      reader.onload = function(e) {
-          // Render thumbnail.
-          getSocket().emit('upload', e.target.result);
-        };
-      // Read in the image file as a data URL.
-      reader.readAsDataURL(files[0]);
-    }
-}
-function handleFileSelect(evt) {
-   var files = evt.target.files; // FileList object
-   readFilesAndDisplayPreview(files);
-}
-document.getElementById('files').addEventListener('change', handleFileSelect, false);
-*/
-/*
-$('input[type=file]').on('change', prepareUpload);
-function prepareUpload(event)
-{
-  files = event.target.files;
-}
-function appendFile(fileName){
-    var htmlFileName = "<li><a href='#' onclick=\"getFile('"+fileName+"');\">"+fileName+"</a>"
-    $("#common-repository-ul").append(htmlFileName)
-}
-*/
-/*var delivery = new Delivery(getSocket());
-delivery.connect();
-delivery.on('delivery.connect',function(delivery){
-   $("input[type=submit]").click(function(evt){
-      var file = $("input[type=file]")[0].files[0];
-      delivery.send(file);
-      evt.preventDefault();
-   });
-});
-
-delivery.on('send.success',function(fileUID){
-   console.log("file was successfully sent.");
-});*/
 window.addEventListener("load", Ready);
  
 function Ready(){
@@ -54,14 +9,20 @@ function Ready(){
     {
         document.getElementById('UploadArea').innerHTML = "Your Browser Doesn't Support The File API Please Update Your Browser";
     }
+    linkOnClick();
 }
+
+function linkOnClick() {
+   console.log("on function");
+   getSocket().emit('download');
+}
+
 var SelectedFile;
 function FileChosen(evnt) {
     SelectedFile = evnt.target.files[0];
     document.getElementById('NameBox').value = SelectedFile.name;
 }
 
-//var socket = io.connect('http://localhost:8080');
 var FReader;
 var Name;
 function StartUpload(){
@@ -83,15 +44,34 @@ function StartUpload(){
         alert("Please Select A File");
     }
 }
-var Path = "http://localhost/";
+//var Path = "files/n/";
  
-getSocket().on('Done', function (data){
-    var Content = "Video Successfully Uploaded !!"
-    Content += "<img id='Thumb' src='" + Path + data['Image'] + "' alt='" + Name + "'><br>";
+/*getSocket().on('Done', function (data){
+    var Content = "Video Successfully Uploaded !!";
+    Content += '<a href="" target="_blank">Download</a>';
+    Content += "<img id='Thumb' src='" + Path + data['file'] + "' alt='" + Name + "'><br>";
     Content += "<button  type='button' name='Upload' value='' id='Restart' class='Button'>Upload Another</button>";
     document.getElementById('UploadArea').innerHTML = Content;
     document.getElementById('Restart').addEventListener('click', Refresh);
+});*/
+
+getSocket().on('download', function (data){
+    var blob = new Blob([data['buffer']], {type: "application/octet-binary"});
+    var a = document.getElementById('downloadFile');
+    a.href = window.URL.createObjectURL(blob);
+    a.download = data['name'];
+    a.click();
 });
+
+function download(content, filename, contentType)
+{
+    if(!contentType) contentType = 'application/octet-stream';
+        var a = document.createElement('a');
+        var blob = new Blob([content], {'type':contentType});
+        a.href = window.URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+}
 function Refresh(){
     location.reload(true);
 }
