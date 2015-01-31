@@ -9,7 +9,7 @@ function Ready(){
     {
         document.getElementById('UploadArea').innerHTML = "Your Browser Doesn't Support The File API Please Update Your Browser";
     }
-    linkOnClick();
+    //linkOnClick(); //Décommente et download du fichier files/n/help.txt starts
 }
 
 function linkOnClick() {
@@ -44,16 +44,6 @@ function StartUpload(){
         alert("Please Select A File");
     }
 }
-//var Path = "files/n/";
- 
-/*getSocket().on('Done', function (data){
-    var Content = "Video Successfully Uploaded !!";
-    Content += '<a href="" target="_blank">Download</a>';
-    Content += "<img id='Thumb' src='" + Path + data['file'] + "' alt='" + Name + "'><br>";
-    Content += "<button  type='button' name='Upload' value='' id='Restart' class='Button'>Upload Another</button>";
-    document.getElementById('UploadArea').innerHTML = Content;
-    document.getElementById('Restart').addEventListener('click', Refresh);
-});*/
 
 getSocket().on('download', function (data){
     var blob = new Blob([data['buffer']], {type: "application/octet-binary"});

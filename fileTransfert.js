@@ -1,27 +1,7 @@
-/*Files*/
 var Files = {};
-
 var fs = require('fs')
-  , exec = require('child_process').exec
-  , util = require('util')
-
-function handler (req, res) {
-  fs.readFile(__dirname + '/index.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
-    res.writeHead(200);
-    res.end(data);
-  });
-}
-/**/
-
 
 module.exports.setOnMethods = function(socket) {
-   /***************Files**************/
-	/*Files*/
    socket.on('Start', function (data) { //data contains the variables that we passed through in the html file
    console.log("onstart " + data['Name']);
      var Name = data['Name'];
@@ -31,7 +11,7 @@ module.exports.setOnMethods = function(socket) {
          Downloaded : 0,
          Name_id : Name,
      }
-     //insertFile(socket.room, Name, Name);
+     //
      //If directory doesn't exist, create it
      if (!fs.existsSync('files/' + socket.room)){
           fs.mkdirSync('files/' + socket.room);
@@ -61,6 +41,7 @@ module.exports.setOnMethods = function(socket) {
              socket.emit('MoreData', { 'Place' : Place, Percent : 0 });
          }
      });
+     insertFile(socket.room, Files[Name]['Name_id'], Name, socket.username, new Date(Date.now()));
    });
    socket.on('Upload', function (data){
       console.log("onupload");
@@ -70,19 +51,6 @@ module.exports.setOnMethods = function(socket) {
         if(Files[Name]['Downloaded'] == Files[Name]['FileSize']) //If File is Fully Uploaded
         {
             fs.write(Files[Name]['Handler'], Files[Name]['Data'], null, 'Binary', function(err, Writen){
-            //console.log("writing");
-            //socket.emit('Done', {'file' : Files[Name]['Name_id']});
-                //Get Thumbnail Here
-                /*var inp = fs.createReadStream("Temp/" + Name);
-var out = fs.createWriteStream("Video/" + Name);
-util.pump(inp, out, function(){
-    fs.unlink("Temp/" + Name, function () { //This Deletes The Temporary File
-        //Moving File Completed
-    });
-});
-exec("ffmpeg -i Video/" + Name  + " -ss 01:30 -r 1 -an -vframes 1 -f mjpeg Video/" + Name  + ".jpg", function(err){
-    socket.emit('Done', {'Image' : 'Video/' + Name + '.jpg'});
-});*/
             });
         }
         else if(Files[Name]['Data'].length > 10485760){ //If the Data Buffer reaches 10MB
@@ -101,13 +69,12 @@ exec("ffmpeg -i Video/" + Name  + " -ss 01:30 -r 1 -an -vframes 1 -f mjpeg Video
         }
     });
 	
-	
    socket.on('download', function(){
       var filename = 'help.txt';
       fs.readFile(__dirname + '/files/n/'+filename, 'Binary', function(err, buf){
          // it's possible to embed binary data
          // within arbitrarily-complex objects
-         socket.emit('download', { image: filename, buffer: buf, name: filename});
+         socket.emit('download', {buffer: buf, name: filename});
          console.log('image file is initialized ' + filename);
       });  
    });

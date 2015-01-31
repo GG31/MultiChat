@@ -132,11 +132,13 @@ module.exports.setOnMethods = function(socket) {
 		socket.leave(socket.room);
    }
    
-   insertFile = function (room, fileName, originName) {
+   insertFile = function (room, fileName, originName, owner, date) {
       var newFile = {
            _id : fileName,
            room_id : room,
            originName : originName,
+           owner : owner,
+           date : date,
       };
       insert('file', newFile);
    }
