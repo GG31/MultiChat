@@ -16,3 +16,13 @@ function handleUserMedia(stream) {
 function handleUserMediaError(error){
   console.log('getUserMedia error: ', error);
 }
+
+
+var room = location.pathname.split('/')[2];
+function getRoom(){
+    return room;
+}
+function setRoom(r){
+    room = r;
+}
+initRoomCheck();

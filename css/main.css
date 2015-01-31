@@ -62,6 +62,10 @@ video, img{
    background-color: #b2b2b2; 
    padding:2px;*/
 }
+#localVideo{
+	   width: 320;
+	   height: 240;
+}
 #activeVideo{
    height: 300px;
 }
