@@ -10,6 +10,7 @@ verifyBan = function(req, res) {
       if (item != null) {
          var bannedIP = JSON.stringify(item.bannedIP);
          if (bannedIP != undefined && bannedIP.indexOf(req.socket.localAddress)) {
+         //if (bannedIP.indexOf(req.socket.localAddress) == 1) {
             res.send("You are banned");
          } else {
             res.sendfile(__dirname + '/index.html');  
@@ -18,7 +19,7 @@ verifyBan = function(req, res) {
          res.sendfile(__dirname + '/index.html');  
       }
   });
-}   
+}
 
 module.exports.setOnMethods = function(socket) {
    getLog = function (room) {
@@ -95,6 +96,7 @@ module.exports.setOnMethods = function(socket) {
    
    addBannedIP = function(room, ip) {
       var collection = db.collection("room");
+      console.log("addBannedIP");
       collection.update({_id:room}, {$push:{bannedIP:ip}})
    }
    
@@ -115,8 +117,45 @@ module.exports.setOnMethods = function(socket) {
       var doc = collection.findOne({_id:room}, function(err, item) {
          if (item.creator == ipCreator) {
             addBannedIP(socket.room, ipToBan);
+            //Leave the room
+            disconnect();
          }
      });
+   }
+   
+   disconnect = function() {
+      // remove the username from global usernames list
+      //delete usernames[socket.username];
+      // update list of users in chat, client-side
+      //io.sockets.in(nom de la salle).emit('updateusers', usernames)
+      // echo globally that this client has left
+      socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+		socket.leave(socket.room);
+   }
+   
+   insertFile = function (room, fileName, originName, owner, date) {
+      var newFile = {
+           _id : fileName,
+           room_id : room,
+           originName : originName,
+           owner : owner,
+           date : date,
+      };
+      insert('file', newFile);
+   }
+   
+   getFile = function (room, file_id) {
+      /*var collection = db.collection("file");
+      var result = collection.find({room_id:room, _id:file_id}, {_id:0, room_id:0}).sort({date:1});
+      result.toArray(function (err, results) {
+         if (err) {
+            throw err;
+         }
+         if (results.length === 0) {
+            console.log('Error 404: No log found');
+         }
+         socket.emit('fullHistory', JSON.stringify(results));
+      });*/
    }
    
    deleteUser = function (userId) {

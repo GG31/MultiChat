@@ -1,0 +1,134 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'delivery',
+1 verbose cli   '-g' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose cache add [ 'delivery', null ]
+5 verbose cache add name=undefined spec="delivery" args=["delivery",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'delivery',
+6 verbose parsed url   path: 'delivery',
+6 verbose parsed url   href: 'delivery' }
+7 silly lockFile 391cb1e0-delivery delivery
+8 verbose lock delivery /home/zz/.npm/391cb1e0-delivery.lock
+9 silly lockFile 391cb1e0-delivery delivery
+10 silly lockFile 391cb1e0-delivery delivery
+11 verbose addNamed [ 'delivery', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile a01eaa9d-delivery delivery@
+14 verbose lock delivery@ /home/zz/.npm/a01eaa9d-delivery.lock
+15 silly addNameRange { name: 'delivery', range: '*', hasData: false }
+16 verbose request where is /delivery
+17 verbose request registry https://registry.npmjs.org/
+18 verbose request id a5b2002151c91b2a
+19 verbose url raw /delivery
+20 verbose url resolving [ 'https://registry.npmjs.org/', './delivery' ]
+21 verbose url resolved https://registry.npmjs.org/delivery
+22 verbose request where is https://registry.npmjs.org/delivery
+23 info trying registry request attempt 1 at 13:47:49
+24 verbose etag "1ANPP0CRFIBHXV6BZ2QXFPFEV"
+25 http GET https://registry.npmjs.org/delivery
+26 http 304 https://registry.npmjs.org/delivery
+27 silly registry.get cb [ 304,
+27 silly registry.get   { date: 'Thu, 29 Jan 2015 12:47:50 GMT',
+27 silly registry.get     server: 'Apache',
+27 silly registry.get     via: '1.1 varnish',
+27 silly registry.get     'last-modified': 'Thu, 29 Jan 2015 12:47:50 GMT',
+27 silly registry.get     'cache-control': 'max-age=60',
+27 silly registry.get     etag: '"1ANPP0CRFIBHXV6BZ2QXFPFEV"',
+27 silly registry.get     age: '12',
+27 silly registry.get     'x-served-by': 'cache-fra1238-FRA',
+27 silly registry.get     'x-cache': 'HIT',
+27 silly registry.get     'x-cache-hits': '1',
+27 silly registry.get     'x-timer': 'S1422535670.067834,VS0,VE0',
+27 silly registry.get     vary: 'Accept',
+27 silly registry.get     'content-length': '0',
+27 silly registry.get     'keep-alive': 'timeout=10, max=50',
+27 silly registry.get     connection: 'Keep-Alive' } ]
+28 verbose etag https://registry.npmjs.org/delivery from cache
+29 silly addNameRange number 2 { name: 'delivery', range: '*', hasData: true }
+30 silly addNameRange versions [ 'delivery', [ '0.0.1', '0.0.2', '0.0.3' ] ]
+31 verbose addNamed [ 'delivery', '0.0.3' ]
+32 verbose addNamed [ '0.0.3', '0.0.3' ]
+33 silly lockFile 0d018553-delivery-0-0-3 delivery@0.0.3
+34 verbose lock delivery@0.0.3 /home/zz/.npm/0d018553-delivery-0-0-3.lock
+35 silly lockFile 0d018553-delivery-0-0-3 delivery@0.0.3
+36 silly lockFile 0d018553-delivery-0-0-3 delivery@0.0.3
+37 silly lockFile a01eaa9d-delivery delivery@
+38 silly lockFile a01eaa9d-delivery delivery@
+39 silly resolved [ { name: 'delivery',
+39 silly resolved     description: 'Bidirectional File Transfers For Node.js via Socket.IO',
+39 silly resolved     author:
+39 silly resolved      { name: 'Liam Kaufman',
+39 silly resolved        email: 'liam.kaufman@gmail.com',
+39 silly resolved        url: 'http://liamkaufman.com' },
+39 silly resolved     version: '0.0.3',
+39 silly resolved     keywords: [ 'file', 'transfer', 'push', 'socket.io', 'websockets' ],
+39 silly resolved     repository:
+39 silly resolved      { type: 'git',
+39 silly resolved        url: 'https://liamks@github.com/liamks/Delivery.js.git' },
+39 silly resolved     engines: { node: '>=0.6.0' },
+39 silly resolved     dependencies: { 'socket.io': '*', 'node-uuid': '1.3.3', mime: '*' },
+39 silly resolved     licenses: [ [Object] ],
+39 silly resolved     main: 'index',
+39 silly resolved     readme: '# Delivery.js (Experimental)\n## Bidirectional File Transfers For Node.js via Socket.IO\n\nSending files to the server, and pushing files to the client should be as easy as possible. Delivery.js uses Node.js and Socket.IO to make it easy to push files to the client, or send them to the server. Files can be pushed to the client as text (utf8) or base64 (for images and binary files). \n\n## Install\n\n    npm install delivery -g\n\n## Browser JavaScript\n\ndelivery.js can be found within lib/client.\n\n## Examples\n\n### Sending a File To a Server (Client is a browser)\n\n#### Server-side code\n```javascript\nvar io  = require(\'socket.io\').listen(5001),\n    dl  = require(\'delivery\'),\n    fs  = require(\'fs\');\n\nio.sockets.on(\'connection\', function(socket){\n  var delivery = dl.listen(socket);\n  delivery.on(\'receive.success\',function(file){\n\n    fs.writeFile(file.name,file.buffer, function(err){\n      if(err){\n        console.log(\'File could not be saved.\');\n      }else{\n        console.log(\'File saved.\');\n      };\n    });\n  });\n});\n```\n#### Client-side code\n```javascript\n$(function(){\n  var socket = io.connect(\'http://0.0.0.0:5001\');\n  \n  socket.on(\'connect\', function(){\n    var delivery = new Delivery(socket);\n\n    delivery.on(\'delivery.connect\',function(delivery){\n      $("input[type=submit]").click(function(evt){\n        var file = $("input[type=file]")[0].files[0];\n        delivery.send(file);\n        evt.preventDefault();\n      });\n    });\n\n    delivery.on(\'send.success\',function(fileUID){\n      console.log("file was successfully sent.");\n    });\n  });\n});\n```\n\n### Pushing a File to a Client (Client is a browser)\n\n### Server-side code\n```javascript\nvar io  = require(\'socket.io\').listen(5001),\n    dl  = require(\'delivery\');\n\nio.sockets.on(\'connection\', function(socket){\n  var delivery = dl.listen(socket);\n  delivery.on(\'delivery.connect\',function(delivery){\n\n    delivery.send({\n      name: \'sample-image.jpg\',\n      path : \'./sample-image.jpg\'\n    });\n\n    delivery.on(\'send.success\',function(file){\n      console.log(\'File successfully sent to client!\');\n    });\n\n  });\n});\n```\n\n### Client-side code\n```javascript\n$(function(){\n  var socket = io.connect(\'http://0.0.0.0:5001\');\n  \n  socket.on(\'connect\', function(){\n    var delivery = new Delivery(socket);\n\n    delivery.on(\'receive.start\',function(fileUID){\n      console.log(\'receiving a file!\');\n    });\n\n    delivery.on(\'receive.success\',function(file){\n      if (file.isImage()) {\n        $(\'img\').attr(\'src\', file.dataURL());\n      };\n    });\n  });\n});\n```\n\n### Transfer files between two servers\n\n### Receive file\n```javascript\nio.sockets.on(\'connection\', function(socket){\n  \n  var delivery = dl.listen(socket);\n  delivery.on(\'receive.success\',function(file){\n\t\t\n    fs.writeFile(file.name, file.buffer, function(err){\n      if(err){\n        console.log(\'File could not be saved: \' + err);\n      }else{\n        console.log(\'File \' + file.name + " saved");\n      };\n    });\n  });\t\n});\n```\n\n### Send file\n```javascript\nsocket.on( \'connect\', function() {\n  log( "Sockets connected" );\n\t\t\n  delivery = dl.listen( socket );\n  delivery.connect();\n\t\n  delivery.on(\'delivery.connect\',function(delivery){\n    delivery.send({\n      name: \'sample-image.jpg\',\n      path : \'./sample-image.jpg\'\n    });\n\n    delivery.on(\'send.success\',function(file){\n      console.log(\'File sent successfully!\');\n    });\n  });\n\t\n});\n```\n\n## API\n\n### Server Functions\n\n#### Importing delivery.js\n\n```javascript\ndl = require(\'delivery\');\n```\n\n#### Listen to the socket\n\n```javascript\nvar delivery = dl.listen(socket);\n```\n\n#### Listening to delivery.js events - delivery.on(\'event\',fn)\n\n```javascript\ndelivery.on(\'delivery.connect\',function(delivery){\n  ...\n});\n```\n#### Sending a file\n\n```javascript\ndelivery.send({\n  name: \'fileName.png\',\n  path: \'path/to/file/fileName.png\'\n});\n```\n\n```javascript\ndelivery.sendAsText({\n  name: \'fileName.txt\',\n  path: \'path/to/file/fileName.txt\'\n});\n```\n\n### Server Events\n\n#### \'delivery.connect\'\ndelivery.connect is called when a client connects to the server.\n\n```javascript\ndelivery.on(\'delivery.connect\',function(delivery){\n  ...\n});\n```\n\n#### \'receive.start\'\nreceive.start is called when the server starts receiving a file. The callback function takes a filePackage object that describes the file being sent.\n\n```javascript\ndelivery.on(\'receive.start\',function(filePackage){\n  console.log(filePackage.name);\n});\n```\n#### \'receive.success\'\nreceive.success is called once the file has been successfully reveived by the server. The callback function takes a filePackage.\n\n```javascript\ndelivery.on(\'receive.success\',function(file){\n    fs.writeFile(file.name,file.buffer, function(err){\n      if(err){\n        console.log(\'File could not be saved.\');\n      }else{\n        console.log(\'File saved.\');\n      };\n    });\n  });\n```\n#### \'file.load\'\nfile.load is called after .send() is called and immediately after the file is loaded. The callback function takes a filePackage.\n\n```javascript\ndelivery.on(\'file.load\',function(filePackage){\n  console.log(filePackage.name + " has just been loaded.");\n});\n```\n#### \'send.start\'\nsend.start is called after .send() is called and immediately after the file begins being sent to the client. The callback function takes a filePackage.\n\n```javascript\ndelivery.on(\'send.start\',function(filePackage){\n  console.log(filePackage.name + " is being sent to the client.");\n});\n```\n#### \'send.success\'\nsend.success is called after .send() is called and once confirmation is received form the client that the the file sent was successfully received. The callback function takes the uid of the file that was sent.\n\n```javascript\ndelivery.on(\'send.success\',function(uid){\n  console.log("File successfully sent!");\n});\n```\n\n### FilePackage\nFilePackage objects encapsulate files and includes a text representation (utf8), or base64 representation of the file. They also include the file\'s meta data, including `name`, `size` and `mimeType`.\n\n```javascript\nfilePackage.isImage()\n```\n\nreturns true if the file has a corresponding mime type that is an image. It is possible that this method could return false if your file is an image, but does not have a mimetype, or does not have a mimetype of image/gif, image/jpeg, image/png, image/svg+xml, image/tiff. Look for `var imageFilter` within delivery.js if you\'d like to add additional mimetypes.\n\n```javascript\nfilePackage.isText()\n```\n\nreturns true if the server used `sendAsText()`.\n\n```javascript\nfilePackage.text()\n```\n\nreturns the text representation of the file sent. If the file has been base64 encoded it returns the base64 encoded version of the file.\n\n```javascript\nfilePackage.dataURL()\n```\n\nreturns the base64 representation of the file prefixed with the data and mimetype necessary to display an image within `<img src=\'\'>`.\n\n### Client\n\n#### Include delivery.js in your html file\n\n```html\n<script src="/js/delivery.js"></script>\n```\n\n#### Events\n\nClient events mirror those on the server, see server events above for more details.\n\n##License\n\nDelivery.js is released under the MIT license:\n\nhttp://www.opensource.org/licenses/MIT\n\n\n## Road Map\n\n1. Incorporating feedback from other developers!\n2. Breaking files into pieces to help transfer larger files.\n3. md5 hash file and confirm the hash when a file has been received.\n4. ?\n\n',
+39 silly resolved     _id: 'delivery@0.0.3',
+39 silly resolved     dist:
+39 silly resolved      { shasum: 'dcf46ae080df40059790739951b5470eb24e300d',
+39 silly resolved        tarball: 'http://registry.npmjs.org/delivery/-/delivery-0.0.3.tgz' },
+39 silly resolved     maintainers: [ [Object] ],
+39 silly resolved     directories: {},
+39 silly resolved     _shasum: 'dcf46ae080df40059790739951b5470eb24e300d',
+39 silly resolved     _from: 'delivery@',
+39 silly resolved     _resolved: 'https://registry.npmjs.org/delivery/-/delivery-0.0.3.tgz',
+39 silly resolved     bugs: { url: 'https://github.com/liamks/Delivery.js/issues' },
+39 silly resolved     homepage: 'https://github.com/liamks/Delivery.js' } ]
+40 info install delivery@0.0.3 into /usr/local/lib
+41 info installOne delivery@0.0.3
+42 verbose lib/node_modules/delivery unbuild
+43 verbose tar unpack /home/zz/.npm/delivery/0.0.3/package.tgz
+44 silly lockFile dde51829--local-lib-node-modules-delivery tar:///usr/local/lib/node_modules/delivery
+45 verbose lock tar:///usr/local/lib/node_modules/delivery /home/zz/.npm/dde51829--local-lib-node-modules-delivery.lock
+46 silly lockFile f9b04217-z-npm-delivery-0-0-3-package-tgz tar:///home/zz/.npm/delivery/0.0.3/package.tgz
+47 verbose lock tar:///home/zz/.npm/delivery/0.0.3/package.tgz /home/zz/.npm/f9b04217-z-npm-delivery-0-0-3-package-tgz.lock
+48 silly gunzTarPerm modes [ '775', '664' ]
+49 error Error: EACCES, mkdir '/usr/local/lib/node_modules/delivery'
+49 error  { [Error: EACCES, mkdir '/usr/local/lib/node_modules/delivery']
+49 error   errno: 3,
+49 error   code: 'EACCES',
+49 error   path: '/usr/local/lib/node_modules/delivery',
+49 error   fstream_type: 'Directory',
+49 error   fstream_path: '/usr/local/lib/node_modules/delivery',
+49 error   fstream_class: 'DirWriter',
+49 error   fstream_stack:
+49 error    [ '/usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23',
+49 error      '/usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53',
+49 error      'Object.oncomplete (fs.js:107:15)' ] }
+50 error Please try running this command again as root/Administrator.
+51 error System Linux 3.13.0-37-generic
+52 error command "/usr/local/bin/node" "/usr/local/bin/npm" "install" "delivery" "-g"
+53 error cwd /home/zz/Cours/PW/MultiChat
+54 error node -v v0.10.33
+55 error npm -v 1.4.28
+56 error path /usr/local/lib/node_modules/delivery
+57 error fstream_path /usr/local/lib/node_modules/delivery
+58 error fstream_type Directory
+59 error fstream_class DirWriter
+60 error code EACCES
+61 error errno 3
+62 error stack Error: EACCES, mkdir '/usr/local/lib/node_modules/delivery'
+63 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23
+63 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53
+63 error fstream_stack Object.oncomplete (fs.js:107:15)
+64 verbose exit [ 3, true ]

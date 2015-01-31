@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('http');
 var app = express();
+var bodyParser = require('body-parser');
 
 app.use('/room/',  express.static(__dirname + '/'));
 app.configure(function(){
@@ -8,11 +9,15 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.methodOverride());
   app.use(app.router);
+  app.use(express.bodyParser({uploadDir:'./uploads'}));
+  app.use(bodyParser.urlencoded());//
+  app.use(bodyParser.json());//
 });
 
 var server;
 var io;
 var mongo = require('./mongo.js');
+var fileTranfert = require('./fileTransfert.js');
 
 var nbClientMax = 5;
 server = app.listen(2013);
@@ -20,6 +25,7 @@ var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket){
    mongo.setOnMethods(socket);
+   fileTranfert.setOnMethods(socket);
 	// Permet d'envoyer des traces au client distant
 	function log(){
 		var array = [">>> "];
@@ -41,6 +47,7 @@ io.sockets.on('connection', function (socket){
 			socket.join(room);
 			socket.emit('created', room);
 			socket.room = room;
+			console.log("room " + socket.room);
 			insertRoom(room, ipClient.address);	
 		} else if (numClients < nbClientMax) {/*TODO Verify ipClient is not banned*/
 			io.sockets.in(room).emit('join', room);
@@ -92,11 +99,16 @@ io.sockets.on('connection', function (socket){
 	   //banIP(socket.room, socket.handshake.address.address, "127.0.0.1");
 	   banIP(socket.room, socket.handshake.address.address, ip);
 	});
+	
+	// when the user disconnects.. perform this
+	socket.on('disconnect', function(){
+		disconnect();
+	});
 });
 
 app.get('/room/:name', function (req, res) {  
-  verifyBan(req, res);
-  //res.sendfile(__dirname + '/index.html');  
+  //verifyBan(req, res);
+  res.sendfile(__dirname + '/index.html');
 });
 app.get('/privateroom/:name', function (req, res) {  
   res.sendfile(__dirname + '/index.html');  

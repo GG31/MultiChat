@@ -20,12 +20,15 @@
 <script src='js/lib/adapter.js'></script>
 
 <script src='js/misc.js'></script>
+<script src='js/main.js'></script>
 <script src='js/scripts_init.js'></script>
 <script src='js/chatManagement.js'></script>
+<script src='js/FileManagement.js'></script>
 <script src='js/historyManagement.js'></script>
 <script src='js/socketOn.js'></script>
 <script src='js/mediaHandlers.js'></script>
 
+<script src='js/size.js'></script>
 </head>
 <body>
 
@@ -59,6 +62,16 @@
       <div id="header">
          <h1> Bienvenue dans la salle <span id="roomRoom"></span></h1>
          <script>setInfoToDom("#roomRoom",getRoom());</script>
+             <div id="UploadBox">
+        <h2>Video Uploader</h2>
+        <span id='UploadArea'>
+            <label for="FileBox">Choose A File: </label><input type="file" id="FileBox"><br>
+            <label for="NameBox">Name: </label><input type="text" id="NameBox"><br>
+ 
+            <button  type='button' id='UploadButton' class='Button'>Upload</button>
+            <a id="downloadFile" href="" target="_blank">Download</a>
+        </span>
+    </div>
       </div>
       <div id='active-video'>
          <h4 id='video-left'><!--pseudoActif--></h4>
@@ -181,8 +194,7 @@
     </script>
 
 
-<script src='js/main.js'></script>
-<script src='js/size.js'></script>
+
 
 
 </body>
