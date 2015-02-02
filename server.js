@@ -3,7 +3,8 @@ var http = require('http');
 var app = express();
 var bodyParser = require('body-parser');
 
-app.use('/room/',  express.static(__dirname + '/'));
+//app.use('/room/',  express.static(__dirname + '/'));
+app.use('/',  express.static(__dirname + '/'));
 app.configure(function(){
   app.use(express.favicon());
   app.use(express.logger('dev'));
@@ -105,12 +106,19 @@ io.sockets.on('connection', function (socket){
 		disconnect();
 	});
 });
-
+/*
 app.get('/room/:name', function (req, res) {  
   //verifyBan(req, res);
   res.sendfile(__dirname + '/index.html');
 });
+
 app.get('/privateroom/:name', function (req, res) {  
   res.sendfile(__dirname + '/index.html');  
+});
+*/
+
+app.get('/:name', function (req, res) {  
+  //verifyBan(req, res);
+  res.sendfile(__dirname + '/index.html');
 });
 
