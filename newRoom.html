@@ -21,7 +21,7 @@
 <div class='container'>
    <div class="row-top">
       <div id="log-header">
-         <h1> Bienvenue dans la salle privée <span id="roomRoom"></span></h1>
+         <h1>Nouvelle salle<span id="roomRoom"></span></h1>
       </div>
    </div>
    <div class="row-body">
@@ -29,9 +29,10 @@
       <form action="">
          <h3>Merci de vous identifier</h3><br>
          <div class="padding-room">Pseudo :  <input type="text" name="logRoom" value="" maxlength="12"></div><br>
-         <div class="padding-room">Mot de passe :  <input type="text" name="pwdRoom" value=""></div><br>
-         <p class="error">* Mot de passe incorrect</p>
-         <div class="padding-room"><input type="submit" value="Connexion" align="right" onclick="logPrivateRoom();"></div>
+         <div class="padding-room">Mot de passe Admin :  <input type="text" name="pwdRoom" value=""></div><br>
+         <div class="padding-room">Mot de passe de la salle :  <input type="text" name="pwdRoom" value=""></div><br>
+         <p class="error">* Merci de remplir les deux mots de passes pour obtenir une salle privée ou aucun des deux pour une salle public.</p>
+         <div class="padding-room"><input type="submit" value="Connexion" align="right" onclick="newRoom();"></div>
       </form>
       </div>
    </div>
