@@ -1,23 +1,20 @@
 # MultiChat
-use **NPM** to install all the dependencies
+
+To install a dependency named XYZ, you have to type on the console :
 ```
-npm install
+[sudo] npm install XYZ [-g]
 ```
 
-Install express
-```
-sudo npm install express -g
-```
+Dependencies to install :
 
-Install mongodb
-```
-sudo apt-get install mongodb
-```
-Install delivery
-```
-sudo npm install delivery
-```
-Pour accéder à une room : 
+express
+mongodb
+socket.io
+delivery
+body-parser
+
+
+To access a room : 
 http://localhost:2013/room/roomname
 
 ------------------------------
