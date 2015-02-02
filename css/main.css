@@ -189,7 +189,7 @@ li:before {
 #droppableZone {
 	padding-top:10px;
    height: 8%;        
-   max-height: 70px;
+   max-height: 60px;
    width: 98%;
    border: 1px dashed #b2b2b2; 
    /*background-color: #e5e5e5;*/
