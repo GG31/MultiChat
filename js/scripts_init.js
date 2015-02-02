@@ -65,7 +65,7 @@ function initRoomCheck(){
       //socket.emit('sendMsg', username, room, "MESSAGE");
     } else {
        room = prompt('Enter room name:');
-       socket.emit('create or join', room, username);
+       socket.emit('create or join', room, "", "");
     }
     
     setRoom(room);
