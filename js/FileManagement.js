@@ -9,7 +9,7 @@ function Ready(){
     {
         document.getElementById('UploadArea').innerHTML = "Your Browser Doesn't Support The File API Please Update Your Browser";
     }
-    linkOnClick(); //Décommente et download du fichier files/n/help.txt starts
+    //linkOnClick(); //Décommente et download du fichier files/n/help.txt starts
 }
 
 function linkOnClick() {
