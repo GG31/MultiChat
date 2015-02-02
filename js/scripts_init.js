@@ -4,7 +4,7 @@ function getUsername(){
 }
 
 
-var room = location.pathname.split('/')[2];
+var room = location.pathname.split('/')[1];
 function getRoom(){
     return room;
 }
@@ -61,11 +61,11 @@ function initRoomCheck(){
     console.log("In room " + room);
     if (room != '') {
       console.log('Create or join room', room);
-      socket.emit('create or join', room, username);
+      socket.emit('create or join', room, "", "");
       //socket.emit('sendMsg', username, room, "MESSAGE");
     } else {
        room = prompt('Enter room name:');
-       socket.emit('create or join', room, username);
+       socket.emit('create or join', room, "", "");
     }
     
     setRoom(room);

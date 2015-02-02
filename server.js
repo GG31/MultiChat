@@ -25,7 +25,7 @@ server = app.listen(2013);
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket){
-   mongo.setOnMethods(socket);
+   mongo.setOnMethods(socket, io);
    fileTranfert.setOnMethods(socket);
 	// Permet d'envoyer des traces au client distant
 	function log(){
@@ -41,20 +41,17 @@ io.sockets.on('connection', function (socket){
 		socket.broadcast.emit('message', message); // should be room only
 	});
 
-	socket.on('create or join', function (room) {
+	socket.on('create or join', function (room, passAdmin, passPrivate) {
 		var numClients = io.sockets.clients(room).length;
       var ipClient = socket.handshake.address;
 		if (numClients == 0){
 			socket.join(room);
 			socket.emit('created', room);
 			socket.room = room;
-			console.log("room " + socket.room);
-			insertRoom(room, ipClient.address);	
-		} else if (numClients < nbClientMax) {/*TODO Verify ipClient is not banned*/
-			io.sockets.in(room).emit('join', room);
-			socket.join(room);
-			socket.room = room;
-			socket.emit('joined', room);
+			socket.pass = passPrivate;
+			insertRoom(room, passAdmin, passPrivate);	
+		} else if (numClients < nbClientMax) {
+		   joinOrReject(room, passPrivate);
 		} else { // max nbClientMax clients
 			socket.emit('full', room);
 		}
@@ -91,6 +88,7 @@ io.sockets.on('connection', function (socket){
 	
 	socket.on('getFullHistory', function(){
 	   // emit the history of the room to the client connected
+	   console.log("on getFullHistory");
 	   getLog(socket.room);
 		//socket.emit('fullHistory', data);
 	});
@@ -106,16 +104,6 @@ io.sockets.on('connection', function (socket){
 		disconnect();
 	});
 });
-/*
-app.get('/room/:name', function (req, res) {  
-  //verifyBan(req, res);
-  res.sendfile(__dirname + '/index.html');
-});
-
-app.get('/privateroom/:name', function (req, res) {  
-  res.sendfile(__dirname + '/index.html');  
-});
-*/
 
 app.get('/:name', function (req, res) {  
   //verifyBan(req, res);
