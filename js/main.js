@@ -29,16 +29,12 @@ var remoteVideo = document.querySelector('#remoteVideo');
 /* ****************************************************************
 User info
 **************************************************************** */
-var username = "";
 var room = location.pathname.split('/')[2];
-var socket;
 
 /* ****************************************************************
 Getters
 **************************************************************** */
-function getUsername(){
-    return username;
-}
+
 function getIsInitiator(){
     return isInitiator;
 }
@@ -47,9 +43,6 @@ function getIsStarted(){
 }
 function getIsChannelReady(){
     return isChannelReady;
-}
-function getSocket(){
-    return socket;
 }
 function getLocalVideo(){
     return localVideo;
@@ -74,9 +67,6 @@ function setIsStarted(started){
 function setIsChannelReady(ready){
     isChannelReady = ready;
 }
-function setSocket(s){
-    socket = s;
-}
 function setLocalStream(stream){
     localStream = stream;
 }
@@ -91,8 +81,6 @@ var initConstraints = initializeServerConstraints();
 var pc_config = initConstraints[0];
 var pc_constraints = initConstraints[1];
 var sdpConstraints = initConstraints[2];
-
-var socket = initializeSocket();
 
 // Envoi de message générique, le serveur broadcaste à tout le monde
 // par défaut (ce sevrait être que dans la salle courante...)

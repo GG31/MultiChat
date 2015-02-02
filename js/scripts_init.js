@@ -1,3 +1,28 @@
+var username = "";
+function getUsername(){
+    return username;
+}
+
+
+var room = location.pathname.split('/')[2];
+function getRoom(){
+    return room;
+}
+function setRoom(r){
+    room = r;
+}
+
+var socket;
+function getSocket(){
+    return socket;
+}
+function setSocket(s){
+    socket = s;
+}
+
+socket = initializeSocket();
+initRoomCheck();
+
 function initializeServerConstraints(){
     // Configuration des serveurs stun...
     var pc_config = webrtcDetectedBrowser === 'firefox' ?
