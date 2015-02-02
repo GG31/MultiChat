@@ -6,22 +6,26 @@ db.open(function(){});
 
 verifyBan = function(req, res) {
    var collection = db.collection("room");
-   var doc = collection.findOne({_id:req.params.name}, {_id:0, bannedIP:1},function(err, item) {
+   var doc = collection.findOne({_id:req.params.name}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
       if (item != null) {
          var bannedIP = JSON.stringify(item.bannedIP);
          if (bannedIP != undefined && bannedIP.indexOf(req.socket.localAddress)) {
          //if (bannedIP.indexOf(req.socket.localAddress) == 1) {
             res.send("You are banned");
          } else {
-            res.sendfile(__dirname + '/index.html');  
+            if (passPrivate == "") {
+               res.sendfile(__dirname + '/logRoom.html');
+            } else {
+               res.sendfile(__dirname + '/logPrivateRoom.html');  
+            }
          }
       } else {
-         res.sendfile(__dirname + '/index.html');  
+         res.sendfile(__dirname + '/newRoom.html');  
       }
   });
 }
 
-module.exports.setOnMethods = function(socket) {
+module.exports.setOnMethods = function(socket, io) {
    getLog = function (room) {
       var collection = db.collection("log");
       var result = collection.find({room_id:room}, {_id:0, room_id:0}).sort({date:1});
@@ -55,11 +59,12 @@ module.exports.setOnMethods = function(socket) {
       insert('message', newMsg);
    },
 
-   insertRoom = function (room, ipCreator) {
+   insertRoom = function (room, passAdmin, passPrivate) {
       var newRoom = {
          _id : room,
          name : room,
-         creator : ipCreator,
+         passAdmin : passAdmin,
+         passPrivate : passPrivate,
          bannedIP : [],
       };
       insert('room', newRoom);
@@ -119,6 +124,20 @@ module.exports.setOnMethods = function(socket) {
             addBannedIP(socket.room, ipToBan);
             //Leave the room
             disconnect();
+         }
+     });
+   }
+   
+   joinOrReject = function(room, passPrivate) {
+      var collection = db.collection("room");
+      var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1}, function(err, item) {
+         if (item.passPrivate == passPrivate) {
+            io.sockets.in(room).emit('join', room);
+			   socket.join(room);
+			   socket.room = room;
+			   socket.emit('joined', room);
+         } else {
+            socket.emit('wrongPass', room);
          }
      });
    }
