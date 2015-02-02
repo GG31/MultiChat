@@ -4,7 +4,7 @@ function getUsername(){
 }
 
 
-var room = location.pathname.split('/')[2];
+var room = location.pathname.split('/')[1];
 function getRoom(){
     return room;
 }
