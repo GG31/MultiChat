@@ -18,7 +18,7 @@ CHAT MANAGEMENT
 ****************************************************** */
 
 function sendNewChat(){
-    if $("#dataChannelSend").val().length > 0{
+    if ($("#dataChannelSend").val().length > 0){
         getSocket().emit('newMessage',$('#dataChannelSend').val());
         $("#dataChannelSend").val("");
     }
@@ -180,3 +180,28 @@ getSocket().on('MoreData', function (data){
            NewFile = SelectedFile.slice(Place, Place + Math.min(524288, (SelectedFile.size-Place)));
        FReader.readAsBinaryString(NewFile);
    });
+
+/* ******************************************************
+ROOM MANAGEMENT
+****************************************************** */    
+   
+function newRoom(){
+    username = $("#usernameInput").val();
+
+    if( ($("#pwdAdmin").val().length==0 && $("#pwdRoom").val().length>0) || ($("#pwdAdmin").val().length>0 && $("#pwdRoom").val().length==0) ){
+        $("#errorPasswords").attr("display","inline");
+    }else {
+        $("#errorPasswords").attr("display","none");
+        createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+    }
+}
+
+function createOrJoin(room,pwdAdmin,pwdRoom){
+    if (room != '') {
+        console.log('Create or join room', room);
+        socket.emit('create or join', room, pwdAdmin, pwdRoom);
+        //socket.emit('sendMsg', username, room, "MESSAGE");
+    } else {
+        room = prompt('Enter room name:');
+        socket.emit('create or join', room, pwdAdmin, pwdAdmin);
+    }
