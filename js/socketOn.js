@@ -15,7 +15,6 @@ function setOnMethods(socket){
       console.log('Another peer made a request to join room ' + room);
       console.log('This peer is the initiator of room ' + room + '!');
       setIsChannelReady(true);
-      enableMessageInterface(true);
     });
 
     // Si on reçoit le message "joined" alors on a rejoint une salle existante
@@ -25,6 +24,7 @@ function setOnMethods(socket){
       console.log('This peer has joined room ' + room);
       roomJoinedLog(room);
       getFullHistory();
+      enableMessageInterface(true);
       setIsChannelReady(true);
     });
 
