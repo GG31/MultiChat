@@ -104,6 +104,7 @@ io.sockets.on('connection', function (socket){
 	socket.on('disconnect', function(){
 		disconnect();
 	});
+	
 });
 
 app.get('/:name', function (req, res) {  
@@ -111,7 +112,8 @@ app.get('/:name', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
-app.get('/download/:name/:filename', function (req, res) {  
-  res.download(__dirname + '/files/'+req.params.name+'/'+req.params.filename);
+app.get('/download/:name/:filename', function (req, res) {
+   download(req.params.name, req.params.filename, res);  
+   //res.download(__dirname + '/files/'+req.params.name+'/'+req.params.filename);
 });
 

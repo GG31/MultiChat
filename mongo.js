@@ -9,11 +9,11 @@ verifyBan = function(req, res) {
    var doc = collection.findOne({_id:req.params.name}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
       if (item != null) {
          var bannedIP = JSON.stringify(item.bannedIP);
-         if (bannedIP != undefined && bannedIP.indexOf(req.socket.localAddress)) {
+         if (bannedIP != undefined && bannedIP.indexOf(req.socket.localAddress) == 1) {
          //if (bannedIP.indexOf(req.socket.localAddress) == 1) {
             res.send("You are banned");
          } else {
-            if (passPrivate == "") {
+            if (item.passPrivate == "") {
                res.sendfile(__dirname + '/logRoom.html');
             } else {
                res.sendfile(__dirname + '/logPrivateRoom.html');  
@@ -177,6 +177,14 @@ module.exports.setOnMethods = function(socket, io) {
          //socket.emit('fullHistory', JSON.stringify(results));
       });
    }
+   
+   download = function(foldername, filename, res){
+      if (socket.room == foldername) {
+         res.download(__dirname + '/files/'+foldername+'/'+filename);
+      } else {
+         res.send("You are not in the room");
+      }
+   },
    
    deleteUser = function (userId) {
       var collection = db.collection(collection);
