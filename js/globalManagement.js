@@ -18,8 +18,10 @@ CHAT MANAGEMENT
 ****************************************************** */
 
 function sendNewChat(){
-    getSocket().emit('newMessage',$('#dataChannelSend').val());
-    $("#dataChannelSend").val("");
+    if $("#dataChannelSend").val().length > 0{
+        getSocket().emit('newMessage',$('#dataChannelSend').val());
+        $("#dataChannelSend").val("");
+    }
 }
 
 function appendNewChat(user,newMessage){
