@@ -104,8 +104,8 @@ function linkOnClick() {
    getSocket().emit('download');
 }
 
-function FileChosen(evnt) {
-    SelectedFile = evnt.target.files[0];
+function FileChosen(evnt, i) {
+    SelectedFile = evnt.target.files[i];
     document.getElementById('NameBox').value = SelectedFile.name;
 }
 

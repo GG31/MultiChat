@@ -36,7 +36,8 @@ module.exports.setOnMethods = function(socket, io) {
          if (results.length === 0) {
             console.log('Error 404: No log found');
          }
-         socket.emit('fullHistory', JSON.stringify(results));
+         var history = JSON.stringify(results);
+         socket.emit('fullHistory', history);
       });
    },
       
@@ -80,13 +81,13 @@ module.exports.setOnMethods = function(socket, io) {
       insert('room', newRoom);
    },
 
-   insertUser = function (user, room) {
+   /*insertUser = function (user, room) {
       var newUser = {
            name : user,
            room_id : room
       };
       insert('user', newUser);
-   },
+   },*/
 
    insert = function (collection, document) {
       var collection = db.collection(collection);

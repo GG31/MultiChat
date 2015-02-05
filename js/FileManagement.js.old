@@ -35,6 +35,7 @@ function StartUpload(){
         Content += "<span id='Uploaded'> - <span id='MB'>0</span>/" + Math.round(SelectedFile.size / 1048576) + "MB</span>";
         document.getElementById('UploadArea').innerHTML = Content;
         FReader.onload = function(evnt){
+         console.log("envoie fichier");
             getSocket().emit('Upload', { 'Name' : Name, Data : evnt.target.result });
         }
         getSocket().emit('Start', { 'Name' : Name, 'Size' : SelectedFile.size });
