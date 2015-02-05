@@ -200,7 +200,7 @@
 
 <script>
       $(document).ready( function(){
-        $("#dataChannelSend").keypress(function( event ) {
+        $(document).keypress(function( event ) {
             if ( event.which == 13 ) {
                 sendNewChat();
             }

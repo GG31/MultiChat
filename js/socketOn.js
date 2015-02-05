@@ -9,6 +9,7 @@ function setOnMethods(socket){
     socket.on('created', function (room){
       console.log('Created room ' + room);
       roomCreationLog(room);
+      getFullHistory();
       setIsInitiator(true);
     });
 
