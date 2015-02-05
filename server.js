@@ -74,6 +74,7 @@ io.sockets.on('connection', function (socket){
 	
 	socket.on('newMessage', function(text){
 	   // echo to room 1 the message of username
+	   console.log ("NEW MESSAGE !!! " + text);
 		io.sockets.in(socket.room).emit('updatechat', socket.username, text);
 	   var date = new Date(Date.now());
       insertMessage(socket.username, socket.room, date, text);
