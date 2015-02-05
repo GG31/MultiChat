@@ -184,7 +184,15 @@ getSocket().on('MoreData', function (data){
 /* ******************************************************
 ROOM MANAGEMENT
 ****************************************************** */    
-   
+
+// Si on reçoit le message "created" alors on est l'initiateur du call
+getSocket().on('created', function (room){
+    console.log('Created room ' + room);
+    roomCreationLog(room);
+    getFullHistory();
+    setIsInitiator(true);
+});
+
 function newRoom(){
     username = $("#usernameInput").val();
 
@@ -205,3 +213,4 @@ function createOrJoin(room,pwdAdmin,pwdRoom){
         room = prompt('Enter room name:');
         socket.emit('create or join', room, pwdAdmin, pwdAdmin);
     }
+}

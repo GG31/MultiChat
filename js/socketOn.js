@@ -5,14 +5,6 @@ function setOnMethods(socket){
         console.log("username " + getUsername);
     });
 
-    // Si on reçoit le message "created" alors on est l'initiateur du call
-    socket.on('created', function (room){
-      console.log('Created room ' + room);
-      roomCreationLog(room);
-      getFullHistory();
-      setIsInitiator(true);
-    });
-
     // On a essayé de rejoindre une salle qui est déjà pleine (avec deux personnes)
     socket.on('full', function (room){
       console.log('Room ' + room + ' is full');
