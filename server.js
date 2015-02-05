@@ -1,7 +1,6 @@
 var express = require('express');
 var http = require('http');
 var app = express();
-var bodyParser = require('body-parser');
 
 //app.use('/room/',  express.static(__dirname + '/'));
 app.use('/',  express.static(__dirname + '/'));
@@ -10,9 +9,6 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.methodOverride());
   app.use(app.router);
-  app.use(express.bodyParser({uploadDir:'./uploads'}));
-  app.use(bodyParser.urlencoded());//
-  app.use(bodyParser.json());//
 });
 
 var server;
