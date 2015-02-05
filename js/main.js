@@ -236,6 +236,7 @@ function handleReceiveChannelStateChange() {
 }
 
 function enableMessageInterface(shouldEnable) {
+    console.log("enableMessageInterface");
     if (shouldEnable) {
     dataChannelSend.disabled = false;
     dataChannelSend.focus();

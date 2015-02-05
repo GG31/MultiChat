@@ -24,6 +24,7 @@ function setOnMethods(socket){
       console.log('This peer has joined room ' + room);
       roomJoinedLog(room);
       getFullHistory();
+      enableMessageInterface(true);
       setIsChannelReady(true);
     });
 
