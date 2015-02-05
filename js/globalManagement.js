@@ -28,7 +28,7 @@ function appendNewChat(user,newMessage){
     if (chatUsernameClass[user]){
         chatClassToUse = chatUsernameClass[user];
     }else{
-        chatUsernameClass[user] = chatClasses[classIndex];
+        chatUsernameClass[user] = chatClasses[chatClassIndex];
         chatClassToUse = chatUsernameClass[user];
         chatClassIndex = (chatClassIndex + 1)%chatClasses.length;
     }
@@ -73,6 +73,8 @@ function uploadFileLog(fileName){
 }
 
 function createHistory(arrayHistory){
+    var historyToCreate = jQuery.parseJSON(arrayHistory);
+    console.log(historyToCreate);
     var htmlHistory = "";
     for(var i = 0 ; i < arrayHistory.length ; i++) htmlHistory+="<p>"+arrayHistory[i]+"</p>";
     $('#historical-container-area').html(htmlHistory);
