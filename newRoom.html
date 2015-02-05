@@ -29,7 +29,7 @@
       <form action="">
          <h3>Merci de vous identifier</h3><br>
          <div class="padding-room">Pseudo :  <input type="text" name="logRoom" value="" maxlength="12"></div><br>
-         <div class="padding-room">Mot de passe Admin :  <input type="text" name="pwdRoom" value=""></div><br>
+         <div class="padding-room">Mot de passe Admin :  <input type="text" name="pwdAdmin" value=""></div><br>
          <div class="padding-room">Mot de passe de la salle :  <input type="text" name="pwdRoom" value=""></div><br>
          <p class="error">* Merci de remplir les deux mots de passes pour obtenir une salle privée ou aucun des deux pour une salle public.</p>
          <div class="padding-room"><input type="submit" value="Connexion" align="right" onclick="newRoom();"></div>
@@ -37,6 +37,18 @@
       </div>
    </div>
 </div>
+
+<script>
+   function newRoom(){
+      if(document.getElementById("pwdAdmin").value == "" && document.getElementById("pwdRoom").value == ""){
+      
+      }else if (){
+      
+      } else {
+      
+      }
+   }
+</script>
     
 <script src='/socket.io/socket.io.js'></script>
 <script src='js/lib/adapter.js'></script>
