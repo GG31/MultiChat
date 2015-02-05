@@ -114,6 +114,5 @@ app.get('/:name', function (req, res) {
 
 app.get('/download/:name/:filename', function (req, res) {
    download(req.params.name, req.params.filename, res);  
-   //res.download(__dirname + '/files/'+req.params.name+'/'+req.params.filename);
 });
 

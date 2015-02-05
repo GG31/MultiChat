@@ -68,16 +68,6 @@ module.exports.setOnMethods = function(socket) {
             socket.emit('MoreData', { 'Place' : Place, 'Percent' :  Percent});
         }
     });
-	
-   socket.on('download', function(){
-      var filename = 'help.txt';
-      fs.readFile(__dirname + '/files/'+socket.room+'/'+filename, 'Binary', function(err, buf){
-         // it's possible to embed binary data
-         // within arbitrarily-complex objects
-         socket.emit('download', {buffer: buf, name: filename});
-         console.log('image file is initialized ' + filename);
-      });  
-   });
    /**********************************/
 }
 
