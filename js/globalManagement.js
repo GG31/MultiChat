@@ -73,6 +73,8 @@ function uploadFileLog(fileName){
 }
 
 function createHistory(arrayHistory){
+    var historyToCreate = jQuery.parseJSON(arrayHistory);
+    console.log(historyToCreate);
     var htmlHistory = "";
     for(var i = 0 ; i < arrayHistory.length ; i++) htmlHistory+="<p>"+arrayHistory[i]+"</p>";
     $('#historical-container-area').html(htmlHistory);
