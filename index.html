@@ -22,11 +22,17 @@
 <script src='js/misc.js'></script>
 <script src='js/socketOn.js'></script>
 <script src='js/scripts_init.js'></script>
-<script src='js/chatManagement.js'></script>
-<script src='js/historyManagement.js'></script>
 <script src='js/mediaHandlers.js'></script>
 
 <script>
+      $(document).ready( function(){
+        $("#dataChannelSend").keypress(function( event ) {
+            if ( event.which == 13 ) {
+                sendNewChat();
+            }
+        });
+      });
+      
       
       function dragEnterHandler(event) {
         console.log("Drag enter");
@@ -237,7 +243,7 @@
 
     <script src='js/main.js'></script>
     <script src='js/size.js'></script>
-    <script src='js/FileManagement.js'></script>
+    <script src='js/globalManagement.js'></script>
 
 </body>
 </html>
