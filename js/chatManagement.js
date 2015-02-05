@@ -2,7 +2,7 @@ var classes = ["color1","color2","color3","color4"];
 var classIndex = 0;
 
 function sendNewChat(){
-    $("#dataChannelSend").attr("value","");
+    $("#dataChannelSend").val("");
     getSocket().emit('newMessage',$('#dataChannelSend').val());
 }
 
