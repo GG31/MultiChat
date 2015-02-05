@@ -1,6 +1,6 @@
-var classes = ["color1","color2","color3","color4"];
-var classIndex = 0;
-var usernameClass = {}
+var chatClasses = ["color1","color2","color3","color4"];
+var chatClassIndex = 0;
+var chatUsernameClass = {}
 
 function sendNewChat(){
     getSocket().emit('newMessage',$('#dataChannelSend').val());
@@ -8,17 +8,16 @@ function sendNewChat(){
 }
 
 function appendNewChat(user,newMessage){
-    var classToUse = "";
+    var chatClassToUse = "";
 
-    if (usernameClass[user]){
-        classToUse = usernameClass[user];
+    if (chatUsernameClass[user]){
+        chatClassToUse = chatUsernameClass[user];
     }else{
-        usernameClass[user] = classes[classIndex];
-        classToUse = usernameClass[user];
-        classIndex = (classIndex + 1)%classes.length;
+        chatUsernameClass[user] = chatClasses[classIndex];
+        chatClassToUse = chatUsernameClass[user];
+        chatClassIndex = (chatClassIndex + 1)%chatClasses.length;
     }
-
-    $('#dataChannelReceive').append("<div class='"+classToUse+"'>"+user+"&nbsp;:</div>"+"<div class='"+classToUse+"-paragraph'>"+newMessage+"</div>");
+    $('#dataChannelReceive').append("<div class='"+chatClassToUse+"'>"+user+"&nbsp;:</div>"+"<div class='"+chatClassToUse+"-paragraph'>"+newMessage+"</div>");
 }
 
 function appendServerMessage(user,newMessage,className){
