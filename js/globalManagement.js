@@ -112,10 +112,10 @@ function FileChosen(evnt, i) {
 }
 
 function StartUpload(){
-    if(document.getElementById('FileBox').value != "")
-    {
+    /*if(document.getElementById('FileBox').value != "")
+    {*/
         FReader = new FileReader();
-        Name = document.getElementById('NameBox').value;
+        Name = SelectedFile.name;
         var Content = "<span id='NameArea'>Uploading " + SelectedFile.name + " as " + Name + "</span>";
         Content += '<div id="ProgressContainer"><div id="ProgressBar"></div></div><span id="percent">0%</span>';
         Content += "<span id='Uploaded'> - <span id='MB'>0</span>/" + Math.round(SelectedFile.size / 1048576) + "MB</span>";
@@ -124,11 +124,11 @@ function StartUpload(){
             getSocket().emit('Upload', { 'Name' : Name, Data : evnt.target.result });
         }
         getSocket().emit('Start', { 'Name' : Name, 'Size' : SelectedFile.size });
-    }
+    /*}
     else
     {
         alert("Please Select A File");
-    }
+    }*/
 }
 
 function download(content, filename, contentType){

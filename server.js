@@ -111,3 +111,7 @@ app.get('/:name', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
+app.get('/download/:name/:filename', function (req, res) {  
+  res.download(__dirname + '/files/'+req.params.name+'/'+req.params.filename);
+});
+
