@@ -27,6 +27,16 @@
 <script src='js/mediaHandlers.js'></script>
 
 <script>
+      $( document ).ready(
+      
+      $("#dataChannelSend").keypress(function( event ) {
+        if ( event.which == 13 ) {
+            sendNewChat();
+        }
+      });
+      
+      
+      
       
       function dragEnterHandler(event) {
         console.log("Drag enter");
