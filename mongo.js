@@ -80,13 +80,13 @@ module.exports.setOnMethods = function(socket, io) {
       insert('room', newRoom);
    },
 
-   insertUser = function (user, room) {
+   /*insertUser = function (user, room) {
       var newUser = {
            name : user,
            room_id : room
       };
       insert('user', newUser);
-   },
+   },*/
 
    insert = function (collection, document) {
       var collection = db.collection(collection);

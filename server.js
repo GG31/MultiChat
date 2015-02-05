@@ -64,7 +64,7 @@ io.sockets.on('connection', function (socket){
    // when the client emits 'adduser', this listens and executes
 	socket.on('adduser', function(room, username){
 	   socket.username = username;
-	   insertUser(username, room);
+	   //insertUser(username, room);
 	   // echo to room 1 that a person has connected to their room
 	   var text = username + ' has connected to this room';
 	   //socket.broadcast.to(room).emit('updatechat', 'SERVER', text);
