@@ -17,7 +17,7 @@ var mongo = require('./mongo.js');
 var fileTranfert = require('./fileTransfert.js');
 
 var nbClientMax = 5;
-server = app.listen(2013);
+server = app.listen(8080);
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket){

@@ -14,7 +14,7 @@ body-parser
 
 
 To access a room : 
-http://localhost:2013/roomname
+http://localhost:8080/roomname
 
 ------------------------------
 A FAIRE
