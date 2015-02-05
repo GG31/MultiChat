@@ -10,12 +10,11 @@ Dependencies to install :
 express
 mongodb
 socket.io
-delivery
 body-parser
 
 
 To access a room : 
-http://localhost:2013/room/roomname
+http://localhost:2013/roomname
 
 ------------------------------
 A FAIRE
