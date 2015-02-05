@@ -28,7 +28,7 @@ function appendNewChat(user,newMessage){
     if (chatUsernameClass[user]){
         chatClassToUse = chatUsernameClass[user];
     }else{
-        chatUsernameClass[user] = chatClasses[classIndex];
+        chatUsernameClass[user] = chatClasses[chatClassIndex];
         chatClassToUse = chatUsernameClass[user];
         chatClassIndex = (chatClassIndex + 1)%chatClasses.length;
     }
