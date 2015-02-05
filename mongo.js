@@ -154,7 +154,7 @@ module.exports.setOnMethods = function(socket, io) {
    
    insertFile = function (room, fileName, originName, owner, date) {
       var newFile = {
-           _id : fileName,
+           filename : fileName,
            room_id : room,
            originName : originName,
            owner : owner,
@@ -163,9 +163,9 @@ module.exports.setOnMethods = function(socket, io) {
       insert('file', newFile);
    }
    
-   getFile = function (room, file_id) {
-      /*var collection = db.collection("file");
-      var result = collection.find({room_id:room, _id:file_id}, {_id:0, room_id:0}).sort({date:1});
+   getFile = function (room, filename) {
+      var collection = db.collection("file");
+      var result = collection.find({room_id:room, filename:filename}, {_id:0, room_id:0}).sort({date:1});
       result.toArray(function (err, results) {
          if (err) {
             throw err;
@@ -173,8 +173,8 @@ module.exports.setOnMethods = function(socket, io) {
          if (results.length === 0) {
             console.log('Error 404: No log found');
          }
-         socket.emit('fullHistory', JSON.stringify(results));
-      });*/
+         //socket.emit('fullHistory', JSON.stringify(results));
+      });
    }
    
    deleteUser = function (userId) {
