@@ -36,7 +36,8 @@ module.exports.setOnMethods = function(socket, io) {
          if (results.length === 0) {
             console.log('Error 404: No log found');
          }
-         socket.emit('fullHistory', JSON.stringify(results));
+         var history = JSON.stringify(results);
+         socket.emit('fullHistory', history);
       });
    },
       
