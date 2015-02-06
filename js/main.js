@@ -336,6 +336,7 @@ function requestTurn(turn_url) {
     console.log('Getting TURN server from ', turn_url);
     // No TURN server. Get one from computeengineondemand.appspot.com:
     var xhr = new XMLHttpRequest();
+    
     xhr.onreadystatechange = function(){
       if (xhr.readyState === 4 && xhr.status === 200) {
         var turnServer = JSON.parse(xhr.responseText);
@@ -348,6 +349,8 @@ function requestTurn(turn_url) {
       }
     };
     xhr.open('GET', turn_url, true);
+    xhr.setRequestHeader('X-PINGOTHER', 'pingpong');
+    xhr.setRequestHeader('Content-Type', 'application/xml');
     xhr.send();
   }
 }
