@@ -109,9 +109,15 @@ function getFile(fileName){
     getSocket().emit("getFile",fileName);
 }
 
+/*Downloader file and send log to the room*/
+function downloadFile(file){
+   getSocket().emit("newLog",getUsername() + " has downloaded "+ file);
+   $('<form action="download/'+getRoom()+'/'+file+'"></form>').submit();
+}
+
 function uploadFile(file){
-    getSocket().emit("uploadFile",file);
-    uploadFileLog(fileName)
+   getSocket().emit("uploadFile",file);
+   uploadFileLog(fileName);
 }
 
 //Sockets

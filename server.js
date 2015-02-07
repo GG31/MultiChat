@@ -106,6 +106,10 @@ io.sockets.on('connection', function (socket){
 	   banIP(socket.room, socket.handshake.address.address, ip);
 	});
 	
+	socket.on('uploadFile', function(file){
+	   
+	});
+	
 	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){
 		disconnect();
