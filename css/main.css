@@ -155,7 +155,7 @@ video, img{
    display: none;
 }
 
-.transfer, .download-file{
+.transfer, .download-file, .upload-file{
    color:black;
 }
 .connect{

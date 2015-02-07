@@ -137,6 +137,19 @@ module.exports.setOnMethods = function(socket, io) {
      });
    }
    
+   disconnect = function() {
+      // remove the username from global usernames list
+      //delete usernames[socket.username];
+      // update list of users in chat, client-side
+      //io.sockets.in(nom de la salle).emit('updateusers', usernames)
+      // echo globally that this client has left
+      //if(socket.room){
+         //io.sockets.in(room).emit('updateDisconnect', socket.username, socket.room);
+      //}
+      //io.sockets.in(room).emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+		socket.leave(socket.room);
+   }
+   
    insertFile = function (room, fileName, originName, owner, date) {
       var newFile = {
            filename : fileName,

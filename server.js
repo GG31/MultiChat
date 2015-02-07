@@ -81,10 +81,16 @@ io.sockets.on('connection', function (socket){
 	   var date = new Date(Date.now());
       insertMessage(socket.username, socket.room, date, text);
 	});
+		socket.on('newMessageConnexion', function(text){
+	   // echo to room 1 the message of username
+		io.sockets.in(socket.room).emit('updateChatConnexion', socket.username, text);
+	});
 	
 	socket.on('newLog', function(text){
 	   // echo to room 1 the message of username
-		updateHistory(text);
+	   io.sockets.in(socket.room).emit('updateHistory', text);
+	   var date = new Date(Date.now());
+     insertLog(socket.room, date, text);
 	});
 	
 	socket.on('getFullHistory', function(){
@@ -114,16 +120,16 @@ io.sockets.on('connection', function (socket){
 	
 	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){
-		//io.sockets.in(room).emit('updatechat', 'SERVER', socket.username + ' has disconnected');
-		updateHistory(socket.username + ' has disconnected');
-		socket.leave(socket.room);
+	   console.log("déconnexion");
+		io.sockets.in(socket.room).emit('updateDisconnect', socket.username, socket.room);
+		disconnect();
 	});
-	
+	/*
 	updateHistory = function(text) {
 	   io.sockets.in(socket.room).emit('updateHistory', text);
 	   var date = new Date(Date.now());
       insertLog(socket.room, date, text);
-	}
+	}*/
 	
 });
 

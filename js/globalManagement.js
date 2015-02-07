@@ -37,6 +37,19 @@ function appendNewChat(user,newMessage){
     $('#dataChannelReceive').append("<div class='"+chatClassToUse+"'>"+user+"&nbsp;:</div>"+"<div class='"+chatClassToUse+"-paragraph'>"+newMessage+"</div>");
 }
 
+function appendConnexionChat(user,newMessage){
+    var chatClassToUse = "";
+
+    if (chatUsernameClass[user]){
+        chatClassToUse = chatUsernameClass[user];
+    }else{
+        chatUsernameClass[user] = chatClasses[chatClassIndex];
+        chatClassToUse = chatUsernameClass[user];
+        chatClassIndex = (chatClassIndex + 1)%chatClasses.length;
+    }
+    $('#dataChannelReceive').append("<div><span class='"+chatClassToUse+"'>"+user+"&nbsp;:</span>"+"<span class='"+chatClassToUse+"-paragraph'>"+newMessage+"</span></div>");
+}
+
 function appendServerMessage(user,newMessage,className){
     $('#chat-table').append("<div class='"+className+"'>"+user+"&nbsp;:&nbsp;"+newMessage+"</div>");
 }
@@ -54,6 +67,10 @@ function roomCreationLog(room){
     var text = "<div class='connect'>" + getUsername() + " has created room "+ room + "</div>";
     storeLog(text,room);
 }
+function appendDisconnect(user, room){
+    var text = user + " has disconnected room "+ room;
+    storeLog("<div class='disconnect'>"+text+"</div>", room);
+}
 
 function appendNewElementToHistory(text){
     $('#historical-container-area').append(text);
@@ -70,12 +87,17 @@ function getFullFiles() {
 }
 
 function roomJoinedLog(room){
+    getSocket().emit('newMessageConnexion', " has joined the room");
     var text = "<div class='connect'>" + getUsername() + " has joined room "+ room + "</div>";
     storeLog(text,room);
 }
 
 function uploadFileLog(fileName){
     var text = "<div class='transfer'>" + getUsername() + " has uploaded "+ fileName + "</div>";
+}
+
+function roomDisconnectLog(fileName){
+    var text = "<div class='disconnect'>" + getUsername() + " has disconnected</div>";
 }
 
 function createHistory(arrayHistory){
@@ -162,12 +184,13 @@ function getFile(fileName){
 
 /*Downloader file and send log to the room*/
 function downloadFile(file){
-   storeLog("<div class='download-file'>"+ getUsername() + " has downloaded "+ file+"</div>", room);
+   //storeLog("<div class='download-file'>"+ getUsername() + " has downloaded "+ file+"</div>", room);
    $('<form action="download/'+getRoom()+'/'+file+'"></form>').submit();
    
 }
 
 function uploadFile(file){
+    storeLog("<div class='upload-file'>"+ getUsername() + " has upload "+ file+"</div>", room);
     getSocket().emit("uploadFile",file);
     uploadFileLog(fileName)
 }
