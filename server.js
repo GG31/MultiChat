@@ -77,9 +77,7 @@ io.sockets.on('connection', function (socket){
 	
 	socket.on('newLog', function(text){
 	   // echo to room 1 the message of username
-		io.sockets.in(socket.room).emit('updateHistory', text);
-	   var date = new Date(Date.now());
-      insertLog(socket.room, date, text);
+		updateHistory(text);
 	});
 	
 	socket.on('getFullHistory', function(){
@@ -108,8 +106,16 @@ io.sockets.on('connection', function (socket){
 	
 	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){
-		disconnect();
+		//io.sockets.in(room).emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+		updateHistory(socket.username + ' has disconnected');
+		socket.leave(socket.room);
 	});
+	
+	updateHistory = function(text) {
+	   io.sockets.in(socket.room).emit('updateHistory', text);
+	   var date = new Date(Date.now());
+      insertLog(socket.room, date, text);
+	}
 	
 });
 
