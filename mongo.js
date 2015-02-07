@@ -3,7 +3,6 @@ var mongodb = require('mongodb')
 var serverMongo = new mongodb.Server('127.0.0.1', 27017, {auto_reconnect: true});
 var db = new mongodb.Db('multichat', serverMongo);
 db.open(function(){});
-
 verifyBan = function(req, res) {
    var collection = db.collection("room");
    var doc = collection.findOne({_id:req.params.name}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
@@ -13,18 +12,24 @@ verifyBan = function(req, res) {
          //if (bannedIP.indexOf(req.socket.localAddress) == 1) {
             res.send("You are banned");
          } else {
-            if (item.passPrivate == "") {
+            console.log("socket.username " + req.socket.username);
+            if (item.passPrivate == "" && req.socket.username == undefined) {
+               console.log("logRoom");
                res.sendfile(__dirname + '/logRoom.html');
+            } else if(item.passPrivate == "" && req.socket.username != "") {
+               console.log("index");
+               res.sendfile(__dirname + '/index.html');
             } else {
+               console.log("logPrivateRoom");
                res.sendfile(__dirname + '/logPrivateRoom.html');  
             }
          }
       } else {
+         console.log("new Room");
          res.sendfile(__dirname + '/newRoom.html');  
       }
   });
 }
-
 module.exports.setOnMethods = function(socket, io) {
    getLog = function (room) {
       var collection = db.collection("log");

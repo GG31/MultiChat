@@ -1,8 +1,9 @@
 function setOnMethods(socket){
     socket.on('connect', function(){
-        username = prompt("What's your name?");
-        socket.emit('adduser', getRoom(), getUsername());
-        console.log("username " + getUsername);
+        //username = prompt("What's your name?");
+        //socket.emit('adduser', getRoom(), getUsername());
+        //console.log("username " + getUsername);
+        console.log("on connect");
     });
 
     // On a essayé de rejoindre une salle qui est déjà pleine (avec deux personnes)
@@ -29,6 +30,11 @@ function setOnMethods(socket){
       setIsChannelReady(true);
     });
 
+   socket.on('userAdded', function (room){
+      window.location.replace("/"+room);
+      console.log("on userAdded " + room);
+      socket.emit('create or join', room, "", "");
+    });
     // Appelé par le serveur pour faire des traces chez les clients connectés
     socket.on('log', function (array){
       console.log.apply(console, array);

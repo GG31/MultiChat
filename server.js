@@ -36,18 +36,27 @@ io.sockets.on('connection', function (socket){
 		log('Got message: ', message);
 		socket.broadcast.emit('message', message); // should be room only
 	});
+	
+	socket.on('createRoom', function (room, passAdmin, passPrivate) {
+	   console.log("createRoom " + room);
+		insertRoom(room, passAdmin, passPrivate);	
+		socket.room = room;
+	});
 
 	socket.on('create or join', function (room, passAdmin, passPrivate) {
 		var numClients = io.sockets.clients(room).length;
       var ipClient = socket.handshake.address;
 		if (numClients == 0){
 			socket.join(room);
+			console.log(socket.username + " has created " + socket.room);
 			socket.emit('created', room);
 			socket.room = room;
 			socket.pass = passPrivate;
-			insertRoom(room, passAdmin, passPrivate);	
+			
+			//insertRoom(room, passAdmin, passPrivate);	
 		} else if (numClients < nbClientMax) {
 		   joinOrReject(room, passPrivate);
+		   console.log(socket.username + " has join " + socket.room);
 		} else { // max nbClientMax clients
 			socket.emit('full', room);
 		}
@@ -66,6 +75,7 @@ io.sockets.on('connection', function (socket){
 	   //socket.broadcast.to(room).emit('updatechat', 'SERVER', text);
       var date = new Date(Date.now());
       insertMessage(username, room, date, text);
+      socket.emit('userAdded', room);
 	});
 	
 	socket.on('newMessage', function(text){
@@ -120,8 +130,8 @@ io.sockets.on('connection', function (socket){
 });
 
 app.get('/:name', function (req, res) {  
-  //verifyBan(req, res);
-  res.sendfile(__dirname + '/index.html');
+  verifyBan(req, res);
+  //res.sendfile(__dirname + '/index.html');
 });
 
 app.get('/download/:name/:filename', function (req, res) {

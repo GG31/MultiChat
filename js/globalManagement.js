@@ -144,7 +144,7 @@ function download(content, filename, contentType){
         a.click();
 }
 
-function Refresh(){
+function refresh(){
     location.reload(true);
 }
 
@@ -211,20 +211,28 @@ getSocket().on('created', function (room){
 });
 
 function newRoom(){
-    username = $("#usernameInput").val();
-
+    //username = $("#usernameInput").val();
+    room = getRoom();
+    console.log("the room is " + room);
+   //
     if( ($("#pwdAdmin").val().length==0 && $("#pwdRoom").val().length>0) || ($("#pwdAdmin").val().length>0 && $("#pwdRoom").val().length==0) ){
         $("#errorPasswords").attr("display","inline");
     }else {
         $("#errorPasswords").attr("display","none");
-        createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+        console.log("on newRoom");
+        socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
+        //window.location.href("/"+room);
+        refresh();
+        //createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
     }
 }
 
 function logRoom(){
     username = $("#usernameLogRoom").val();
-    //socket.emit('create or join', room, pwdAdmin, pwdAdmin);
+    console.log("adduser "+username+" on room " + getRoom());
+    socket.emit('adduser', getRoom(), username);
 }
+
 function logPrivateRoom() {
     username = $("#usernameLogPrivateRoom").val();
     pwdRoom = $("#pwdLogPrivateRoom").val();
