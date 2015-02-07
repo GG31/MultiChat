@@ -111,6 +111,7 @@ function getFile(fileName){
 
 /*Downloader file and send log to the room*/
 function downloadFile(file){
+   console.log("ON DOWNLOAD");
    getSocket().emit("newLog",getUsername() + " has downloaded "+ file);
    $('<form action="download/'+getRoom()+'/'+file+'"></form>').submit();
 }

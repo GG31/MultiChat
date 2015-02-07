@@ -1,7 +1,7 @@
 var Files = {};
 var fs = require('fs')
 
-module.exports.setOnMethods = function(socket) {
+module.exports.setOnMethods = function(socket, io) {
    socket.on('Start', function (data) { //data contains the variables that we passed through in the html file
    console.log("onstart " + data['Name']);
      var Name = data['Name'];
@@ -52,6 +52,7 @@ module.exports.setOnMethods = function(socket) {
         {
             fs.write(Files[Name]['Handler'], Files[Name]['Data'], null, 'Binary', function(err, Writen){
             });
+            io.sockets.in(socket.room).emit('newFile', Files[Name]['Name_id']);
         }
         else if(Files[Name]['Data'].length > 10485760){ //If the Data Buffer reaches 10MB
             fs.write(Files[Name]['Handler'], Files[Name]['Data'], null, 'Binary', function(err, Writen){
