@@ -16,7 +16,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(function (req, res, next) {
-      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Origin', "http://"+req.headers.host+':8080');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
       res.setHeader('Access-Control-Allow-Headers', 'X-PINGOTHER, X-Requested-With,origin, content-type, accept');
       res.setHeader('Access-Control-Expose-Headers', 'X-My-Custom-Header, X-Another-Custom-Header');
