@@ -162,8 +162,9 @@ function getFile(fileName){
 
 /*Downloader file and send log to the room*/
 function downloadFile(file){
-   getSocket().emit("newLog",getUsername() + " has downloaded "+ file);
+   storeLog("<div class='download-file'>"+ getUsername() + " has downloaded "+ file+"</div>", room);
    $('<form action="download/'+getRoom()+'/'+file+'"></form>').submit();
+   
 }
 
 function uploadFile(file){
@@ -192,7 +193,8 @@ getSocket().on('MoreData', function (data){
    });
 
 function appendFile(fileName) {
-   var newFile = $('<li onclick="downloadFile(\''+fileName+'\')">'+fileName+'</li>');
+   var newFile = $('<li class="common-repository-li" onclick="downloadFile(\''+fileName+'\')">'+fileName+'</li>');
+   //var newFile = $('<li class="common-repository-li" ><a href="#" onclick="downloadFile(\''+fileName+'\')">'+fileName+'</a></li>');
    $('#common-repository-ul').append(newFile);
 }
 /* ******************************************************
