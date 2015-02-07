@@ -15,6 +15,15 @@
 
 <!-- <link rel='stylesheet' href='css/main.css' /> -->
 <script src='js/lib/jquery-1.11.2.min.js'></script>
+
+<script src='/socket.io/socket.io.js'></script>
+<script src='js/lib/adapter.js'></script>
+
+<script src='js/misc.js'></script>
+<script src='js/socketOn.js'></script>
+<script src='js/scripts_init.js'></script>
+<script src='js/mediaHandlers.js'></script>
+
 </head>
 <body>
 
@@ -28,25 +37,18 @@
       <div class="row-body-container">
       <form action="">
          <h3>Merci de vous identifier</h3><br>
-         <div class="padding-room">Pseudo :  <input type="text" name="logRoom" value="" maxlength="12"></div><br>
-         <div class="padding-room">Mot de passe :  <input type="text" name="pwdRoom" value=""></div><br>
-         <p class="error">* Mot de passe incorrect</p>
+         <div class="padding-room">Pseudo :  <input type="text" id="usernameLogPrivateRoom" value="" maxlength="12"></div><br>
+         <div class="padding-room">Mot de passe :  <input type="text" name="pwdLogPrivateRoom" value=""></div><br>
+         <p class="error" id="errorPrivatePassword">* Mot de passe incorrect</p>
          <div class="padding-room"><input type="submit" value="Connexion" align="right" onclick="logPrivateRoom();"></div>
       </form>
       </div>
    </div>
 </div>
     
-<script src='/socket.io/socket.io.js'></script>
-<script src='js/lib/adapter.js'></script>
-
-<script src='js/scripts_init.js'></script>
-<script src='js/chatManagement.js'></script>
-<script src='js/historyManagement.js'></script>
-<script src='js/socketOn.js'></script>
-<script src='js/mediaHandlers.js'></script>
-<script src='js/main.js'></script>
-<script src='js/size.js'></script>
+    <script src='js/main.js'></script>
+    <script src='js/size.js'></script>
+    <script src='js/globalManagement.js'></script>
 
 
 
