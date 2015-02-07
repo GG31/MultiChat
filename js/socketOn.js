@@ -24,17 +24,14 @@ function setOnMethods(socket){
     socket.on('joined', function (room){
       console.log('This peer has joined room ' + room);
       roomJoinedLog(room);
+      $('.container').css({display : 'none'});
+      $('#containerIndex').css({display : 'block'});
       getFullHistory();
       getFullFiles();
       enableMessageInterface(true);
       setIsChannelReady(true);
     });
 
-   socket.on('userAdded', function (room){
-      window.location.replace("/"+room);
-      console.log("on userAdded " + room);
-      socket.emit('create or join', room, "", "");
-    });
     // Appelé par le serveur pour faire des traces chez les clients connectés
     socket.on('log', function (array){
       console.log.apply(console, array);
@@ -102,6 +99,11 @@ function setOnMethods(socket){
     
     socket.on('newFile',function(fileName){
         appendFile(fileName);
+    });
+    
+    socket.on('typePage',function(type) {
+      $('.container').css({display :'none'});
+      $('#'+type).css({display : 'block'});
     });
     
 }

@@ -46,17 +46,14 @@ io.sockets.on('connection', function (socket){
 	socket.on('create or join', function (room, passAdmin, passPrivate) {
 		var numClients = io.sockets.clients(room).length;
       var ipClient = socket.handshake.address;
-		if (numClients == 0){
+		if (numClients == 0){ //TODO vérifier le mot de passe si jamais la room s'est vidé entre temps
 			socket.join(room);
-			console.log(socket.username + " has created " + socket.room);
 			socket.emit('created', room);
 			socket.room = room;
 			socket.pass = passPrivate;
-			
-			//insertRoom(room, passAdmin, passPrivate);	
+//			insertRoom(room, passAdmin, passPrivate);	
 		} else if (numClients < nbClientMax) {
 		   joinOrReject(room, passPrivate);
-		   console.log(socket.username + " has join " + socket.room);
 		} else { // max nbClientMax clients
 			socket.emit('full', room);
 		}
@@ -75,7 +72,7 @@ io.sockets.on('connection', function (socket){
 	   //socket.broadcast.to(room).emit('updatechat', 'SERVER', text);
       var date = new Date(Date.now());
       insertMessage(username, room, date, text);
-      socket.emit('userAdded', room);
+      //socket.emit('userAdded', room);
 	});
 	
 	socket.on('newMessage', function(text){
@@ -110,8 +107,9 @@ io.sockets.on('connection', function (socket){
 	   banIP(socket.room, socket.handshake.address.address, ip);
 	});
 	
-	socket.on('uploadFile', function(file){
-	   
+	socket.on('typePage', function(room){
+	   console.log('on typePage');
+	   typePage(room);
 	});
 	
 	// when the user disconnects.. perform this

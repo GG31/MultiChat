@@ -23,11 +23,66 @@
 <script src='js/socketOn.js'></script>
 <script src='js/scripts_init.js'></script>
 <script src='js/mediaHandlers.js'></script>
-
 </head>
 <body ondragenter="dragEnterHandler(event)">
+<div class='container' id="containerNewRoom">
+   <div class="row-top">
+      <div id="log-header">
+         <h1>Nouvelle salle<span id="roomRoom"></span></h1>
+      </div>
+   </div>
+   <div class="row-body">
+      <div class="row-body-container">
+      <form action="">
+         <h3>Merci de vous identifier</h3><br>
+         <div class="padding-room">Pseudo :  <input type="text" id="usernameInput" value="" maxlength="12" name="pseudo"></div><br>
+         <div class="padding-room">Mot de passe Admin :  <input type="text" id="pwdAdmin" value="" name="passAdmin"></div><br>
+         <div class="padding-room">Mot de passe de la salle :  <input type="text" id="pwdRoom" value="" name="passRoom"></div><br>
+         Fuck<input type='text' name="name" value="fuck"/><br>
+         <p id="errorPasswords" class="error">* Merci de remplir les deux mots de passes pour obtenir une salle privée ou aucun des deux pour une salle publique.</p>
+         <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="newRoom();"></div>
+      </form>
+      </div>
+   </div>
+</div>
 
-<div class='container'>
+<div class='container' id="containerLogRoom">
+   <div class="row-top">
+      <div id="log-header">
+         <h1> Bienvenue dans la salle <span id="roomRoom"></span></h1>
+      </div>
+   </div>
+   <div class="row-body">
+      <div class="row-body-container">
+      <form action="">
+         <h3>Merci de vous identifier</h3><br>
+         <div class="padding-room">Pseudo :  <input type="text" id="usernameLogRoom" value="" maxlength="12"></div><br>
+         <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="logRoom();"></div>
+      </form>
+      </div>
+   </div>
+</div>
+
+<div class='container' id="containerLogPrivateRoom">
+   <div class="row-top">
+      <div id="log-header">
+         <h1> Bienvenue dans la salle privée <span id="roomRoom"></span></h1>
+      </div>
+   </div>
+   <div class="row-body">
+      <div class="row-body-container">
+      <form action="">
+         <h3>Merci de vous identifier</h3><br>
+         <div class="padding-room">Pseudo :  <input type="text" id="usernameLogPrivateRoom" value="" maxlength="12"></div><br>
+         <div class="padding-room">Mot de passe :  <input type="text" id="pwdLogPrivateRoom" name="pwdLogPrivateRoom" value=""></div><br>
+         <p class="error" id="errorPrivatePassword">* Mot de passe incorrect</p>
+         <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="logPrivateRoom();"></div>
+      </form>
+      </div>
+   </div>
+</div>
+
+<div class='container' id="containerIndex">
    <div id="col-left">   
       <!-- liste de tous les utilisateurs connectes -->
       <div id="profils-container">

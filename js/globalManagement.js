@@ -208,10 +208,12 @@ getSocket().on('created', function (room){
     getFullHistory();
     getFullFiles();
     setIsInitiator(true);
+    $('.container').css({display : 'none'});
+    $('#containerIndex').css({display : 'block'});
 });
 
 function newRoom(){
-    //username = $("#usernameInput").val();
+    username = $("#usernameInput").val();
     room = getRoom();
     console.log("the room is " + room);
    //
@@ -220,10 +222,11 @@ function newRoom(){
     }else {
         $("#errorPasswords").attr("display","none");
         console.log("on newRoom");
+        socket.emit('adduser',getRoom(), username); 
         socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
-        //window.location.href("/"+room);
-        refresh();
-        //createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+        createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+        /*$('.container').css({display : 'none'});
+        $('#containerIndex').css({display : 'block'});*/
     }
 }
 
@@ -231,15 +234,19 @@ function logRoom(){
     username = $("#usernameLogRoom").val();
     console.log("adduser "+username+" on room " + getRoom());
     socket.emit('adduser', getRoom(), username);
+    createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+    /*$('.container').css({display : 'none'});
+    $('#containerIndex').css({display : 'block'});*/
 }
 
 function logPrivateRoom() {
     username = $("#usernameLogPrivateRoom").val();
     pwdRoom = $("#pwdLogPrivateRoom").val();
-    if($("#pwdAdmin").val().length==0){ // || mauvais mot de passe // wrongPass mongo.js si mauvais mot de passe
+    if(pwdRoom.length==0){ // || mauvais mot de passe // wrongPass mongo.js si mauvais mot de passe
         $("#errorPrivatePassword").attr("display","inline");
     } else {
-        createOrJoin(room,"",pwdRoom);
+      socket.emit('adduser', getRoom(), username);
+      createOrJoin(getRoom(),"",pwdRoom);
    }
 } 
 
@@ -250,6 +257,6 @@ function createOrJoin(room,pwdAdmin,pwdRoom){
         //socket.emit('sendMsg', username, room, "MESSAGE");
     } else {
         room = prompt('Enter room name:');
-        socket.emit('create or join', room, pwdAdmin, pwdAdmin);
+        socket.emit('create or join', room, pwdAdmin, pwdRoom);
     }
 }

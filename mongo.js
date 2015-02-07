@@ -9,24 +9,12 @@ verifyBan = function(req, res) {
       if (item != null) {
          var bannedIP = JSON.stringify(item.bannedIP);
          if (bannedIP != undefined && bannedIP.indexOf(req.socket.localAddress) == 1) {
-         //if (bannedIP.indexOf(req.socket.localAddress) == 1) {
             res.send("You are banned");
          } else {
-            console.log("socket.username " + req.socket.username);
-            if (item.passPrivate == "" && req.socket.username == undefined) {
-               console.log("logRoom");
-               res.sendfile(__dirname + '/logRoom.html');
-            } else if(item.passPrivate == "" && req.socket.username != "") {
-               console.log("index");
                res.sendfile(__dirname + '/index.html');
-            } else {
-               console.log("logPrivateRoom");
-               res.sendfile(__dirname + '/logPrivateRoom.html');  
-            }
          }
       } else {
-         console.log("new Room");
-         res.sendfile(__dirname + '/newRoom.html');  
+         res.sendfile(__dirname + '/index.html');  
       }
   });
 }
@@ -143,6 +131,7 @@ module.exports.setOnMethods = function(socket, io) {
 			   socket.room = room;
 			   socket.emit('joined', room);
          } else {
+            console.log("wrongPass");
             socket.emit('wrongPass', room);
          }
      });
@@ -182,6 +171,24 @@ module.exports.setOnMethods = function(socket, io) {
          res.send("You are not in the room");
       }
    },
+   
+   typePage = function(room) {
+      var collection = db.collection("room");
+      var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
+         if (item != null) {
+            if (item.passPrivate == "") {
+               console.log("logRoom");
+               socket.emit('typePage', "containerLogRoom");
+            } else {
+               console.log("logPrivateRoom");
+               socket.emit('typePage', "containerLogPrivateRoom"); 
+            }
+         } else {
+            console.log("new Room");
+            socket.emit('typePage', "containerNewRoom");
+         }
+     });
+   }
    
    deleteUser = function (userId) {
       var collection = db.collection(collection);

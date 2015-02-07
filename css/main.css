@@ -226,3 +226,16 @@ li:before {
    border: 2px dashed #000;
    background-color: green;
 }
+
+#containerIndex {
+   display : none;
+}
+#containerLogRoom {
+   display : none;
+}
+#containerLogPrivateRoom {
+   display : none;
+}
+#containerNewRoom{
+   display : none;
+}
