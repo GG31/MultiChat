@@ -89,6 +89,13 @@ io.sockets.on('connection', function (socket){
 		//socket.emit('fullHistory', data);
 	});
 	
+	socket.on('getFullFiles', function(){
+	   // emit the history of the room to the client connected
+	   console.log("on getFullFiles");
+	   getFiles(socket.room);
+		//socket.emit('fullHistory', data);
+	});
+	
 	socket.on('banIP', function(ip){
 	   // add banned ip to db if the creator emit banIP
 	   //banIP(socket.room, socket.handshake.address.address, "127.0.0.1");

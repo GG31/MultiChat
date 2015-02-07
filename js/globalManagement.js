@@ -65,6 +65,10 @@ function getFullHistory(){
     console.log("asked");
 }
 
+function getFullFiles() {
+   socket.emit('getFullFiles');
+}
+
 function roomJoinedLog(room){
     var text = "<div class='connect'>" + getUsername() + " has joined room "+ room + "</div>";
     storeLog(text,room);
@@ -111,7 +115,6 @@ function getFile(fileName){
 
 /*Downloader file and send log to the room*/
 function downloadFile(file){
-   console.log("ON DOWNLOAD");
    getSocket().emit("newLog",getUsername() + " has downloaded "+ file);
    $('<form action="download/'+getRoom()+'/'+file+'"></form>').submit();
 }
@@ -132,6 +135,10 @@ getSocket().on('MoreData', function (data){
        FReader.readAsBinaryString(NewFile);
    });
 
+function appendFile(fileName) {
+   var newFile = $('<li onclick="downloadFile(\''+fileName+'\')">'+fileName+'</li>');
+   $('#common-repository-ul').append(newFile);
+}
 /* ******************************************************
 ROOM MANAGEMENT
 ****************************************************** */    
@@ -141,6 +148,7 @@ getSocket().on('created', function (room){
     console.log('Created room ' + room);
     roomCreationLog(room);
     getFullHistory();
+    getFullFiles();
     setIsInitiator(true);
 });
 
