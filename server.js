@@ -1,7 +1,13 @@
-var express = require('express');
+/*var express = require('express');
 var http = require('http');
-var app = express();
+var app = express();*/
 
+var express = require('express');
+var app = express();
+var http = require('http');
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+server.listen(8080);
 //app.use('/room/',  express.static(__dirname + '/'));
 app.use('/',  express.static(__dirname + '/'));
 app.configure(function(){
@@ -21,15 +27,16 @@ app.configure(function(){
    );
 });
 
-var server;
-var io;
+
 var mongo = require('./mongo.js');
 var fileTranfert = require('./fileTransfert.js');
 
 var nbClientMax = 5;
+/*var server;
+var io;
 server = app.listen(8080);
 var io = require('socket.io').listen(server);
-
+*/
 io.sockets.on('connection', function (socket){
    mongo.setOnMethods(socket, io);
    fileTranfert.setOnMethods(socket, io);

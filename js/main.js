@@ -349,7 +349,6 @@ function requestTurn(turn_url) {
       }
     };
     xhr.open('GET', turn_url, true);
-    xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
     xhr.setRequestHeader('X-PINGOTHER', 'pingpong');
     xhr.setRequestHeader('Content-Type', 'application/xml');
     xhr.send();
