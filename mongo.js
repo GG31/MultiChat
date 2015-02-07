@@ -179,7 +179,9 @@ module.exports.setOnMethods = function(socket, io) {
    }
    
    download = function(foldername, filename, res){
+      console.log("download");
       if (socket.room == foldername) {
+         console.log("on if download");
          res.download(__dirname + '/files/'+foldername+'/'+filename);
       } else {
          res.send("You are not in the room");

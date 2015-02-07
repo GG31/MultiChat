@@ -6,7 +6,7 @@ function getUsername(){
 
 var room = location.pathname.split('/')[1];
 function getRoom(){
-    return room;
+    return location.pathname.split('/')[1]; //Allez savoir pourquoi room devient undefined...
 }
 function setRoom(r){
     room = r;
