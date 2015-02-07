@@ -87,7 +87,8 @@ function setOnMethods(socket){
     });
     
     socket.on('newFile',function(fileName){
-        appendFile(fileName);
+        var newFile = $('<li onclick="downloadFile(\''+fileName+'\')">'+fileName+'</li>');
+        $('#common-repository-ul').append(newFile);
     });
     
 }
