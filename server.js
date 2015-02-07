@@ -8,7 +8,7 @@ var http = require('http');
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 server.listen(8080);
-//app.use('/room/',  express.static(__dirname + '/'));
+
 app.use('/',  express.static(__dirname + '/'));
 app.configure(function(){
   app.use(express.favicon());
@@ -18,7 +18,7 @@ app.configure(function(){
   app.use(function (req, res, next) {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-      res.setHeader('Access-Control-Allow-Headers', 'X-PINGOTHER, X-Requested-With,content-type');
+      res.setHeader('Access-Control-Allow-Headers', 'X-PINGOTHER, X-Requested-With,origin, content-type, accept');
       res.setHeader('Access-Control-Expose-Headers', 'X-My-Custom-Header, X-Another-Custom-Header');
       res.setHeader('Access-Control-Max-Age', 1728000);
       res.setHeader('Access-Control-Allow-Credentials', true);
