@@ -39,6 +39,15 @@ function setOnMethods(socket){
         //$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
         appendNewChat(username,data);
     });
+    socket.on('updateChatConnexion', function (username, data) {
+       //à écrire dans la conversation : data // username = SERVER, data = msg
+        //$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+        appendConnexionChat(username,data);
+    });
+    socket.on('updateDisconnect', function (username, room) {
+         appendConnexionChat(username," has disconnected the room");
+        appendDisconnect(username, room);
+    });
     
     // Récépeiton de message générique.
     socket.on('message', function (message){
