@@ -149,7 +149,7 @@ module.exports.setOnMethods = function(socket, io) {
       // update list of users in chat, client-side
       //io.sockets.in(nom de la salle).emit('updateusers', usernames)
       // echo globally that this client has left
-      socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+      io.sockets.in(room).emit('updatechat', 'SERVER', socket.username + ' has disconnected');
 		socket.leave(socket.room);
    }
    
