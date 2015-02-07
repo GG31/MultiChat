@@ -24,6 +24,7 @@ function setOnMethods(socket){
       console.log('This peer has joined room ' + room);
       roomJoinedLog(room);
       getFullHistory();
+      getFullFiles();
       enableMessageInterface(true);
       setIsChannelReady(true);
     });
@@ -86,9 +87,15 @@ function setOnMethods(socket){
         createHistory(arrayHistory);
     });
     
+    socket.on('fullFiles',function(arrayFilesName){
+        var obj = jQuery.parseJSON(arrayFilesName);
+        $.each(obj, function(index, value ) {
+            appendFile(value.filename);
+        });
+    });
+    
     socket.on('newFile',function(fileName){
-        var newFile = $('<li onclick="downloadFile(\''+fileName+'\')">'+fileName+'</li>');
-        $('#common-repository-ul').append(newFile);
+        appendFile(fileName);
     });
     
 }

@@ -8,7 +8,7 @@ var chatClassIndex = 0;
 var chatUsernameClass = {}
 
 //File
-//window.addEventListener("load", Ready);
+window.addEventListener("load", Ready);
 var SelectedFile;
 var FReader;
 var Name;
@@ -65,6 +65,10 @@ function getFullHistory(){
     console.log("asked");
 }
 
+function getFullFiles() {
+   socket.emit('getFullFiles');
+}
+
 function roomJoinedLog(room){
     var text = "<div class='connect'>" + getUsername() + " has joined room "+ room + "</div>";
     storeLog(text,room);
@@ -89,19 +93,66 @@ FILE MANAGEMENT
 ****************************************************** */
 
 //Functions
+function Ready(){
+    if(window.File && window.FileReader){ //These are the relevant HTML5 objects that we are going to use
+        document.getElementById('UploadButton').addEventListener('click', StartUpload); 
+        document.getElementById('FileBox').addEventListener('change', FileChosen);
+    }
+    else
+    {
+        document.getElementById('UploadArea').innerHTML = "Your Browser Doesn't Support The File API Please Update Your Browser";
+    }
+    //linkOnClick(); //Décommente et download du fichier files/n/help.txt starts
+}
+
 function linkOnClick() {
    console.log("on function");
    getSocket().emit('download');
 }
 
+function FileChosen(evnt, i) {
+    SelectedFile = evnt.target.files[i];
+    document.getElementById('NameBox').value = SelectedFile.name;
+}
+
 function StartUpload(){
+    /*if(document.getElementById('FileBox').value != "")
+    {*/
         FReader = new FileReader();
         Name = SelectedFile.name;
-       
+        var Content = "<span id='NameArea'>Uploading " + SelectedFile.name + " as " + Name + "</span>";
+        Content += '<div id="ProgressContainer"><div id="ProgressBar"></div></div><span id="percent">0%</span>';
+        Content += "<span id='Uploaded'> - <span id='MB'>0</span>/" + Math.round(SelectedFile.size / 1048576) + "MB</span>";
+        document.getElementById('UploadArea').innerHTML = Content;
         FReader.onload = function(evnt){
             getSocket().emit('Upload', { 'Name' : Name, Data : evnt.target.result });
         }
         getSocket().emit('Start', { 'Name' : Name, 'Size' : SelectedFile.size });
+    /*}
+    else
+    {
+        alert("Please Select A File");
+    }*/
+}
+
+function download(content, filename, contentType){
+    if(!contentType) contentType = 'application/octet-stream';
+        var a = document.createElement('a');
+        var blob = new Blob([content], {'type':contentType});
+        a.href = window.URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+}
+
+function Refresh(){
+    location.reload(true);
+}
+
+function UpdateBar(percent){
+   document.getElementById('ProgressBar').style.width = percent + '%';
+   document.getElementById('percent').innerHTML = (Math.round(percent*100)/100) + '%';
+   var MBDone = Math.round(((percent/100.0) * SelectedFile.size) / 1048576);
+   document.getElementById('MB').innerHTML = MBDone;
 }
 
 function getFile(fileName){
@@ -111,18 +162,27 @@ function getFile(fileName){
 
 /*Downloader file and send log to the room*/
 function downloadFile(file){
-   console.log("ON DOWNLOAD");
-   getSocket().emit("newLog",getUsername() + " has downloaded "+ file);
+   storeLog("<div class='download-file'>"+ getUsername() + " has downloaded "+ file+"</div>", room);
    $('<form action="download/'+getRoom()+'/'+file+'"></form>').submit();
+   
 }
 
 function uploadFile(file){
-   getSocket().emit("uploadFile",file);
-   uploadFileLog(fileName);
+    getSocket().emit("uploadFile",file);
+    uploadFileLog(fileName)
 }
 
 //Sockets
+getSocket().on('download', function (data){
+    var blob = new Blob([data['buffer']], {type: "application/octet-binary"});
+    var a = document.getElementById('downloadFile');
+    a.href = window.URL.createObjectURL(blob);
+    a.download = data['name'];
+    a.click();
+});
+
 getSocket().on('MoreData', function (data){
+       UpdateBar(data['Percent']);
        var Place = data['Place'] * 524288; //The Next Blocks Starting Position
        var NewFile; //The Variable that will hold the new Block of Data
        if(SelectedFile.webkitSlice)
@@ -132,6 +192,11 @@ getSocket().on('MoreData', function (data){
        FReader.readAsBinaryString(NewFile);
    });
 
+function appendFile(fileName) {
+   var newFile = $('<li class="common-repository-li" onclick="downloadFile(\''+fileName+'\')">'+fileName+'</li>');
+   //var newFile = $('<li class="common-repository-li" ><a href="#" onclick="downloadFile(\''+fileName+'\')">'+fileName+'</a></li>');
+   $('#common-repository-ul').append(newFile);
+}
 /* ******************************************************
 ROOM MANAGEMENT
 ****************************************************** */    
@@ -141,6 +206,7 @@ getSocket().on('created', function (room){
     console.log('Created room ' + room);
     roomCreationLog(room);
     getFullHistory();
+    getFullFiles();
     setIsInitiator(true);
 });
 
@@ -154,6 +220,20 @@ function newRoom(){
         createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
     }
 }
+
+function logRoom(){
+    username = $("#usernameLogRoom").val();
+    //socket.emit('create or join', room, pwdAdmin, pwdAdmin);
+}
+function logPrivateRoom() {
+    username = $("#usernameLogPrivateRoom").val();
+    pwdRoom = $("#pwdLogPrivateRoom").val();
+    if($("#pwdAdmin").val().length==0){ // || mauvais mot de passe // wrongPass mongo.js si mauvais mot de passe
+        $("#errorPrivatePassword").attr("display","inline");
+    } else {
+        createOrJoin(room,"",pwdRoom);
+   }
+} 
 
 function createOrJoin(room,pwdAdmin,pwdRoom){
     if (room != '') {
