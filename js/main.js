@@ -95,8 +95,14 @@ getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 console.log('Getting user media with constraints', constraints);
 
 // On regarde si on a besoin d'un serveur TURN que si on est pas en localhost
-if (location.hostname != "localhost") {
+console.log("hostname : "+location.hostname);
+if (location.hostname != "localhost" && location.hostname != "127.0.0.1") {
   requestTurn('https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913');
+}
+
+function appendVideo(vid,usrname){
+    var text = "<div class='profil'><span class='color4'>"+usrname+"</span><img class='image-delete' src='images/croix.jpg' title='delete'><video class='remoteVideo' autoplay></video></div>";
+    $('#profils-container').append(text);
 }
 
 // On démarre peut être l'appel (si on est appelant) que quand on a toutes les 
@@ -115,6 +121,7 @@ function maybeStart() {
     // on donne le flux video local à la connexion p2p. Va provoquer un événement 
     // onAddStream chez l'autre pair.
     pc.addStream(localStream);
+    console.log("stream add to peer");
     // On a démarré, utile pour ne pas démarrer le call plusieurs fois
     isStarted = true;
     // Si on est l'appelant on appelle. Si on est pas l'appelant, on ne fait rien.

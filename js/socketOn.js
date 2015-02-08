@@ -15,7 +15,9 @@ function setOnMethods(socket){
     socket.on('join', function (room){
       console.log('Another peer made a request to join room ' + room);
       console.log('This peer is the initiator of room ' + room + '!');
-      setIsChannelReady(true);
+      //setIsChannelReady(true);
+      isChannelReady = true;
+      console.log("channel ready !!");
     });
 
     // Si on reçoit le message "joined" alors on a rejoint une salle existante
@@ -29,7 +31,8 @@ function setOnMethods(socket){
       getFullHistory();
       getFullFiles();
       enableMessageInterface(true);
-      setIsChannelReady(true);
+      //setIsChannelReady(true);
+      isChannelReady = true;
     });
 
     // Appelé par le serveur pour faire des traces chez les clients connectés
