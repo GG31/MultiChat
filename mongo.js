@@ -125,6 +125,7 @@ module.exports.setOnMethods = function(socket, io) {
    joinOrReject = function(room, passPrivate) {
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1}, function(err, item) {
+         console.log(item.passPrivate + " =?= " + passPrivate);
          if (item.passPrivate == passPrivate) {
             io.sockets.in(room).emit('join', room);
 			   socket.join(room);
