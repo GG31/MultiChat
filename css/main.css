@@ -51,16 +51,10 @@ video, img{
    width: 65%;
    display: block;
    margin: 0 auto;
-   padding-bottom:5px;
+   padding-bottom:10px;
 }
 .remoteVideo{
-   width: 65%;
-   display: block;
-   margin: 0 auto;
-   padding-bottom:10px;
-   /*
-   background-color: #b2b2b2; 
-   padding:2px;*/
+   padding:2px;
 }
 #localVideo{
 	   width: 320;

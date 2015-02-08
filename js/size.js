@@ -12,6 +12,7 @@ $(document).ready(function(){
       var height_box = height_col/4;
       var height_profil = height_col*(3/5);
       var height_map = document.getElementById("localVideo").offsetHeight;
+      // ou width / 1.33
         
       document.getElementById("common-repository-area").style.height= height_dir+"px";
       document.getElementById("dataChannelReceive").style.height= height_conv+"px";
@@ -25,6 +26,7 @@ $(document).ready(function(){
       document.getElementById("col-center").style.height= (height_col)+"px";
       document.getElementById("col-right").style.height= (height_col)+"px";
     });
+    /*
     $("#localVideo").webcam({
 	   mode: "callback",
 	   swffile: "/download/jscam_canvas_only.swf",
@@ -33,6 +35,6 @@ $(document).ready(function(){
 	   onCapture: function() {},
 	   debug: function() {},
 	   onLoad: function() {}
-   });
+   });*/
 });
 
