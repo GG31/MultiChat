@@ -241,9 +241,10 @@ function newRoom(){
     console.log("the room is " + room);
    //
     if( ($("#pwdAdmin").val().length==0 && $("#pwdRoom").val().length>0) || ($("#pwdAdmin").val().length>0 && $("#pwdRoom").val().length==0) ){
-        $("#errorPasswords").attr("display","inline");
+         console.log('ici');
+      $('#errorPasswords').css({display :"block"});
     }else {
-        $("#errorPasswords").attr("display","none");
+      $('#errorPasswords').css({display :"none"});
         console.log("on newRoom");
         socket.emit('adduser',getRoom(), username); 
         socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
@@ -266,7 +267,7 @@ function logPrivateRoom() {
     username = $("#usernameLogPrivateRoom").val();
     pwdRoom = $("#pwdLogPrivateRoom").val();
     if(pwdRoom.length==0){ // || mauvais mot de passe // wrongPass mongo.js si mauvais mot de passe
-        $("#errorPrivatePassword").attr("display","inline");
+      $('#errorPrivatePassword').css({display :"block"});
     } else {
       socket.emit('adduser', getRoom(), username);
       createOrJoin(getRoom(),"",pwdRoom);

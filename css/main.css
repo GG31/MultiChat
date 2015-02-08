@@ -92,6 +92,19 @@ video, img{
 #profils-container{
    overflow:auto;
 }
+.profil{   
+   border: 1px solid white;
+   background-color: #b2b2b2; 
+   padding:2px;
+}
+.profil span {
+   width:80%; 
+   float:left;
+}
+.profil img{
+    width:10%; 
+    float:right;
+}
 
 #dataChannelReceive {
    width : 98%;
@@ -150,8 +163,10 @@ video, img{
    margin:0px auto;
    margin-top: 10%;
 }
-.error{
+#errorPasswords, #errorPrivatePassword{
    color: red;
+   font-size: 12px;
+   padding-bottom: 5px;
    display: none;
 }
 
