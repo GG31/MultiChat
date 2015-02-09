@@ -78,6 +78,11 @@ video, img{
 #common-repository-area{
    margin-bottom:5px;
 }
+.common-repository-li{
+   color: blue;
+   text-decoration: underline;
+   cursor: pointer;
+}
 #historical-container-area{
    background-color: #b2b2b2;
    border: 1px solid #ffffff;
@@ -90,6 +95,7 @@ video, img{
    border: 1px solid white;
    background-color: #b2b2b2; 
    padding:2px;
+   margin-bottom: 5px;
 }
 .profil span {
    width:80%; 
