@@ -477,7 +477,7 @@ var idVid = 0;
 function appendVideo(vid,usrname){
     ephemeralStream = localStream;
 
-    var text = "<div class='profil'><span class='color4'>"+usrname+"</span><img class='image-delete' src='images/croix.jpg' title='delete' onclick='tryBan(\""+usrname+"\");'><video id='streamVid_"+idVid+"' class='remoteVideo' onclick='makeVideoActive(ephemeralStream);' autoplay></video></div>";
+    var text = "<div class='profil'><span class='color4'>"+usrname+"</span><img class='image-delete' src='images/croix.png' title='delete' onclick='tryBan(\""+usrname+"\");'><video id='streamVid_"+idVid+"' class='remoteVideo' onclick='makeVideoActive(ephemeralStream);' autoplay></video></div>";
     text += "<script>var element = document.querySelector('#streamVid_"+idVid+"');attachMediaStream(element, ephemeralStream);</script>";
     idVid += 1;
     
