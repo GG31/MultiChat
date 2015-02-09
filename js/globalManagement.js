@@ -249,8 +249,6 @@ function newRoom(){
         socket.emit('adduser',getRoom(), username); 
         socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
         createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
-        /*$('.container').css({display : 'none'});
-        $('#containerIndex').css({display : 'block'});*/
     }
 }
 
@@ -259,8 +257,6 @@ function logRoom(){
     console.log("adduser "+username+" on room " + getRoom());
     socket.emit('adduser', getRoom(), username);
     createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
-    /*$('.container').css({display : 'none'});
-    $('#containerIndex').css({display : 'block'});*/
 }
 
 function logPrivateRoom() {
