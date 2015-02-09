@@ -8,7 +8,7 @@ var chatClassIndex = 0;
 var chatUsernameClass = {}
 
 //File
-window.addEventListener("load", Ready);
+//window.addEventListener("load", Ready);
 var SelectedFile;
 var FReader;
 var Name;
@@ -115,70 +115,21 @@ FILE MANAGEMENT
 ****************************************************** */
 
 //Functions
-function Ready(){
-    if(window.File && window.FileReader){ //These are the relevant HTML5 objects that we are going to use
-        document.getElementById('UploadButton').addEventListener('click', StartUpload); 
-        document.getElementById('FileBox').addEventListener('change', FileChosen);
-    }
-    else
-    {
-        document.getElementById('UploadArea').innerHTML = "Your Browser Doesn't Support The File API Please Update Your Browser";
-    }
-    //linkOnClick(); //Décommente et download du fichier files/n/help.txt starts
-}
-
-function linkOnClick() {
-   console.log("on function");
-   getSocket().emit('download');
-}
-
-function FileChosen(evnt, i) {
-    SelectedFile = evnt.target.files[i];
-    document.getElementById('NameBox').value = SelectedFile.name;
-}
-
 function StartUpload(){
-    /*if(document.getElementById('FileBox').value != "")
-    {*/
-        FReader = new FileReader();
-        Name = SelectedFile.name;
-        var Content = "<span id='NameArea'>Uploading " + SelectedFile.name + " as " + Name + "</span>";
-        Content += '<div id="ProgressContainer"><div id="ProgressBar"></div></div><span id="percent">0%</span>';
-        Content += "<span id='Uploaded'> - <span id='MB'>0</span>/" + Math.round(SelectedFile.size / 1048576) + "MB</span>";
-        document.getElementById('UploadArea').innerHTML = Content;
-        FReader.onload = function(evnt){
-            getSocket().emit('Upload', { 'Name' : Name, Data : evnt.target.result });
-        }
-        getSocket().emit('Start', { 'Name' : Name, 'Size' : SelectedFile.size });
-    /*}
-    else
-    {
-        alert("Please Select A File");
-    }*/
-}
-
-function download(content, filename, contentType){
-    if(!contentType) contentType = 'application/octet-stream';
-        var a = document.createElement('a');
-        var blob = new Blob([content], {'type':contentType});
-        a.href = window.URL.createObjectURL(blob);
-        a.download = filename;
-        a.click();
+     FReader = new FileReader();
+     Name = SelectedFile.name;
+     FReader.onload = function(evnt){
+         getSocket().emit('Upload', { 'Name' : Name, Data : evnt.target.result });
+     }
+     getSocket().emit('Start', { 'Name' : Name, 'Size' : SelectedFile.size });
 }
 
 function refresh(){
     location.reload(true);
 }
 
-function UpdateBar(percent){
-   document.getElementById('ProgressBar').style.width = percent + '%';
-   document.getElementById('percent').innerHTML = (Math.round(percent*100)/100) + '%';
-   var MBDone = Math.round(((percent/100.0) * SelectedFile.size) / 1048576);
-   document.getElementById('MB').innerHTML = MBDone;
-}
-
 function getFile(fileName){
-    alert("ask for "+fileName);
+    //alert("ask for "+fileName);
     getSocket().emit("getFile",fileName);
 }
 
@@ -205,7 +156,6 @@ getSocket().on('download', function (data){
 });
 
 getSocket().on('MoreData', function (data){
-       UpdateBar(data['Percent']);
        var Place = data['Place'] * 524288; //The Next Blocks Starting Position
        var NewFile; //The Variable that will hold the new Block of Data
        if(SelectedFile.webkitSlice)
@@ -249,8 +199,6 @@ function newRoom(){
         socket.emit('adduser',getRoom(), username); 
         socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
         createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
-        /*$('.container').css({display : 'none'});
-        $('#containerIndex').css({display : 'block'});*/
     }
 }
 
@@ -259,8 +207,6 @@ function logRoom(){
     console.log("adduser "+username+" on room " + getRoom());
     socket.emit('adduser', getRoom(), username);
     createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
-    /*$('.container').css({display : 'none'});
-    $('#containerIndex').css({display : 'block'});*/
 }
 
 function logPrivateRoom() {

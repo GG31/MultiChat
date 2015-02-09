@@ -55,6 +55,7 @@ video, img{
 }
 .remoteVideo{
    padding:2px;
+   cursor: pointer;
 }
 #localVideo{
 	   width: 320;
@@ -102,6 +103,7 @@ video, img{
    float:left;
 }
 .profil img{
+    cursor: pointer;
     width:10%; 
     float:right;
 }
@@ -196,7 +198,7 @@ li:before {
 /** Drag N Drop */
 #droppableZone-container {
 	margin:-20px 0 0 0px;
-   height: 8%;        
+   height: 20%;        
    max-height: 60px;
    overflow:auto;
    font-size: 10px;
@@ -205,7 +207,7 @@ li:before {
 #droppableZone {
    margin-top:10px;
 	border:2px dashed #b2b2b2;  
-   height: 8%;      
+   height: 20%;      
    max-height: 60px;
 	padding:10px;
 }
