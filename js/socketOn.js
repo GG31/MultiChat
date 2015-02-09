@@ -30,9 +30,10 @@ function setOnMethods(socket){
       $('#containerIndex').css({display : 'block'});
       getFullHistory();
       getFullFiles();
+      isChannelReady = true;
       enableMessageInterface(true);
       //setIsChannelReady(true);
-      isChannelReady = true;
+      
     });
 
     // Appelé par le serveur pour faire des traces chez les clients connectés
@@ -65,7 +66,7 @@ function setOnMethods(socket){
         maybeStart();
       } else if (message.type === 'offer') {
 
-        if (!getIsInitiator() && !getIsStarted()) {
+        if (!getIsStarted()) {
           // on a recu une "offre" on ouvre peut être la connexion so on
           // est pas appelant et si on ne l'a pas déjà ouverte...
           maybeStart();

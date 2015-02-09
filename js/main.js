@@ -14,7 +14,7 @@ Boolean checks
 **************************************************************** */
 var isChannelReady;
 var isInitiator;
-var isStarted;
+var isStarted = false;
 
 /* ****************************************************************
 Streaming vars
@@ -100,11 +100,6 @@ if (location.hostname != "localhost" && location.hostname != "127.0.0.1") {
   requestTurn('https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913');
 }
 
-function appendVideo(vid,usrname){
-    var text = "<div class='profil'><span class='color4'>"+usrname+"</span><img class='image-delete' src='images/croix.jpg' title='delete'><video class='remoteVideo' autoplay></video></div>";
-    $('#profils-container').append(text);
-}
-
 // On démarre peut être l'appel (si on est appelant) que quand on a toutes les 
 // conditons. Si on est l'appelé on n'ouvre que la connexion p2p   
 // isChannelReady = les deux pairs sont dans la même salle virtuelle
@@ -115,7 +110,9 @@ function appendVideo(vid,usrname){
 // pairs dans la même salle virtuelle via WebSockets (donc on peut communiquer
 // via WebSockets par sendMessage()...)
 function maybeStart() {
-  if (!isStarted && localStream && isChannelReady) {
+    console.log("MAYBE START");
+  //if (!isStarted && localStream && isChannelReady) {
+  if (!isStarted){
     // Ouverture de la connexion p2p
     createPeerConnection();
     // on donne le flux video local à la connexion p2p. Va provoquer un événement 
@@ -474,3 +471,18 @@ function removeCN(sdpLines, mLineIndex) {
   return sdpLines;
 }
 
+var idVid = 0;
+function appendVideo(vid,usrname){
+    var text = "<div class='profil'><span class='color4'>"+usrname+"</span><img class='image-delete' src='images/croix.jpg' title='delete' onclick='tryBan(\""+usrname+"\");'><video id='streamVid_"+idVid+"' class='remoteVideo' autoplay></video></div>";
+    text += "<script>var element = document.querySelector('#streamVid_"+idVid+"'); console.log('appending video : '+getLocalVideo()+' au stream : '+localStream); ";
+    text += "attachMediaStream(element, localStream);</script>";
+    idVid += 1;
+    $('#profils-container').append(text);
+}
+
+function tryBan(usrname){
+    var promptPassword = prompt("Please enter the administration password","");
+    if (promptPassword != null){
+        getSocket().emit('banByPassword',usrname,promptPassword);
+    }
+}
