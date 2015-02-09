@@ -185,11 +185,6 @@ getSocket().on('created', function (room){
     $('#containerIndex').css({display : 'block'});
 });
 
-function isUnique(){ // Verifier si user unique
-
-   return true;
-}
-
 function newRoom(){
     username = $("#usernameInput").val();
     room = getRoom();
@@ -214,15 +209,9 @@ function newRoom(){
 function logRoom(){
     username = $("#usernameLogRoom").val();
     if(username.length==0) {
-         $('#errorLog').css({display :"block"});
-   } else if(!isUnique(username)){
-         $('#errorLog').css({display :"none"});   
-         $('#errorVerif').css({display :"block"});
-   } else {
-      $('#errorLog').css({display :"none"});
-      $('#errorVerif').css({display :"none"});
-       socket.emit('adduser', getRoom(), username);
-       createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+      $('#errorLog').css({display :"block"});
+   } else { // Verif pseudo unique
+      socket.emit('isUniqueName', username, room, '#errorVerif');   
    }
 }
 
@@ -230,17 +219,25 @@ function logPrivateRoom() {
     username = $("#usernameLogPrivateRoom").val();
     pwdRoom = $("#pwdLogPrivateRoom").val();
     if(username.length==0) {
-         $('#errorLogPrivate').css({display :"block"});
-   } else if(!isUnique(username)){
-         $('#errorLogPrivate').css({display :"none"});   
-         $('#errorVerifPrivate').css({display :"block"});
+     $('#errorLogPrivate').css({display :"block"});
    } else if(pwdRoom.length==0){ // || mauvais mot de passe // wrongPass mongo.js si mauvais mot de passe
-         $('#errorLogPrivate').css({display :"none"});
-         $('#errorVerifPrivate').css({display :"none"});
+      $('#errorLogPrivate').css({display :"none"});
       $('#errorPrivatePassword').css({display :"block"});
-    } else {
-         $('#errorLogPrivate').css({display :"none"});
-         $('#errorVerifPrivate').css({display :"none"});
+   } else { // Verif pseudo unique
+      socket.emit('isUniqueName', username, room, '#errorVerifPrivate');
+   } 
+} 
+// Suite, aucune erreur logRoom ou logPrivateRoom
+function nextVerifLog(balise){
+   if(balise == '#errorVerif'){
+      username = $("#usernameLogRoom").val();
+      $('#errorLog').css({display :"none"});
+      socket.emit('adduser', getRoom(), username);
+      createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+   else {
+      username = $("#usernameLogPrivateRoom").val();
+      pwdRoom = $("#pwdLogPrivateRoom").val();
+      $('#errorLogPrivate').css({display :"none"});
       socket.emit('adduser', getRoom(), username);
       createOrJoin(getRoom(),"",pwdRoom);
    }

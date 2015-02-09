@@ -125,4 +125,13 @@ function setOnMethods(socket){
       $('#'+type).css({display : 'block'});
     });
     
+    socket.on('isUnique', function(verif, balise) {
+      if(!verif){
+         $(balise).css({display :"block"});
+      } else {
+         $(balise).css({display :"none"});
+         nextVerifLog(balise);
+      }
+    });
+    
 }
