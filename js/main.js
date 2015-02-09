@@ -491,6 +491,6 @@ function makeVideoActive(videoStream){
 function tryBan(usrname){
     var promptPassword = prompt("Please enter the administration password","");
     if (promptPassword != null){
-        getSocket().emit('banByPassword',usrname,promptPassword);
+        getSocket().emit('banIP',ip,promptPassword);
     }
 }
