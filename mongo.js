@@ -74,13 +74,14 @@ module.exports.setOnMethods = function(socket, io) {
       insert('room', newRoom);
    },
 
-   /*insertUser = function (user, room) {
+   insertUser = function (user, ip, room) {
       var newUser = {
            name : user,
+           ip : ip,
            room_id : room
       };
       insert('user', newUser);
-   },*/
+   },
 
    insert = function (collection, document) {
       var collection = db.collection(collection);
@@ -111,14 +112,32 @@ module.exports.setOnMethods = function(socket, io) {
      });
    }
    
-   banIP = function(room, ipCreator, ipToBan) {
+   banIP = function(room, usernameToBan, passAdmin) {
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, function(err, item) {
-         if (item.creator == ipCreator) {
-            addBannedIP(socket.room, ipToBan);
-            //Leave the room
-            disconnect();
+         if (item.passAdmin == passAdmin) {
+            var collectionUser = db.collection("user");
+            var docUser = collectionUser.findOne({name:usernameToBan, room_id:room}, function(err, item) {
+               addBannedIP(socket.room, item.ip);
+               //Leave the room
+               io.socket.emit('amITheUser', item.ip);
+               //disconnect();
+            });
          }
+     });
+   }
+   
+   isUnique = function(username, room, balise) {
+      var collection = db.collection("user");
+      var doc = collection.find({room_id:room});
+      doc.toArray(function(err, item) {
+         for(i=0; i<item.length; i++) {
+            var returnValue = true;
+            if(item[i].name == username){ 
+               returnValue = false;
+            }
+         }
+         socket.emit('isUnique', returnValue, balise);
      });
    }
    
@@ -138,7 +157,7 @@ module.exports.setOnMethods = function(socket, io) {
      });
    }
    
-   disconnect = function() {
+   /*disconnect = function() {
       // remove the username from global usernames list
       //delete usernames[socket.username];
       // update list of users in chat, client-side
@@ -149,7 +168,7 @@ module.exports.setOnMethods = function(socket, io) {
       //}
       //io.sockets.in(room).emit('updatechat', 'SERVER', socket.username + ' has disconnected');
 		socket.leave(socket.room);
-   }
+   }*/
    
    insertFile = function (room, fileName, originName, owner, date) {
       var newFile = {
@@ -204,9 +223,9 @@ module.exports.setOnMethods = function(socket, io) {
      });
    }
    
-   deleteUser = function (userId) {
-      var collection = db.collection(collection);
-      collection.remove({_id : userId});
+   deleteUser = function (username, room) {
+      var collection = db.collection('user');
+      collection.remove({name : username, room_id:room});
    },
 
    deleteAll = function (collection) {
