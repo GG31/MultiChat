@@ -107,7 +107,7 @@ io.sockets.on('connection', function (socket){
 		//socket.emit('fullHistory', data);
 	});
 	
-	socket.on('banIP', function(ip){
+	socket.on('banIP', function(ip, passAdmin){
 	   // add banned ip to db if the creator emit banIP
 	   //banIP(socket.room, socket.handshake.address.address, "127.0.0.1");
 	   banIP(socket.room, socket.handshake.address.address, ip);
