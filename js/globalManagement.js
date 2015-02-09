@@ -211,6 +211,7 @@ function logRoom(){
     if(username.length==0) {
       $('#errorLog').css({display :"block"});
    } else { // Verif pseudo unique
+      $('#errorLog').css({display :"none"});
       socket.emit('isUniqueName', username, getRoom(), '#errorVerif');   
    }
 }
@@ -224,6 +225,8 @@ function logPrivateRoom() {
       $('#errorLogPrivate').css({display :"none"});
       $('#errorPrivatePassword').css({display :"block"});
    } else { // Verif pseudo unique
+      $('#errorLogPrivate').css({display :"none"});
+      $('#errorPrivatePassword').css({display :"none"});
       socket.emit('isUniqueName', username, getRoom(), '#errorVerifPrivate');
    } 
 } 
@@ -232,12 +235,15 @@ function nextVerifLog(balise){
    if(balise == '#errorVerif'){
       username = $("#usernameLogRoom").val();
       $('#errorLog').css({display :"none"});
+      $(balise).css({display :"none"});
       socket.emit('adduser', getRoom(), username);
       createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
    } else {
       username = $("#usernameLogPrivateRoom").val();
       pwdRoom = $("#pwdLogPrivateRoom").val();
       $('#errorLogPrivate').css({display :"none"});
+      $('#errorPrivatePassword').css({display :"none"});
+      $(balise).css({display :"none"});
       socket.emit('adduser', getRoom(), username);
       createOrJoin(getRoom(),"",pwdRoom);
    }
