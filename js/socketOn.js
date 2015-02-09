@@ -20,11 +20,11 @@ function setOnMethods(socket){
       console.log("channel ready !!");
     });
     
-    socket.on('amITheUser',ip){
+    socket.on('amITheUser',function(ip){
         if(socket.handshake.address.address==ip){
             socket.emit("iAmTheUser");
         }
-    }
+    });
 
     // Si on reçoit le message "joined" alors on a rejoint une salle existante
     // on est pas l'initiateur, il y a déjà quelqu'un (l'appelant), donc
