@@ -132,8 +132,8 @@ module.exports.setOnMethods = function(socket, io) {
       var collection = db.collection("user");
       var doc = collection.find({room_id:room});
       doc.toArray(function(err, item) {
+         var returnValue = true;
          for(i=0; i<item.length; i++) {
-            var returnValue = true;
             if(item[i].name == username){ 
                returnValue = false;
             }

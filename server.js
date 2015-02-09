@@ -52,6 +52,7 @@ io.sockets.on('connection', function (socket){
 			socket.room = room;
 			socket.pass = passPrivate;
 //			insertRoom(room, passAdmin, passPrivate);	
+//banIP(socket.room, 'alice', passAdmin);
 		} else if (numClients < nbClientMax) {
 		   joinOrReject(room, passPrivate);
 		} else { // max nbClientMax clients
