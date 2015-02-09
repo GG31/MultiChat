@@ -32,6 +32,7 @@ function setOnMethods(socket){
       getFullFiles();
       isChannelReady = true;
       enableMessageInterface(true);
+      //createPeerConnection();
       //setIsChannelReady(true);
       
     });

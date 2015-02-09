@@ -250,7 +250,7 @@ function enableMessageInterface(shouldEnable) {
     sendButton.disabled = false;
   } else {
     dataChannelSend.disabled = true;
-    sendButton.disabled = true;
+    //sendButton.disabled = true;
   }
 }
 
