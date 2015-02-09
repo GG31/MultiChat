@@ -25,6 +25,7 @@ var remoteStream;
 var turnReady;
 var localVideo = document.querySelector('#localVideo');
 var remoteVideo = document.querySelector('#remoteVideo');
+var activeVideo = document.querySelector('#activeVideo');
 
 /* ****************************************************************
 User info
@@ -473,11 +474,15 @@ function removeCN(sdpLines, mLineIndex) {
 
 var idVid = 0;
 function appendVideo(vid,usrname){
-    var text = "<div class='profil'><span class='color4'>"+usrname+"</span><img class='image-delete' src='images/croix.jpg' title='delete' onclick='tryBan(\""+usrname+"\");'><video id='streamVid_"+idVid+"' class='remoteVideo' autoplay></video></div>";
-    text += "<script>var element = document.querySelector('#streamVid_"+idVid+"'); console.log('appending video : '+getLocalVideo()+' au stream : '+localStream); ";
-    text += "attachMediaStream(element, localStream);</script>";
+    var text = "<div class='profil'><span class='color4'>"+usrname+"</span><img class='image-delete' src='images/croix.jpg' title='delete' onclick='tryBan(\""+usrname+"\");'><video id='streamVid_"+idVid+"' class='remoteVideo' onclick='makeVideoActive(localStream);' autoplay></video></div>";
+    text += "<script>var element = document.querySelector('#streamVid_"+idVid+"');attachMediaStream(element, localStream);</script>";
     idVid += 1;
+    
     $('#profils-container').append(text);
+}
+
+function makeVideoActive(videoStream){
+    attachMediaStream(activeVideo,videoStream);
 }
 
 function tryBan(usrname){
