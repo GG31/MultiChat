@@ -46,13 +46,12 @@ io.sockets.on('connection', function (socket){
 	socket.on('create or join', function (room, passAdmin, passPrivate) {
 		var numClients = io.sockets.clients(room).length;
       var ipClient = socket.handshake.address;
-		if (numClients == 0){ //TODO vérifier le mot de passe si jamais la room s'est vidé entre temps
+		if (numClients == 0){ //TODO vérifier le mot de passe si jamais la room s'est vidée entre temps
 			socket.join(room);
 			socket.emit('created', room);
 			socket.room = room;
 			socket.pass = passPrivate;
 //			insertRoom(room, passAdmin, passPrivate);	
-         
 		} else if (numClients < nbClientMax) {
 		   joinOrReject(room, passPrivate);
 		} else { // max nbClientMax clients

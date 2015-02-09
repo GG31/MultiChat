@@ -128,6 +128,7 @@ module.exports.setOnMethods = function(socket, io) {
    }
    
    isUnique = function(username, room, balise) {
+      console.log('user ' + username + ' room ' + room);
       var collection = db.collection("user");
       var doc = collection.find({room_id:room});
       doc.toArray(function(err, item) {
@@ -137,6 +138,7 @@ module.exports.setOnMethods = function(socket, io) {
                returnValue = false;
             }
          }
+         console.log("send " + returnValue);
          socket.emit('isUnique', returnValue, balise);
      });
    }

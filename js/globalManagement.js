@@ -211,7 +211,7 @@ function logRoom(){
     if(username.length==0) {
       $('#errorLog').css({display :"block"});
    } else { // Verif pseudo unique
-      socket.emit('isUniqueName', username, room, '#errorVerif');   
+      socket.emit('isUniqueName', username, getRoom(), '#errorVerif');   
    }
 }
 
@@ -224,7 +224,7 @@ function logPrivateRoom() {
       $('#errorLogPrivate').css({display :"none"});
       $('#errorPrivatePassword').css({display :"block"});
    } else { // Verif pseudo unique
-      socket.emit('isUniqueName', username, room, '#errorVerifPrivate');
+      socket.emit('isUniqueName', username, getRoom(), '#errorVerifPrivate');
    } 
 } 
 // Suite, aucune erreur logRoom ou logPrivateRoom
@@ -234,7 +234,7 @@ function nextVerifLog(balise){
       $('#errorLog').css({display :"none"});
       socket.emit('adduser', getRoom(), username);
       createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
-   else {
+   } else {
       username = $("#usernameLogPrivateRoom").val();
       pwdRoom = $("#pwdLogPrivateRoom").val();
       $('#errorLogPrivate').css({display :"none"});
