@@ -19,6 +19,12 @@ function setOnMethods(socket){
       isChannelReady = true;
       console.log("channel ready !!");
     });
+    
+    socket.on('amITheUser',ip){
+        if(socket.handshake.address.address==ip){
+            socket.emit("iAmTheUser");
+        }
+    }
 
     // Si on reçoit le message "joined" alors on a rejoint une salle existante
     // on est pas l'initiateur, il y a déjà quelqu'un (l'appelant), donc
@@ -32,7 +38,6 @@ function setOnMethods(socket){
       getFullFiles();
       isChannelReady = true;
       enableMessageInterface(true);
-      //createPeerConnection();
       //setIsChannelReady(true);
       
     });
