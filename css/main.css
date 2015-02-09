@@ -57,10 +57,6 @@ video, img{
    padding:2px;
    cursor: pointer;
 }
-#localVideo{
-	   width: 320;
-	   height: 240;
-}
 #activeVideo{
    height: 300px;
 }
@@ -165,7 +161,9 @@ video, img{
    margin:0px auto;
    margin-top: 10%;
 }
-#errorPasswords, #errorPrivatePassword{
+#errorPasswords, #errorPrivatePassword, 
+#errorLog, #errorLogNew, #errorLogPrivate,
+#errorVerifPrivate, #errorVerif{
    color: red;
    font-size: 12px;
    padding-bottom: 5px;

@@ -185,16 +185,25 @@ getSocket().on('created', function (room){
     $('#containerIndex').css({display : 'block'});
 });
 
+function isUnique(){ // Verifier si user unique
+
+   return true;
+}
+
 function newRoom(){
     username = $("#usernameInput").val();
     room = getRoom();
     console.log("the room is " + room);
    //
-    if( ($("#pwdAdmin").val().length==0 && $("#pwdRoom").val().length>0) || ($("#pwdAdmin").val().length>0 && $("#pwdRoom").val().length==0) ){
+   if(username.length==0) {
+      $('#errorLogNew').css({display :"block"});
+   } else if( ($("#pwdAdmin").val().length==0 && $("#pwdRoom").val().length>0) || ($("#pwdAdmin").val().length>0 && $("#pwdRoom").val().length==0) ){
          console.log('ici');
       $('#errorPasswords').css({display :"block"});
-    }else {
+      $('#errorLogNew').css({display :"none"});
+   } else {
       $('#errorPasswords').css({display :"none"});
+      $('#errorLogNew').css({display :"none"});
         console.log("on newRoom");
         socket.emit('adduser',getRoom(), username); 
         socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
@@ -204,17 +213,34 @@ function newRoom(){
 
 function logRoom(){
     username = $("#usernameLogRoom").val();
-    console.log("adduser "+username+" on room " + getRoom());
-    socket.emit('adduser', getRoom(), username);
-    createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+    if(username.length==0) {
+         $('#errorLog').css({display :"block"});
+   } else if(!isUnique(username)){
+         $('#errorLog').css({display :"none"});   
+         $('#errorVerif').css({display :"block"});
+   } else {
+      $('#errorLog').css({display :"none"});
+      $('#errorVerif').css({display :"none"});
+       socket.emit('adduser', getRoom(), username);
+       createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+   }
 }
 
 function logPrivateRoom() {
     username = $("#usernameLogPrivateRoom").val();
     pwdRoom = $("#pwdLogPrivateRoom").val();
-    if(pwdRoom.length==0){ // || mauvais mot de passe // wrongPass mongo.js si mauvais mot de passe
+    if(username.length==0) {
+         $('#errorLogPrivate').css({display :"block"});
+   } else if(!isUnique(username)){
+         $('#errorLogPrivate').css({display :"none"});   
+         $('#errorVerifPrivate').css({display :"block"});
+   } else if(pwdRoom.length==0){ // || mauvais mot de passe // wrongPass mongo.js si mauvais mot de passe
+         $('#errorLogPrivate').css({display :"none"});
+         $('#errorVerifPrivate').css({display :"none"});
       $('#errorPrivatePassword').css({display :"block"});
     } else {
+         $('#errorLogPrivate').css({display :"none"});
+         $('#errorVerifPrivate').css({display :"none"});
       socket.emit('adduser', getRoom(), username);
       createOrJoin(getRoom(),"",pwdRoom);
    }

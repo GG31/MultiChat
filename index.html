@@ -39,6 +39,7 @@
          <div class="padding-room">Mot de passe Admin :  <input type="password" id="pwdAdmin" value="" name="passAdmin"></div><br>
          <div class="padding-room">Mot de passe de la salle :  <input type="password" id="pwdRoom" value="" name="passRoom"></div><br>
          <p id="errorPasswords" class="error">* Merci de remplir les deux mots de passes pour obtenir une salle privée ou aucun des deux pour une salle publique.</p>
+         <p id="errorLogNew" class="error">* Merci de ne pas mettre de pseudo vide.</p>
          <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="newRoom();"></div>
       </form>
       </div>
@@ -56,6 +57,8 @@
       <form action="">
          <h3>Merci de vous identifier</h3><br>
          <div class="padding-room">Pseudo :  <input type="text" id="usernameLogRoom" value="" maxlength="12"></div><br>
+         <p id="errorLog" class="error">* Merci de ne pas mettre de pseudo vide.</p>
+         <p id="errorVerif" class="error">* Ce pseudo est déjà utilisé.</p>
          <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="logRoom();"></div>
       </form>
       </div>
@@ -75,6 +78,8 @@
          <div class="padding-room">Pseudo :  <input type="text" id="usernameLogPrivateRoom" value="" maxlength="12"></div><br>
          <div class="padding-room">Mot de passe :  <input type="password" id="pwdLogPrivateRoom" name="pwdLogPrivateRoom" value=""></div><br>
          <p class="error" id="errorPrivatePassword">* Mot de passe incorrect</p>
+         <p id="errorLogPrivate" class="error">* Merci de ne pas mettre de pseudo vide.</p>
+         <p id="errorVerifPrivate" class="error">* Ce pseudo est déjà utilisé.</p>
          <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="logPrivateRoom();"></div>
       </form>
       </div>
