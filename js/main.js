@@ -247,7 +247,7 @@ function enableMessageInterface(shouldEnable) {
     dataChannelSend.disabled = false;
     dataChannelSend.focus();
     dataChannelSend.placeholder = "";
-    sendButton.disabled = false;
+    //sendButton.disabled = false;
   } else {
     dataChannelSend.disabled = true;
     //sendButton.disabled = true;
