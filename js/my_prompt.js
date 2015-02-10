@@ -11,7 +11,7 @@ function myPrompt(){
     block.setAttribute("style", "padding-top:18px;margin:auto;margin-top:100px;background-color:#e5e5e5;width:200px;height:100px;text-align:center;border:1px solid #b2b2b2");
     panel.appendChild(block);
     //ajout de text
-    block.appendChild(document.createTextNode('Saisissez votre mot de passe'));
+    block.appendChild(document.createTextNode('Please enter the administration password'));
     //ajout de l'input password
     var pass = document.createElement("input");
     pass.type="password";
@@ -25,11 +25,4 @@ function myPrompt(){
     valider.setAttribute("onclick", "validerPassword(document.getElementById('password').value);");
     block.appendChild(valider);
     document.body.appendChild(panel);
-}
- 
-//Fonction appelé par le 'valider' du prompt et de destruction de ce dernier
-function validerPassword(Password){
-    //alert("mot de passe " + Password + " enregistré.");
-    var myPrompt = document.getElementById('myPrompt');
-    document.body.removeChild(myPrompt);
 }
