@@ -64,7 +64,7 @@ function storeLog(text,room){
 }
 
 function roomCreationLog(room){
-    var text = "<div class='connect'>" + getUsername() + " has created room "+ room + "</div>";
+    var text = "<div class='connect'>" + getUsername() + " has initated room "+ room + "</div>";
     storeLog(text,room);
 }
 function appendDisconnect(user, room){
@@ -200,12 +200,18 @@ function newRoom(){
       $('#errorPasswords').css({display :"none"});
       $('#errorLogNew').css({display :"none"});
         console.log("on newRoom");
-        $.getJSON("http://jsonip.appspot.com?callback=?",
-        function(data){
-           socket.emit('adduser',getRoom(), username, data.ip); 
-           socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
-           createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
-        });
+        try{
+           $.getJSON("http://ip-api.com/json?callback=?",
+            function(data){
+            socket.emit('adduser',getRoom(), username, data.ip); 
+            socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
+            createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val())
+         });
+       } catch (e){
+          socket.emit('adduser',getRoom(), username, ""); 
+          socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
+          createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+       }
     }
 }
 
@@ -239,23 +245,32 @@ function nextVerifLog(balise){
       username = $("#usernameLogRoom").val();
       $('#errorLog').css({display :"none"});
       $(balise).css({display :"none"});
-      $.getJSON("http://jsonip.appspot.com?callback=?",
-      function(data){
-         socket.emit('adduser', getRoom(), username, data.ip);
-         createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
-      });
+      try {
+         $.getJSON("http://ip-api.com/json?callback=?",
+            function(data){
+            socket.emit('adduser', getRoom(), username, data.ip);
+            createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+         });
+       } catch (e){
+          socket.emit('adduser', getRoom(), username, "");
+          createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+       }
    } else {
       username = $("#usernameLogPrivateRoom").val();
       pwdRoom = $("#pwdLogPrivateRoom").val();
       $('#errorLogPrivate').css({display :"none"});
       $('#errorPrivatePassword').css({display :"none"});
       $(balise).css({display :"none"});
-      $.getJSON("http://jsonip.appspot.com?callback=?",
-      function(data){
-         socket.emit('adduser', getRoom(), username, data.ip);
-         createOrJoin(getRoom(),"",pwdRoom);
-      });
-      
+      try{
+         $.getJSON("http://ip-api.com/json?callback=?",
+            function(data){
+            socket.emit('adduser', getRoom(), username, data.ip);
+          createOrJoin(getRoom(),"",pwdRoom);
+         });      
+       } catch (e){
+          socket.emit('adduser', getRoom(), username, "");
+          createOrJoin(getRoom(),"",pwdRoom);
+       }
    }
 } 
 
