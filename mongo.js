@@ -96,20 +96,8 @@ module.exports.setOnMethods = function(socket, io) {
    
    addBannedIP = function(room, ip) {
       var collection = db.collection("room");
-      console.log("addBannedIP");
+      //console.log("addBannedIP");
       collection.update({_id:room}, {$push:{bannedIP:ip}})
-   }
-   
-   isBanned = function(room, ip) {
-      var collection = db.collection("room");
-      var doc = collection.findOne({_id:room}, {_id:0, bannedIP:1},function(err, item) {
-         if (item.bannedIP.contains(ip)) {
-            console.log("ip on array");
-            //Is banned;
-         }
-         console.log("return false");
-         //Is not banned;
-     });
    }
    
    banIP = function(room, usernameToBan, passAdmin) {
@@ -122,9 +110,8 @@ module.exports.setOnMethods = function(socket, io) {
             var docUser = collectionUser.findOne({name:usernameToBan, room_id:room}, function(err, item) {
                console.log('find user to ban ' + item.ip);
                addBannedIP(socket.room, item.ip);
-               //Leave the room
+               //Ask who is the user with item.ip
                io.sockets.in(room).emit('amITheUser', item.ip);
-               //disconnect();
             });
          }
      });
@@ -141,7 +128,6 @@ module.exports.setOnMethods = function(socket, io) {
                returnValue = false;
             }
          }
-         console.log("send " + returnValue);
          socket.emit('isUnique', returnValue, balise);
      });
    }
@@ -156,25 +142,11 @@ module.exports.setOnMethods = function(socket, io) {
 			   socket.room = room;
 			   socket.emit('joined', room);
          } else {
-            console.log("wrongPass");
             socket.emit('wrongPass', room);
          }
      });
    }
-   
-   /*disconnect = function() {
-      // remove the username from global usernames list
-      //delete usernames[socket.username];
-      // update list of users in chat, client-side
-      //io.sockets.in(nom de la salle).emit('updateusers', usernames)
-      // echo globally that this client has left
-      //if(socket.room){
-         //io.sockets.in(room).emit('updateDisconnect', socket.username, socket.room);
-      //}
-      //io.sockets.in(room).emit('updatechat', 'SERVER', socket.username + ' has disconnected');
-		socket.leave(socket.room);
-   }*/
-   
+
    insertFile = function (room, fileName, originName, owner, date) {
       var newFile = {
            filename : fileName,
@@ -201,9 +173,7 @@ module.exports.setOnMethods = function(socket, io) {
    }
    
    download = function(foldername, filename, res){
-      console.log("download");
       if (socket.room == foldername) {
-         console.log("on if download");
          res.download(__dirname + '/files/'+foldername+'/'+filename);
       } else {
          res.send("You are not in the room");
@@ -215,14 +185,11 @@ module.exports.setOnMethods = function(socket, io) {
       var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
          if (item != null) {
             if (item.passPrivate == "") {
-               console.log("logRoom");
                socket.emit('typePage', "containerLogRoom");
             } else {
-               console.log("logPrivateRoom");
                socket.emit('typePage', "containerLogPrivateRoom"); 
             }
          } else {
-            console.log("new Room");
             socket.emit('typePage', "containerNewRoom");
          }
      });

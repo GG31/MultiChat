@@ -487,7 +487,18 @@ function appendVideo(vid,usrname){
 function makeVideoActive(videoStream){
     attachMediaStream(activeVideo,videoStream);
 }
+ 
+//Fonction appelé par le 'valider' du prompt et de destruction de ce dernier
+function validerPassword(Password){
+   if(Password != null || Password != ""){
+      getSocket().emit('banIP',ip,Password);
+      //alert("mot de passe " + Password + " enregistré.");
+      var myPrompt = document.getElementById('myPrompt');
+      document.body.removeChild(myPrompt);
+   }
+}
 
+/** Ban Part */
 function tryBan(username){
     var promptPassword = prompt("Please enter the administration password","");
     if (promptPassword != null){

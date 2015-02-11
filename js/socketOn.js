@@ -25,6 +25,7 @@ function setOnMethods(socket){
       function(data){
          //alert( "Your ip: " + );
          console.log(data.ip +'=?=' + ip);
+         socket.emit('iAmTheUser');
       });
       
         /*if(socket.handshake.address.address==ip){

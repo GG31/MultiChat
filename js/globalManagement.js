@@ -200,9 +200,12 @@ function newRoom(){
       $('#errorPasswords').css({display :"none"});
       $('#errorLogNew').css({display :"none"});
         console.log("on newRoom");
-        socket.emit('adduser',getRoom(), username); 
-        socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
-        createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+        $.getJSON("http://jsonip.appspot.com?callback=?",
+        function(data){
+           socket.emit('adduser',getRoom(), username, data.ip); 
+           socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
+           createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+        });
     }
 }
 
@@ -211,6 +214,7 @@ function logRoom(){
     if(username.length==0) {
       $('#errorLog').css({display :"block"});
    } else { // Verif pseudo unique
+      $('#errorLog').css({display :"none"});
       socket.emit('isUniqueName', username, getRoom(), '#errorVerif');   
    }
 }
@@ -224,6 +228,8 @@ function logPrivateRoom() {
       $('#errorLogPrivate').css({display :"none"});
       $('#errorPrivatePassword').css({display :"block"});
    } else { // Verif pseudo unique
+      $('#errorLogPrivate').css({display :"none"});
+      $('#errorPrivatePassword').css({display :"none"});
       socket.emit('isUniqueName', username, getRoom(), '#errorVerifPrivate');
    } 
 } 
@@ -232,14 +238,24 @@ function nextVerifLog(balise){
    if(balise == '#errorVerif'){
       username = $("#usernameLogRoom").val();
       $('#errorLog').css({display :"none"});
-      socket.emit('adduser', getRoom(), username);
-      createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+      $(balise).css({display :"none"});
+      $.getJSON("http://jsonip.appspot.com?callback=?",
+      function(data){
+         socket.emit('adduser', getRoom(), username, data.ip);
+         createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+      });
    } else {
       username = $("#usernameLogPrivateRoom").val();
       pwdRoom = $("#pwdLogPrivateRoom").val();
       $('#errorLogPrivate').css({display :"none"});
-      socket.emit('adduser', getRoom(), username);
-      createOrJoin(getRoom(),"",pwdRoom);
+      $('#errorPrivatePassword').css({display :"none"});
+      $(balise).css({display :"none"});
+      $.getJSON("http://jsonip.appspot.com?callback=?",
+      function(data){
+         socket.emit('adduser', getRoom(), username, data.ip);
+         createOrJoin(getRoom(),"",pwdRoom);
+      });
+      
    }
 } 
 
