@@ -3,6 +3,8 @@ var mongodb = require('mongodb')
 var serverMongo = new mongodb.Server('127.0.0.1', 27017, {auto_reconnect: true});
 var db = new mongodb.Db('multichat', serverMongo);
 db.open(function(){});
+var nbClientMax = 5;
+
 verifyBan = function(req, res) {
    var collection = db.collection("room");
    var doc = collection.findOne({_id:req.params.name}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
@@ -134,7 +136,33 @@ module.exports.setOnMethods = function(socket, io) {
      });
    }
    
-   joinOrReject = function(room, passPrivate) {
+   createJoinOrReject = function(room, passPrivate, numClients) {
+      var collection = db.collection("room");
+      var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1}, function(err, item) {
+         console.log(item.passPrivate + " =?= " + passPrivate);
+         if (item.passPrivate == passPrivate) {
+            io.sockets.in(room).emit('join', room);
+			   socket.join(room);
+			   socket.room = room;
+			   if (numClients == 0) {
+			      console.log("created");
+			      socket.emit('created', room);
+			   } else if (numClients < nbClientMax){
+			      socket.emit('joined', room);
+			      console.log("joined");
+			   } else {
+			      console.log("full");
+			      deleteUser(socket.username, room);
+			      socket.emit('full', room);
+			   }
+         } else {
+            deleteUser(socket.username, room);
+            socket.emit('wrongPass', room);
+         }
+     });
+   }
+   
+   /*joinOrReject = function(room, passPrivate) {
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1}, function(err, item) {
          console.log(item.passPrivate + " =?= " + passPrivate);
@@ -147,7 +175,7 @@ module.exports.setOnMethods = function(socket, io) {
             socket.emit('wrongPass', room);
          }
      });
-   }
+   }*/
 
    insertFile = function (room, fileName, originName, owner, date) {
       var newFile = {
@@ -198,6 +226,7 @@ module.exports.setOnMethods = function(socket, io) {
    }
    
    deleteUser = function (username, room) {
+      console.log("delete " + username);
       var collection = db.collection('user');
       collection.remove({name : username, room_id:room});
    },

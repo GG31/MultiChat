@@ -17,7 +17,7 @@ var io;
 var mongo = require('./mongo.js');
 var fileTranfert = require('./fileTransfert.js');
 
-var nbClientMax = 5;
+
 server = app.listen(8080);
 var io = require('socket.io').listen(server);
 
@@ -45,17 +45,14 @@ io.sockets.on('connection', function (socket){
 
 	socket.on('create or join', function (room, passAdmin, passPrivate) {
 		var numClients = io.sockets.clients(room).length;
-      var ipClient = socket.handshake.address;
-		if (numClients == 0){ //TODO vérifier le mot de passe si jamais la room s'est vidée entre temps
-			socket.join(room);
-			socket.emit('created', room);
-			socket.room = room;
-			socket.pass = passPrivate;
-		} else if (numClients < nbClientMax) {
+		console.log("on create or join");
+		//if (numClients == 0){
+		   createJoinOrReject(room, passPrivate, numClients);
+		/*} else if (numClients < nbClientMax) {
 		   joinOrReject(room, passPrivate);
 		} else { // max nbClientMax clients
 			socket.emit('full', room);
-		}
+		}*/
 	});
 	
 	socket.on('set pass room', function (room, pass) {
