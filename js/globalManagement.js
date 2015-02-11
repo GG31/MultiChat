@@ -180,7 +180,7 @@ getSocket().on('created', function (room){
     roomCreationLog(room);
     getFullHistory();
     getFullFiles();
-    setIsInitiator(true);
+    isInitiator = true;
     $('.container').css({display : 'none'});
     $('#containerIndex').css({display : 'block'});
 });

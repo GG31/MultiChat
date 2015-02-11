@@ -15,9 +15,6 @@ function setOnMethods(socket){
     socket.on('join', function (room){
       console.log('Another peer made a request to join room ' + room);
       console.log('This peer is the initiator of room ' + room + '!');
-      //setIsChannelReady(true);
-      isChannelReady = true;
-      console.log("channel ready !!");
     });
     
     socket.on('amITheUser',function(ip){
@@ -36,10 +33,6 @@ function setOnMethods(socket){
       $('#containerIndex').css({display : 'block'});
       getFullHistory();
       getFullFiles();
-      isChannelReady = true;
-      enableMessageInterface(true);
-      //setIsChannelReady(true);
-      
     });
 
     // Appelé par le serveur pour faire des traces chez les clients connectés
@@ -60,44 +53,6 @@ function setOnMethods(socket){
     socket.on('updateDisconnect', function (username, room) {
          appendConnexionChat(username," has disconnected the room");
         appendDisconnect(username, room);
-    });
-    
-    // Récépeiton de message générique.
-    socket.on('message', function (message){
-      console.log('Received message:', message);
-
-
-      if (message === 'got user media') {
-        // On ouvre peut-être la connexion p2p
-        maybeStart();
-      } else if (message.type === 'offer') {
-
-        if (!getIsStarted()) {
-          // on a recu une "offre" on ouvre peut être la connexion so on
-          // est pas appelant et si on ne l'a pas déjà ouverte...
-          maybeStart();
-        }
-
-        // si on reçoit une offre, on va initialiser dans la connexion p2p
-        // la "remote Description", avec le message envoyé par l'autre pair 
-        // (et recu ici)
-        pc.setRemoteDescription(new RTCSessionDescription(message));
-
-        // On envoie une réponse à l'offre.
-        doAnswer();
-      } else if (message.type === 'answer' && getIsStarted()) {
-        // On a reçu une réponse à l'offre envoyée, on initialise la 
-        // "remote description" du pair.
-        pc.setRemoteDescription(new RTCSessionDescription(message));
-      } else if (message.type === 'candidate' && getIsStarted()) {
-        // On a recu un "ice candidate" et la connexion p2p est déjà ouverte
-        // On ajoute cette candidature à la connexion p2p. 
-        var candidate = new RTCIceCandidate({sdpMLineIndex:message.label,
-          candidate:message.candidate});
-        pc.addIceCandidate(candidate);
-      } else if (message === 'bye' && getIsStarted()) {
-        handleRemoteHangup();
-      }
     });
 
     socket.on('updateHistory', function(text){
