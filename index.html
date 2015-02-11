@@ -19,25 +19,89 @@
 <script src='/socket.io/socket.io.js'></script>
 <script src='js/lib/adapter.js'></script>
 
+<script src='js/my_prompt.js'></script>
 <script src='js/misc.js'></script>
 <script src='js/socketOn.js'></script>
 <script src='js/scripts_init.js'></script>
 <script src='js/mediaHandlers.js'></script>
-
+<script type="text/javascript">
+</script>
 </head>
 <body ondragenter="dragEnterHandler(event)">
+<!-- juste un bouton rapide qui appel le prompt perso
+<input type="button" onclick="myPrompt();" value="open my prompt"/> -->
+<div class='container' id="containerNewRoom">
+   <div class="row-top">
+      <div id="log-header">
+         <h1>Nouvelle salle<span id="roomRoom"></span></h1>
+      </div>
+   </div>
+   <div class="row-body">
+      <div class="row-body-container">
+      <form action="">
+         <h3>Merci de vous identifier</h3><br>
+         <div class="padding-room">Pseudo :  <input type="text" id="usernameInput" value="" maxlength="12" name="pseudo"></div><br>
+         <div class="padding-room">Mot de passe Admin :  <input type="password" id="pwdAdmin" value="" name="passAdmin"></div><br>
+         <div class="padding-room">Mot de passe de la salle :  <input type="password" id="pwdRoom" value="" name="passRoom"></div><br>
+         <p id="errorPasswords" class="error">* Merci de remplir les deux mots de passes pour obtenir une salle privée ou aucun des deux pour une salle publique.</p>
+         <p id="errorLogNew" class="error">* Merci de ne pas mettre de pseudo vide.</p>
+         <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="newRoom();"></div>
+      </form>
+      </div>
+   </div>
+</div>
 
-<div class='container'>
+<div class='container' id="containerLogRoom">
+   <div class="row-top">
+      <div id="log-header">
+         <h1> Bienvenue dans la salle <span id="roomRoom"></span></h1>
+      </div>
+   </div>
+   <div class="row-body">
+      <div class="row-body-container">
+      <form action="">
+         <h3>Merci de vous identifier</h3><br>
+         <div class="padding-room">Pseudo :  <input type="text" id="usernameLogRoom" value="" maxlength="12"></div><br>
+         <p id="errorLog" class="error">* Merci de ne pas mettre de pseudo vide.</p>
+         <p id="errorVerif" class="error">* Ce pseudo est déjà utilisé.</p>
+         <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="logRoom();"></div>
+      </form>
+      </div>
+   </div>
+</div>
+
+<div class='container' id="containerLogPrivateRoom">
+   <div class="row-top">
+      <div id="log-header">
+         <h1> Bienvenue dans la salle privée <span id="roomRoom"></span></h1>
+      </div>
+   </div>
+   <div class="row-body">
+      <div class="row-body-container">
+      <form action="">
+         <h3>Merci de vous identifier</h3><br>
+         <div class="padding-room">Pseudo :  <input type="text" id="usernameLogPrivateRoom" value="" maxlength="12"></div><br>
+         <div class="padding-room">Mot de passe :  <input type="password" id="pwdLogPrivateRoom" name="pwdLogPrivateRoom" value=""></div><br>
+         <p class="error" id="errorPrivatePassword">* Mot de passe incorrect</p>
+         <p id="errorLogPrivate" class="error">* Merci de ne pas mettre de pseudo vide.</p>
+         <p id="errorVerifPrivate" class="error">* Ce pseudo est déjà utilisé.</p>
+         <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="logPrivateRoom();"></div>
+      </form>
+      </div>
+   </div>
+</div>
+
+<div class='container' id="containerIndex">
    <div id="col-left">   
       <!-- liste de tous les utilisateurs connectes -->
       <div id="profils-container">
-      
-            <div class="profil" style="background-color: white; padding:2px;">
-               <span class="color4" style="width:80%; float:left;">Pseudo BLABLA</span>
-               <img class="image-delete" src="images/croix.jpg" title="delete" style="width:10%; float:right;">
+      <!--
+            <div class="profil">
+               <span class="color4">Pseudo BLABLA</span>
+               <img class="image-delete" src="images/croix.jpg" title="delete">
                <video class='remoteVideo' autoplay></video>
             </div>
-       
+       -->
       </div>
       <!-- historique -->
       <div id="historical-container">
@@ -58,17 +122,6 @@
       <div id="header">
          <h1> Bienvenue dans la salle <span id="roomRoom"></span></h1>
          <script>setInfoToDom("#roomRoom",getRoom());</script>
-             <!---->
-             <div id="UploadBox">
-              <h2>Video Uploader</h2>
-              <span id='UploadArea'>
-                  <label for="FileBox">Choose A File: </label><input type="file" id="FileBox"><br>
-                  <label for="NameBox">Name: </label><input type="text" id="NameBox"><br>
-       
-                  <button  type='button' id='UploadButton' class='Button'>Upload</button>
-                  <a id="downloadFile" href="" target="_blank">Download</a>
-              </span>
-          </div>
       </div>
       <div id='active-video'>
          <h4 id='video-left'><!--pseudoActif--></h4>
@@ -118,7 +171,7 @@
 		            -->
 		         </table>
 		      </div>
-		      <input type="text" id="dataChannelSend" disabled placeholder="Enter some text, then press Send.">
+		      <input type="text" id="dataChannelSend" placeholder="Enter some text, then press Send.">
 		       <button id="submitButton" onclick="sendNewChat();">Send</button> 
 	      </div>          
       </div>      
@@ -199,58 +252,16 @@
     <script src='js/main.js'></script>
     <script src='js/size.js'></script>
     <script src='js/globalManagement.js'></script>
+    <script src='js/drag_drop.js'></script>
 
 <script>
-      $(document).ready( function(){
+      /*$(document).ready( function(){
         $(document).keypress(function( event ) {
             if ( event.which == 13 ) {
                 sendNewChat();
             }
         });
-      });
-      
-      
-      function dragEnterHandler(event) {
-        console.log("Drag enter");
-        // Show some visual feedback
-        document.getElementById("droppableZone").classList.add('draggedOver'); 
-      }
-      function dropHandler(event) {
-          console.log('drop event');
-          document.getElementById("droppableZone").classList.remove('draggedOver'); 
-        
-         // Do not propagate the event
-         event.stopPropagation();
-         // Prevent default behavior, in particular when we drop images or links
-          event.preventDefault(); 
-        
-      
-        // reset the visual look of the drop zone to default
-        event.target.classList.remove('draggedOver'); 
-        
-       
-        // get the files from the clipboard
-        var files = event.dataTransfer.files;
-        var filesLen = files.length; 
-        var filenames = "";
-        if(filesLen > 0){
-         SelectedFile = files[filesLen-1];
-           //FileChosen(event, filesLen-1);
-           StartUpload();
-        }
- 
-        // iterate on the files, get details using the file API
-        // Display file names in a list.
-       for(var i = 0 ; i < filesLen ; i++) {
-           filenames += '\n' + files[i].name; 
-           // Create a li, set its value to a file name, add it to the ol
-           var li = document.createElement('li');
-           li.textContent = files[i].name;    
-           document.querySelector("#droppedFiles").appendChild(li);
-       }
-     console.log(files.length + ' file(s) have been dropped:\n' + filenames);
-        
-    }  
+      });*/
 </script>
 
 </body>

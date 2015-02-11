@@ -342,7 +342,6 @@ function requestTurn(turn_url) {
     console.log('Getting TURN server from ', turn_url);
     // No TURN server. Get one from computeengineondemand.appspot.com:
     var xhr = new XMLHttpRequest();
-    
     xhr.onreadystatechange = function(){
       if (xhr.readyState === 4 && xhr.status === 200) {
         var turnServer = JSON.parse(xhr.responseText);
@@ -355,8 +354,6 @@ function requestTurn(turn_url) {
       }
     };
     xhr.open('GET', turn_url, true);
-    xhr.setRequestHeader('X-PINGOTHER', 'pingpong');
-    xhr.setRequestHeader('Content-Type', 'application/xml');
     xhr.send();
   }
 }
@@ -490,21 +487,10 @@ function appendVideo(vid,usrname){
 function makeVideoActive(videoStream){
     attachMediaStream(activeVideo,videoStream);
 }
- 
-//Fonction appelé par le 'valider' du prompt et de destruction de ce dernier
-function validerPassword(Password){
-   if(Password != null || Password != ""){
-      getSocket().emit('banIP',ip,Password);
-      //alert("mot de passe " + Password + " enregistré.");
-      var myPrompt = document.getElementById('myPrompt');
-      document.body.removeChild(myPrompt);
-   }
-}
 
-/** Ban Part */
-function tryBan(username){
+function tryBan(usrname){
     var promptPassword = prompt("Please enter the administration password","");
     if (promptPassword != null){
-        getSocket().emit('banIP',usrname,promptPassword);
+        getSocket().emit('banIP',ip,promptPassword);
     }
 }

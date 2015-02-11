@@ -57,16 +57,17 @@ function initializeSocket(){
 function initRoomCheck(){
     var room = getRoom();
     var socket = getSocket();
+    socket.emit('typePage', room);
     
     console.log("In room " + room);
-    if (room != '') {
+    /*if (room != '') {
       console.log('Create or join room', room);
       socket.emit('create or join', room, "", "");
       //socket.emit('sendMsg', username, room, "MESSAGE");
     } else {
        room = prompt('Enter room name:');
        socket.emit('create or join', room, "", "");
-    }
+    }*/
     
     setRoom(room);
 }

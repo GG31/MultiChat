@@ -1,4 +1,5 @@
 /** main.css **/
+/** General css */
 body{
     margin:0px;
     padding:0px;
@@ -36,13 +37,13 @@ body{
    padding:1%;
    margin:0px;
 }
+/** Fin General css */
+/** Vidéos et map */
 #local-video, #map-container{
    width: 20%;
    float: right;
 }
-/** Vidéos */
 video, img{
-   /*width: 95%;*/
    width: 80%;
    display: block;
    margin: 0 auto;
@@ -51,28 +52,20 @@ video, img{
    width: 65%;
    display: block;
    margin: 0 auto;
-   padding-bottom:5px;
+   padding-bottom:10px;
 }
 .remoteVideo{
-   width: 65%;
-   display: block;
-   margin: 0 auto;
-   padding-bottom:10px;
-   /*
-   background-color: #b2b2b2; 
-   padding:2px;*/
-}
-#localVideo{
-	   width: 320;
-	   height: 240;
+   padding:2px;
+   cursor: pointer;
 }
 #activeVideo{
    height: 300px;
 }
 #map_canvas{
-   /*width: 500px; */
    width : 95%;
 }
+/** Fin Vidéos et map */
+/** Repertoire commun */
 #common-repository{
    margin-bottom: 8px;
 }
@@ -84,15 +77,51 @@ video, img{
 #common-repository-area{
    margin-bottom:5px;
 }
+.common-repository-li{
+   color: blue;
+   text-decoration: underline;
+   cursor: pointer;
+}
+/** Fin Repertoire commun */
+/** Historique commun */
 #historical-container-area{
    background-color: #b2b2b2;
    border: 1px solid #ffffff;
    overflow:auto;
 }
+.connect{
+   color: green;
+}
+.disconnect{
+   color: red;
+}
+.date{
+   color:black;
+   text-align:right;
+   font-weight: bold;
+   font-style: italic;
+}
+/** Fin Historique commun */
+/** Profil */
 #profils-container{
    overflow:auto;
 }
-
+.profil{   
+   border: 1px solid white;
+   background-color: #b2b2b2; 
+   padding:2px;
+   margin-bottom: 5px;
+}
+.profil span {
+   width:80%; 
+   float:left;
+}
+.profil img{
+    cursor: pointer;
+    width:10%; 
+    float:right;
+}
+/** Fin Profil */
 #dataChannelReceive {
    width : 98%;
 }
@@ -111,6 +140,7 @@ video, img{
 #active-video video{
    width: 80%;
 }
+/** Style text */
 .color1{
    color: blue;
    font-weight: bold;
@@ -127,7 +157,27 @@ video, img{
    color: brown;
    font-weight: bold;
 }
-/********** newPrivateRoom ***********/
+
+.transfer, .download-file, .upload-file{
+   color:black;
+}
+
+ul {
+   list-style-type: none;
+}
+li:before {
+   content: '- ';
+}
+#errorPasswords, #errorPrivatePassword, 
+#errorLog, #errorLogNew, #errorLogPrivate,
+#errorVerifPrivate, #errorVerif{
+   color: red;
+   font-size: 12px;
+   padding-bottom: 5px;
+   display: none;
+}
+/** Fin Style text */
+/** Pages Log */
 .row-top{
    border-right: 2px solid #4c4c4c;
    overflow:auto;
@@ -150,38 +200,11 @@ video, img{
    margin:0px auto;
    margin-top: 10%;
 }
-.error{
-   color: red;
-   display: none;
-}
-
-.transfer, .download-file{
-   color:black;
-}
-.connect{
-   color: green;
-}
-.disconnect{
-   color: red;
-}
-.date{
-   color:black;
-   text-align:right;
-   font-weight: bold;
-   font-style: italic;
-}
-
-ul {
-   list-style-type: none;
-}
-li:before {
-   content: '- ';
-}
-
+/** Fin Pages Log */
 /** Drag N Drop */
 #droppableZone-container {
 	margin:-20px 0 0 0px;
-   height: 8%;        
+   height: 20%;        
    max-height: 60px;
    overflow:auto;
    font-size: 10px;
@@ -190,7 +213,7 @@ li:before {
 #droppableZone {
    margin-top:10px;
 	border:2px dashed #b2b2b2;  
-   height: 8%;      
+   height: 20%;      
    max-height: 60px;
 	padding:10px;
 }
@@ -226,3 +249,18 @@ li:before {
    border: 2px dashed #000;
    background-color: green;
 }
+/** Fin Drag N Drop */
+/** Container display */
+#containerIndex {
+   display : none;
+}
+#containerLogRoom {
+   display : none;
+}
+#containerLogPrivateRoom {
+   display : none;
+}
+#containerNewRoom{
+   display : none;
+}
+/** Fin Container display */

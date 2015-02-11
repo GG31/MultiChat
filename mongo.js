@@ -3,24 +3,19 @@ var mongodb = require('mongodb')
 var serverMongo = new mongodb.Server('127.0.0.1', 27017, {auto_reconnect: true});
 var db = new mongodb.Db('multichat', serverMongo);
 db.open(function(){});
-
 verifyBan = function(req, res) {
    var collection = db.collection("room");
    var doc = collection.findOne({_id:req.params.name}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
+      console.log("IP : " + req.connection.remoteAddress);
       if (item != null) {
          var bannedIP = JSON.stringify(item.bannedIP);
-         if (bannedIP != undefined && bannedIP.indexOf(req.socket.localAddress) == 1) {
-         //if (bannedIP.indexOf(req.socket.localAddress) == 1) {
+         if (bannedIP != undefined && bannedIP.indexOf(req.connection.remoteAddress) == 1) {
             res.send("You are banned");
          } else {
-            if (item.passPrivate == "") {
-               res.sendfile(__dirname + '/logRoom.html');
-            } else {
-               res.sendfile(__dirname + '/logPrivateRoom.html');  
-            }
+               res.sendfile(__dirname + '/index.html');
          }
       } else {
-         res.sendfile(__dirname + '/newRoom.html');  
+         res.sendfile(__dirname + '/index.html');  
       }
   });
 }
@@ -81,13 +76,14 @@ module.exports.setOnMethods = function(socket, io) {
       insert('room', newRoom);
    },
 
-   /*insertUser = function (user, room) {
+   insertUser = function (user, ip, room) {
       var newUser = {
            name : user,
+           ip : ip,
            room_id : room
       };
       insert('user', newUser);
-   },*/
+   },
 
    insert = function (collection, document) {
       var collection = db.collection(collection);
@@ -102,36 +98,46 @@ module.exports.setOnMethods = function(socket, io) {
    
    addBannedIP = function(room, ip) {
       var collection = db.collection("room");
-      console.log("addBannedIP");
+      //console.log("addBannedIP");
       collection.update({_id:room}, {$push:{bannedIP:ip}})
    }
    
-   isBanned = function(room, ip) {
+   banIP = function(room, usernameToBan, passAdmin) {
+      console.log('on banIP ' + room + ' ' + usernameToBan + ' ' + passAdmin);
       var collection = db.collection("room");
-      var doc = collection.findOne({_id:room}, {_id:0, bannedIP:1},function(err, item) {
-         if (item.bannedIP.contains(ip)) {
-            console.log("ip on array");
-            //Is banned;
+      var doc = collection.findOne({_id:room}, function(err, item) {
+         console.log('passAdmin ' + item.passAdmin + '=?=' + passAdmin);
+         if (item.passAdmin == passAdmin) {
+            var collectionUser = db.collection("user");
+            var docUser = collectionUser.findOne({name:usernameToBan, room_id:room}, function(err, item) {
+               console.log('find user to ban ' + item.ip);
+               addBannedIP(socket.room, item.ip);
+               //Ask who is the user with item.ip
+               io.sockets.in(room).emit('amITheUser', item.ip);
+            });
          }
-         console.log("return false");
-         //Is not banned;
      });
    }
    
-   banIP = function(room, ipCreator, ipToBan) {
-      var collection = db.collection("room");
-      var doc = collection.findOne({_id:room}, function(err, item) {
-         if (item.creator == ipCreator) {
-            addBannedIP(socket.room, ipToBan);
-            //Leave the room
-            disconnect();
+   isUnique = function(username, room, balise) {
+      console.log('user ' + username + ' room ' + room);
+      var collection = db.collection("user");
+      var doc = collection.find({room_id:room});
+      doc.toArray(function(err, item) {
+         var returnValue = true;
+         for(i=0; i<item.length; i++) {
+            if(item[i].name == username){ 
+               returnValue = false;
+            }
          }
+         socket.emit('isUnique', returnValue, balise);
      });
    }
    
    joinOrReject = function(room, passPrivate) {
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1}, function(err, item) {
+         console.log(item.passPrivate + " =?= " + passPrivate);
          if (item.passPrivate == passPrivate) {
             io.sockets.in(room).emit('join', room);
 			   socket.join(room);
@@ -142,17 +148,7 @@ module.exports.setOnMethods = function(socket, io) {
          }
      });
    }
-   
-   disconnect = function() {
-      // remove the username from global usernames list
-      //delete usernames[socket.username];
-      // update list of users in chat, client-side
-      //io.sockets.in(nom de la salle).emit('updateusers', usernames)
-      // echo globally that this client has left
-      socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', socket.username + ' has disconnected');
-		socket.leave(socket.room);
-   }
-   
+
    insertFile = function (room, fileName, originName, owner, date) {
       var newFile = {
            filename : fileName,
@@ -179,18 +175,31 @@ module.exports.setOnMethods = function(socket, io) {
    }
    
    download = function(foldername, filename, res){
-      console.log("download");
       if (socket.room == foldername) {
-         console.log("on if download");
          res.download(__dirname + '/files/'+foldername+'/'+filename);
       } else {
          res.send("You are not in the room");
       }
    },
    
-   deleteUser = function (userId) {
-      var collection = db.collection(collection);
-      collection.remove({_id : userId});
+   typePage = function(room) {
+      var collection = db.collection("room");
+      var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
+         if (item != null) {
+            if (item.passPrivate == "") {
+               socket.emit('typePage', "containerLogRoom");
+            } else {
+               socket.emit('typePage', "containerLogPrivateRoom"); 
+            }
+         } else {
+            socket.emit('typePage', "containerNewRoom");
+         }
+     });
+   }
+   
+   deleteUser = function (username, room) {
+      var collection = db.collection('user');
+      collection.remove({name : username, room_id:room});
    },
 
    deleteAll = function (collection) {

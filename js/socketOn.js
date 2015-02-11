@@ -1,8 +1,9 @@
 function setOnMethods(socket){
     socket.on('connect', function(){
-        username = prompt("What's your name?");
-        socket.emit('adduser', getRoom(), getUsername());
-        console.log("username " + getUsername);
+        //username = prompt("What's your name?");
+        //socket.emit('adduser', getRoom(), getUsername());
+        //console.log("username " + getUsername);
+        console.log("on connect");
     });
 
     // On a essayé de rejoindre une salle qui est déjà pleine (avec deux personnes)
@@ -14,7 +15,22 @@ function setOnMethods(socket){
     socket.on('join', function (room){
       console.log('Another peer made a request to join room ' + room);
       console.log('This peer is the initiator of room ' + room + '!');
-      setIsChannelReady(true);
+      //setIsChannelReady(true);
+      isChannelReady = true;
+      console.log("channel ready !!");
+    });
+    
+    socket.on('amITheUser',function(ip){
+      $.getJSON("http://jsonip.appspot.com?callback=?",
+      function(data){
+         //alert( "Your ip: " + );
+         console.log(data.ip +'=?=' + ip);
+         socket.emit('iAmTheUser');
+      });
+      
+        /*if(socket.handshake.address.address==ip){
+            socket.emit("iAmTheUser");
+        }*/
     });
 
     // Si on reçoit le message "joined" alors on a rejoint une salle existante
@@ -23,10 +39,14 @@ function setOnMethods(socket){
     socket.on('joined', function (room){
       console.log('This peer has joined room ' + room);
       roomJoinedLog(room);
+      $('.container').css({display : 'none'});
+      $('#containerIndex').css({display : 'block'});
       getFullHistory();
       getFullFiles();
+      isChannelReady = true;
       enableMessageInterface(true);
-      setIsChannelReady(true);
+      //setIsChannelReady(true);
+      
     });
 
     // Appelé par le serveur pour faire des traces chez les clients connectés
@@ -39,6 +59,15 @@ function setOnMethods(socket){
         //$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
         appendNewChat(username,data);
     });
+    socket.on('updateChatConnexion', function (username, data) {
+       //à écrire dans la conversation : data // username = SERVER, data = msg
+        //$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+        appendConnexionChat(username,data);
+    });
+    socket.on('updateDisconnect', function (username, room) {
+         appendConnexionChat(username," has disconnected the room");
+        appendDisconnect(username, room);
+    });
     
     // Récépeiton de message générique.
     socket.on('message', function (message){
@@ -50,7 +79,7 @@ function setOnMethods(socket){
         maybeStart();
       } else if (message.type === 'offer') {
 
-        if (!getIsInitiator() && !getIsStarted()) {
+        if (!getIsStarted()) {
           // on a recu une "offre" on ouvre peut être la connexion so on
           // est pas appelant et si on ne l'a pas déjà ouverte...
           maybeStart();
@@ -96,6 +125,20 @@ function setOnMethods(socket){
     
     socket.on('newFile',function(fileName){
         appendFile(fileName);
+    });
+    
+    socket.on('typePage',function(type) {
+      $('.container').css({display :'none'});
+      $('#'+type).css({display : 'block'});
+    });
+    
+    socket.on('isUnique', function(verif, balise) {
+      if(!verif){
+         $(balise).css({display :"block"});
+      } else {
+         $(balise).css({display :"none"});
+         nextVerifLog(balise);
+      }
     });
     
 }

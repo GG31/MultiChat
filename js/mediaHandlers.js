@@ -8,9 +8,11 @@ function handleUserMedia(stream) {
   sendMessage('got user media');
 
   // Si on est l'appelant on essaie d'ouvrir la connexion p2p
+  /*
   if (getIsInitiator()) {
     maybeStart();
   }
+  */
 }
 
 function handleUserMediaError(error){
