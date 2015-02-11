@@ -21,9 +21,15 @@ function setOnMethods(socket){
     });
     
     socket.on('amITheUser',function(ip){
-        if(socket.handshake.address.address==ip){
+      $.getJSON("http://jsonip.appspot.com?callback=?",
+      function(data){
+         //alert( "Your ip: " + );
+         console.log(data.ip +'=?=' + ip);
+      });
+      
+        /*if(socket.handshake.address.address==ip){
             socket.emit("iAmTheUser");
-        }
+        }*/
     });
 
     // Si on reçoit le message "joined" alors on a rejoint une salle existante

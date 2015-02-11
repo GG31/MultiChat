@@ -52,7 +52,7 @@ io.sockets.on('connection', function (socket){
 			socket.room = room;
 			socket.pass = passPrivate;
 //			insertRoom(room, passAdmin, passPrivate);	
-//banIP(socket.room, 'alice', passAdmin);
+banIP(socket.room, socket.username, passAdmin);
 		} else if (numClients < nbClientMax) {
 		   joinOrReject(room, passPrivate);
 		} else { // max nbClientMax clients
@@ -65,8 +65,9 @@ io.sockets.on('connection', function (socket){
 	});
 
    // when the client emits 'adduser', this listens and executes
-	socket.on('adduser', function(room, username){
+	socket.on('adduser', function(room, username, ip){
 	   socket.username = username;
+	   console.log("IP " + socket.manager.handshaken[socket.id].address.address);
 	   insertUser(username, socket.handshake.address.address, room);
 	   // echo to room 1 that a person has connected to their room
 	   var text = username + ' has connected to this room';
@@ -119,6 +120,7 @@ io.sockets.on('connection', function (socket){
 	socket.on('iAmTheUser', function(){
 	   // add banned ip to db if the creator emit banIP
 	   //banIP(socket.room, socket.handshake.address.address, "127.0.0.1");
+	   console.log('I am the user');
 	   deleteUser(socket.username, socket.room);
 	   socket.leave(socket.room);
 	});

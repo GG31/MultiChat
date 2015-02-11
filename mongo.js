@@ -113,14 +113,17 @@ module.exports.setOnMethods = function(socket, io) {
    }
    
    banIP = function(room, usernameToBan, passAdmin) {
+      console.log('on banIP ' + room + ' ' + usernameToBan + ' ' + passAdmin);
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, function(err, item) {
+         console.log('passAdmin ' + item.passAdmin + '=?=' + passAdmin);
          if (item.passAdmin == passAdmin) {
             var collectionUser = db.collection("user");
             var docUser = collectionUser.findOne({name:usernameToBan, room_id:room}, function(err, item) {
+               console.log('find user to ban ' + item.ip);
                addBannedIP(socket.room, item.ip);
                //Leave the room
-               io.socket.emit('amITheUser', item.ip);
+               io.sockets.in(room).emit('amITheUser', item.ip);
                //disconnect();
             });
          }
