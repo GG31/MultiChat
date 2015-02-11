@@ -38,7 +38,6 @@ io.sockets.on('connection', function (socket){
 	});
 	
 	socket.on('createRoom', function (room, passAdmin, passPrivate) {
-	   console.log("createRoom " + room);
 		insertRoom(room, passAdmin, passPrivate);	
 		socket.room = room;
 	});
@@ -46,12 +45,11 @@ io.sockets.on('connection', function (socket){
 	socket.on('create or join', function (room, passAdmin, passPrivate) {
 		var numClients = io.sockets.clients(room).length;
       var ipClient = socket.handshake.address;
-		if (numClients == 0){ //TODO vérifier le mot de passe si jamais la room s'est vidé entre temps
+		if (numClients == 0){ //TODO vérifier le mot de passe si jamais la room s'est vidée entre temps
 			socket.join(room);
 			socket.emit('created', room);
 			socket.room = room;
 			socket.pass = passPrivate;
-//			insertRoom(room, passAdmin, passPrivate);	
 		} else if (numClients < nbClientMax) {
 		   joinOrReject(room, passPrivate);
 		} else { // max nbClientMax clients
@@ -64,15 +62,17 @@ io.sockets.on('connection', function (socket){
 	});
 
    // when the client emits 'adduser', this listens and executes
-	socket.on('adduser', function(room, username){
+	socket.on('adduser', function(room, username, ip){
 	   socket.username = username;
-	   //insertUser(username, room);
+	   insertUser(username, ip, room);
 	   // echo to room 1 that a person has connected to their room
 	   var text = username + ' has connected to this room';
-	   //socket.broadcast.to(room).emit('updatechat', 'SERVER', text);
       var date = new Date(Date.now());
       insertMessage(username, room, date, text);
-      //socket.emit('userAdded', room);
+	});
+	
+	socket.on('isUniqueName', function(username, room, balise) {
+	   isUnique(username, room, balise);
 	});
 	
 	socket.on('newMessage', function(text){
@@ -81,7 +81,8 @@ io.sockets.on('connection', function (socket){
 	   var date = new Date(Date.now());
       insertMessage(socket.username, socket.room, date, text);
 	});
-		socket.on('newMessageConnexion', function(text){
+	
+	socket.on('newMessageConnexion', function(text){
 	   // echo to room 1 the message of username
 		io.sockets.in(socket.room).emit('updateChatConnexion', socket.username, text);
 	});
@@ -90,52 +91,47 @@ io.sockets.on('connection', function (socket){
 	   // echo to room 1 the message of username
 	   io.sockets.in(socket.room).emit('updateHistory', text);
 	   var date = new Date(Date.now());
-     insertLog(socket.room, date, text);
+      insertLog(socket.room, date, text);
 	});
 	
 	socket.on('getFullHistory', function(){
 	   // emit the history of the room to the client connected
-	   console.log("on getFullHistory");
 	   getLog(socket.room);
-		//socket.emit('fullHistory', data);
 	});
 	
 	socket.on('getFullFiles', function(){
-	   // emit the history of the room to the client connected
-	   console.log("on getFullFiles");
+	   // emit the files of the room to the client connected
 	   getFiles(socket.room);
-		//socket.emit('fullHistory', data);
 	});
 	
-	socket.on('banIP', function(ip, passAdmin){
+	socket.on('banIP', function(username, passAdmin){
+	   // add banned ip to db if the creator emit banIP
+	   banIP(socket.room, username, passAdmin);
+	});
+	
+	socket.on('iAmTheUser', function(){
 	   // add banned ip to db if the creator emit banIP
 	   //banIP(socket.room, socket.handshake.address.address, "127.0.0.1");
-	   banIP(socket.room, socket.handshake.address.address, ip);
+	   //console.log('I am the user');
+	   deleteUser(socket.username, socket.room);
+	   socket.leave(socket.room);
 	});
 	
 	socket.on('typePage', function(room){
-	   console.log('on typePage');
 	   typePage(room);
 	});
 	
 	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){
-	   console.log("déconnexion");
+	   deleteUser(socket.username, socket.room);
 		io.sockets.in(socket.room).emit('updateDisconnect', socket.username, socket.room);
-		disconnect();
+		socket.leave(socket.room);
 	});
-	/*
-	updateHistory = function(text) {
-	   io.sockets.in(socket.room).emit('updateHistory', text);
-	   var date = new Date(Date.now());
-      insertLog(socket.room, date, text);
-	}*/
 	
 });
 
 app.get('/:name', function (req, res) {  
-  verifyBan(req, res);
-  //res.sendfile(__dirname + '/index.html');
+   verifyBan(req, res);
 });
 
 app.get('/download/:name/:filename', function (req, res) {

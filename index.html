@@ -19,12 +19,17 @@
 <script src='/socket.io/socket.io.js'></script>
 <script src='js/lib/adapter.js'></script>
 
+<script src='js/my_prompt.js'></script>
 <script src='js/misc.js'></script>
 <script src='js/socketOn.js'></script>
 <script src='js/scripts_init.js'></script>
 <script src='js/mediaHandlers.js'></script>
+<script type="text/javascript">
+</script>
 </head>
 <body ondragenter="dragEnterHandler(event)">
+<!-- juste un bouton rapide qui appel le prompt perso
+<input type="button" onclick="myPrompt();" value="open my prompt"/> -->
 <div class='container' id="containerNewRoom">
    <div class="row-top">
       <div id="log-header">
@@ -39,6 +44,7 @@
          <div class="padding-room">Mot de passe Admin :  <input type="password" id="pwdAdmin" value="" name="passAdmin"></div><br>
          <div class="padding-room">Mot de passe de la salle :  <input type="password" id="pwdRoom" value="" name="passRoom"></div><br>
          <p id="errorPasswords" class="error">* Merci de remplir les deux mots de passes pour obtenir une salle privée ou aucun des deux pour une salle publique.</p>
+         <p id="errorLogNew" class="error">* Merci de ne pas mettre de pseudo vide.</p>
          <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="newRoom();"></div>
       </form>
       </div>
@@ -56,6 +62,8 @@
       <form action="">
          <h3>Merci de vous identifier</h3><br>
          <div class="padding-room">Pseudo :  <input type="text" id="usernameLogRoom" value="" maxlength="12"></div><br>
+         <p id="errorLog" class="error">* Merci de ne pas mettre de pseudo vide.</p>
+         <p id="errorVerif" class="error">* Ce pseudo est déjà utilisé.</p>
          <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="logRoom();"></div>
       </form>
       </div>
@@ -75,6 +83,8 @@
          <div class="padding-room">Pseudo :  <input type="text" id="usernameLogPrivateRoom" value="" maxlength="12"></div><br>
          <div class="padding-room">Mot de passe :  <input type="password" id="pwdLogPrivateRoom" name="pwdLogPrivateRoom" value=""></div><br>
          <p class="error" id="errorPrivatePassword">* Mot de passe incorrect</p>
+         <p id="errorLogPrivate" class="error">* Merci de ne pas mettre de pseudo vide.</p>
+         <p id="errorVerifPrivate" class="error">* Ce pseudo est déjà utilisé.</p>
          <div class="padding-room"><input type="button" value="Connexion" align="right" onclick="logPrivateRoom();"></div>
       </form>
       </div>
@@ -242,6 +252,7 @@
     <script src='js/main.js'></script>
     <script src='js/size.js'></script>
     <script src='js/globalManagement.js'></script>
+    <script src='js/drag_drop.js'></script>
 
 <script>
       /*$(document).ready( function(){
@@ -251,49 +262,6 @@
             }
         });
       });*/
-      
-      
-      function dragEnterHandler(event) {
-        console.log("Drag enter");
-        // Show some visual feedback
-        document.getElementById("droppableZone").classList.add('draggedOver'); 
-      }
-      function dropHandler(event) {
-          console.log('drop event');
-          document.getElementById("droppableZone").classList.remove('draggedOver'); 
-        
-         // Do not propagate the event
-         event.stopPropagation();
-         // Prevent default behavior, in particular when we drop images or links
-          event.preventDefault(); 
-        
-      
-        // reset the visual look of the drop zone to default
-        event.target.classList.remove('draggedOver'); 
-        
-       
-        // get the files from the clipboard
-        var files = event.dataTransfer.files;
-        var filesLen = files.length; 
-        var filenames = "";
-        if(filesLen > 0){
-         SelectedFile = files[filesLen-1];
-           //FileChosen(event, filesLen-1);
-           StartUpload();
-        }
- 
-        // iterate on the files, get details using the file API
-        // Display file names in a list.
-       for(var i = 0 ; i < filesLen ; i++) {
-           filenames += '\n' + files[i].name; 
-           // Create a li, set its value to a file name, add it to the ol
-           var li = document.createElement('li');
-           li.textContent = files[i].name;    
-           document.querySelector("#droppedFiles").appendChild(li);
-       }
-     console.log(files.length + ' file(s) have been dropped:\n' + filenames);
-        
-    }  
 </script>
 
 </body>

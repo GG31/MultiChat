@@ -190,33 +190,72 @@ function newRoom(){
     room = getRoom();
     console.log("the room is " + room);
    //
-    if( ($("#pwdAdmin").val().length==0 && $("#pwdRoom").val().length>0) || ($("#pwdAdmin").val().length>0 && $("#pwdRoom").val().length==0) ){
+   if(username.length==0) {
+      $('#errorLogNew').css({display :"block"});
+   } else if( ($("#pwdAdmin").val().length==0 && $("#pwdRoom").val().length>0) || ($("#pwdAdmin").val().length>0 && $("#pwdRoom").val().length==0) ){
          console.log('ici');
       $('#errorPasswords').css({display :"block"});
-    }else {
+      $('#errorLogNew').css({display :"none"});
+   } else {
       $('#errorPasswords').css({display :"none"});
+      $('#errorLogNew').css({display :"none"});
         console.log("on newRoom");
-        socket.emit('adduser',getRoom(), username); 
-        socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
-        createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+        $.getJSON("http://jsonip.appspot.com?callback=?",
+        function(data){
+           socket.emit('adduser',getRoom(), username, data.ip); 
+           socket.emit('createRoom',room, $("#pwdAdmin").val(), $("#pwdRoom").val());
+           createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+        });
     }
 }
 
 function logRoom(){
     username = $("#usernameLogRoom").val();
-    console.log("adduser "+username+" on room " + getRoom());
-    socket.emit('adduser', getRoom(), username);
-    createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+    if(username.length==0) {
+      $('#errorLog').css({display :"block"});
+   } else { // Verif pseudo unique
+      $('#errorLog').css({display :"none"});
+      socket.emit('isUniqueName', username, getRoom(), '#errorVerif');   
+   }
 }
 
 function logPrivateRoom() {
     username = $("#usernameLogPrivateRoom").val();
     pwdRoom = $("#pwdLogPrivateRoom").val();
-    if(pwdRoom.length==0){ // || mauvais mot de passe // wrongPass mongo.js si mauvais mot de passe
+    if(username.length==0) {
+     $('#errorLogPrivate').css({display :"block"});
+   } else if(pwdRoom.length==0){ // || mauvais mot de passe // wrongPass mongo.js si mauvais mot de passe
+      $('#errorLogPrivate').css({display :"none"});
       $('#errorPrivatePassword').css({display :"block"});
-    } else {
-      socket.emit('adduser', getRoom(), username);
-      createOrJoin(getRoom(),"",pwdRoom);
+   } else { // Verif pseudo unique
+      $('#errorLogPrivate').css({display :"none"});
+      $('#errorPrivatePassword').css({display :"none"});
+      socket.emit('isUniqueName', username, getRoom(), '#errorVerifPrivate');
+   } 
+} 
+// Suite, aucune erreur logRoom ou logPrivateRoom
+function nextVerifLog(balise){
+   if(balise == '#errorVerif'){
+      username = $("#usernameLogRoom").val();
+      $('#errorLog').css({display :"none"});
+      $(balise).css({display :"none"});
+      $.getJSON("http://jsonip.appspot.com?callback=?",
+      function(data){
+         socket.emit('adduser', getRoom(), username, data.ip);
+         createOrJoin(getRoom(),$("#pwdAdmin").val(),$("#pwdRoom").val());
+      });
+   } else {
+      username = $("#usernameLogPrivateRoom").val();
+      pwdRoom = $("#pwdLogPrivateRoom").val();
+      $('#errorLogPrivate').css({display :"none"});
+      $('#errorPrivatePassword').css({display :"none"});
+      $(balise).css({display :"none"});
+      $.getJSON("http://jsonip.appspot.com?callback=?",
+      function(data){
+         socket.emit('adduser', getRoom(), username, data.ip);
+         createOrJoin(getRoom(),"",pwdRoom);
+      });
+      
    }
 } 
 

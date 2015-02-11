@@ -15,12 +15,20 @@ function setOnMethods(socket){
     socket.on('join', function (room){
       console.log('Another peer made a request to join room ' + room);
       console.log('This peer is the initiator of room ' + room + '!');
+      isChannelReady = true;
     });
     
     socket.on('amITheUser',function(ip){
-        if(socket.handshake.address.address==ip){
+      $.getJSON("http://jsonip.appspot.com?callback=?",
+      function(data){
+         //alert( "Your ip: " + );
+         console.log(data.ip +'=?=' + ip);
+         socket.emit('iAmTheUser');
+      });
+      
+        /*if(socket.handshake.address.address==ip){
             socket.emit("iAmTheUser");
-        }
+        }*/
     });
 
     // Si on reçoit le message "joined" alors on a rejoint une salle existante
@@ -33,6 +41,7 @@ function setOnMethods(socket){
       $('#containerIndex').css({display : 'block'});
       getFullHistory();
       getFullFiles();
+      isChannelReady = true;
     });
 
     // Appelé par le serveur pour faire des traces chez les clients connectés
@@ -78,6 +87,15 @@ function setOnMethods(socket){
     socket.on('typePage',function(type) {
       $('.container').css({display :'none'});
       $('#'+type).css({display : 'block'});
+    });
+    
+    socket.on('isUnique', function(verif, balise) {
+      if(!verif){
+         $(balise).css({display :"block"});
+      } else {
+         $(balise).css({display :"none"});
+         nextVerifLog(balise);
+      }
     });
     
 }
