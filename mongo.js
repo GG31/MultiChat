@@ -6,9 +6,10 @@ db.open(function(){});
 verifyBan = function(req, res) {
    var collection = db.collection("room");
    var doc = collection.findOne({_id:req.params.name}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
+      console.log("IP : " + req.connection.remoteAddress);
       if (item != null) {
          var bannedIP = JSON.stringify(item.bannedIP);
-         if (bannedIP != undefined && bannedIP.indexOf(req.socket.localAddress) == 1) {
+         if (bannedIP != undefined && bannedIP.indexOf(req.connection.remoteAddress) == 1) {
             res.send("You are banned");
          } else {
                res.sendfile(__dirname + '/index.html');
@@ -18,6 +19,7 @@ verifyBan = function(req, res) {
       }
   });
 }
+
 module.exports.setOnMethods = function(socket, io) {
    getLog = function (room) {
       var collection = db.collection("log");

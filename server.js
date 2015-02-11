@@ -10,6 +10,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(app.router);
 });
+app.enable('trust proxy');
 
 var server;
 var io;
