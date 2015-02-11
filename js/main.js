@@ -24,6 +24,7 @@ var localVideo = document.querySelector('#localVideo');
 var remoteVideo = document.querySelector('#remoteVideo');
 var activeVideo = document.querySelector('#activeVideo');
 
+var lastUsername = "";
 var idVid = 0;
 var streamList = [];
 
@@ -71,7 +72,7 @@ function makeVideoActive(videoStream){
 function gotRemoteStream(event){
     streamList[idVid] = event.stream;
     console.log("Got remote stream !");
-    var text = "<div class='profil'><span class='color4'>USERNAME</span><img class='image-delete' src='images/croix.png' title='delete' onclick='tryBan(\"USERNAME\");'><video id='streamVid_"+idVid+"' class='remoteVideo' onclick='makeVideoActive(streamList["+idVid+"]);' autoplay></video></div>";
+    var text = "<div class='profil'><span class='color4'>"+lastUsername+"</span><img class='image-delete' src='images/croix.png' title='delete' onclick='tryBan(\""+lastUsername+"\");'><video id='streamVid_"+idVid+"' class='remoteVideo' onclick='makeVideoActive(streamList["+idVid+"]);' autoplay></video></div>";
     text += "<script>var element = document.querySelector('#streamVid_"+idVid+"');attachMediaStream(element,streamList["+idVid+"]);</script>";
     idVid += 1;
     
@@ -109,6 +110,7 @@ function handleMessage(event) {
 
 socket.on('message', function (message){
     console.log('Received message:', message);
+
     if (message === 'got user media') {
         maybeStart();
     } else if (message.type === 'offer') {
@@ -118,6 +120,7 @@ socket.on('message', function (message){
     } else if (message.type === 'answer' && isStarted) {
         pc.setRemoteDescription(new RTCSessionDescription(message));
     } else if (message.type === 'candidate' && isStarted) {
+        lastUsername = message.username;
         var candidate = new RTCIceCandidate({sdpMLineIndex:message.label,candidate:message.candidate});
         pc.addIceCandidate(candidate);
     } /*else if (message === 'bye' && isStarted) {
@@ -153,6 +156,7 @@ function doCall() {
 function setLocalAndSendMessage(sessionDescription) {
   // Set Opus as the preferred codec in SDP if Opus is present.
   sessionDescription.sdp = preferOpus(sessionDescription.sdp);
+  sessionDescription.username = username;
   pc.setLocalDescription(sessionDescription);
   socket.emit('messageForRoom',sessionDescription);
 }
@@ -161,10 +165,11 @@ function handleIceCandidate(event) {
   console.log('handleIceCandidate event: ', event);
   if (event.candidate) {
     socket.emit('messageForRoom',{
-      type: 'candidate',
-      label: event.candidate.sdpMLineIndex,
-      id: event.candidate.sdpMid,
-      candidate: event.candidate.candidate});
+        username: username,
+        type: 'candidate',
+        label: event.candidate.sdpMLineIndex,
+        id: event.candidate.sdpMid,
+        candidate: event.candidate.candidate});
   } else {
     console.log('End of candidates.');
   }
