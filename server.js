@@ -32,10 +32,10 @@ io.sockets.on('connection', function (socket){
 	  }
 	    socket.emit('log', array);
 	}
-
-	socket.on('message', function (message) {
+    
+    socket.on('messageForRoom', function (message) {
 		log('Got message: ', message);
-		socket.broadcast.emit('message', message); // should be room only
+		socket.broadcast.to(socket.room).emit('message',message);
 	});
 	
 	socket.on('createRoom', function (room, passAdmin, passPrivate) {

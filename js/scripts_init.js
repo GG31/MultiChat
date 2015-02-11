@@ -33,6 +33,7 @@ function initializeServerConstraints(){
     var pc_constraints = {
       'optional': [
         {'DtlsSrtpKeyAgreement': true},
+        {'RtpDataChannel': true},
         {'RtpDataChannels': true}
       ]};
 
