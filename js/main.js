@@ -74,7 +74,7 @@ function gotRemoteStream(event){
     var text = "<div class='profil'><span class='color4'>"+lastUsername+"</span><img class='image-delete' src='images/croix.png' title='delete' onclick='tryBan(\""+lastUsername+"\");'><video id='streamVid_"+idVid+"' class='remoteVideo' onclick='makeVideoActive(streamList["+idVid+"]);' autoplay></video></div>";
     text += "<script>var element = document.querySelector('#streamVid_"+idVid+"');attachMediaStream(element,streamList["+idVid+"]);</script>";
     idVid += 1;
-    
+    makeVideoActive(event.stream);
     $('#profils-container').append(text);
 }
 
