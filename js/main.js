@@ -122,10 +122,14 @@ socket.on('message', function (message){
         lastUsername = message.username;
         var candidate = new RTCIceCandidate({sdpMLineIndex:message.label,candidate:message.candidate});
         pc.addIceCandidate(candidate);
-    } /*else if (message === 'bye' && isStarted) {
+    } else if (message === 'bye' && isStarted) {
         handleRemoteHangup();
-    }*/
+    }
 });
+
+window.onbeforeunload = function(e){
+	socket.emit('messageForRoom','bye');
+}
 
 function mergeConstraints(cons1, cons2) {
   var merged = cons1;
