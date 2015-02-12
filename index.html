@@ -33,7 +33,7 @@
 <div class='container' id="containerNewRoom">
    <div class="row-top">
       <div id="log-header">
-         <h1>Nouvelle salle<span id="roomRoom"></span></h1>
+         <h1>Nouvelle salle<span class="roomRoom"></span></h1>
       </div>
    </div>
    <div class="row-body">
@@ -54,7 +54,7 @@
 <div class='container' id="containerLogRoom">
    <div class="row-top">
       <div id="log-header">
-         <h1> Bienvenue dans la salle <span id="roomRoom"></span></h1>
+         <h1> Bienvenue dans la salle <span class="roomRoom"></span></h1>
       </div>
    </div>
    <div class="row-body">
@@ -73,7 +73,7 @@
 <div class='container' id="containerLogPrivateRoom">
    <div class="row-top">
       <div id="log-header">
-         <h1> Bienvenue dans la salle privée <span id="roomRoom"></span></h1>
+         <h1> Bienvenue dans la salle privée <span class="roomRoom"></span></h1>
       </div>
    </div>
    <div class="row-body">
@@ -120,8 +120,8 @@
    </div>
    <div id="col-center">
       <div id="header">
-         <h1> Bienvenue dans la salle <span id="roomRoom"></span></h1>
-         <script>setInfoToDom("#roomRoom",getRoom());</script>
+         <h1> Bienvenue dans la salle <span class="roomRoom"></span></h1>
+         <script>setInfoToDom(".roomRoom",getRoom());</script>
       </div>
       <div id='active-video'>
          <h4 id='video-left'><!--pseudoActif--></h4>
