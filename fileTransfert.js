@@ -3,7 +3,6 @@ var fs = require('fs')
 
 module.exports.setOnMethods = function(socket, io) {
    socket.on('Start', function (data) { //data contains the variables that we passed through in the html file
-   console.log("onstart " + data['Name']);
      var Name = data['Name'];
      Files[Name] = {  //Create a new Entry in The Files Variable
          FileSize : data['Size'],
@@ -22,10 +21,7 @@ module.exports.setOnMethods = function(socket, io) {
          var Stat = fs.statSync('files/' + socket.room + '/' +  Files[Name]['Name_id']);
          if(Stat.isFile())
          {
-             /*Files[Name]['Downloaded'] = Stat.size;
-             Place = Stat.size / 524288;*/
              Files[Name]['Name_id'] = findName(Name, socket.room);
-             console.log("THE NAME IS " + Files[Name]['Name_id']);
          }
      }
      catch(er){} //It's a New File
@@ -36,15 +32,13 @@ module.exports.setOnMethods = function(socket, io) {
          }
          else
          {
-            console.log("fs.open");
-             Files[Name]['Handler'] = fd; //We store the file handler so we can write to it later
+             Files[Name]['Handler'] = fd; // Store the file handler so we can write to it later
              socket.emit('MoreData', { 'Place' : Place, Percent : 0 });
          }
      });
      insertFile(socket.room, Files[Name]['Name_id'], Name, socket.username, new Date(Date.now()));
    });
    socket.on('Upload', function (data){
-      console.log("onupload");
         var Name = data['Name'];
         Files[Name]['Downloaded'] += data['Data'].length;
         Files[Name]['Data'] += data['Data'];
@@ -69,9 +63,9 @@ module.exports.setOnMethods = function(socket, io) {
             socket.emit('MoreData', { 'Place' : Place, 'Percent' :  Percent});
         }
     });
-   /**********************************/
 }
 
+// Return a unique file name in the folder
 findName = function(Name, room) {
    var filesOfDir = fs.readdirSync('files/' + room).sort();
    var nb = 0;

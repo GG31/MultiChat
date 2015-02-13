@@ -19,16 +19,12 @@ function setOnMethods(socket){
     });
     
     socket.on('amITheUser',function(ip){
-      $.getJSON("http://jsonip.appspot.com?callback=?",
+      $.getJSON("http://ip-api.com/json?callback=?",
       function(data){
-         //alert( "Your ip: " + );
-         console.log(data.ip +'=?=' + ip);
-         socket.emit('iAmTheUser');
+         if (data.ip == ip) {
+            socket.emit('iAmTheUser');
+         }
       });
-      
-        /*if(socket.handshake.address.address==ip){
-            socket.emit("iAmTheUser");
-        }*/
     });
 
     // Si on reçoit le message "joined" alors on a rejoint une salle existante
@@ -69,7 +65,6 @@ function setOnMethods(socket){
     });
     
     socket.on('fullHistory',function(arrayHistory){
-        console.log("response for history");
         createHistory(arrayHistory);
     });
     
@@ -97,5 +92,4 @@ function setOnMethods(socket){
          nextVerifLog(balise);
       }
     });
-    
 }

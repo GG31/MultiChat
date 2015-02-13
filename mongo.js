@@ -5,6 +5,7 @@ var db = new mongodb.Db('multichat', serverMongo);
 db.open(function(){});
 var nbClientMax = 5;
 
+// Renvoie "You are banned" si le client tente de se connecter à une room dont il est banni, l'index sinon
 verifyBan = function(req, res) {
    var collection = db.collection("room");
    var doc = collection.findOne({_id:req.params.name}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
@@ -23,6 +24,7 @@ verifyBan = function(req, res) {
 }
 
 module.exports.setOnMethods = function(socket, io) {
+   // Renvoie la liste des logs de la room
    getLog = function (room) {
       var collection = db.collection("log");
       var result = collection.find({room_id:room}, {_id:0, room_id:0}).sort({date:1});
@@ -38,6 +40,7 @@ module.exports.setOnMethods = function(socket, io) {
       });
    },
       
+   // Insère un log dans la base de données
    insertLog = function(room, date, text) {
       var newLog = {
          date : date,
@@ -47,6 +50,7 @@ module.exports.setOnMethods = function(socket, io) {
       insert('log', newLog);
    },
 
+   // Insère un message dans la base de données
    insertMessage = function (user, room, date, text) {
       var newMsg = {
          date : date,
@@ -57,6 +61,7 @@ module.exports.setOnMethods = function(socket, io) {
       insert('message', newMsg);
    },
 
+   // Insère une nouvelle room dans la base de données
    insertRoom = function (room, passAdmin, passPrivate) {
       var newRoom = {
          _id : room,
@@ -67,17 +72,8 @@ module.exports.setOnMethods = function(socket, io) {
       };
       insert('room', newRoom);
    },
-   
-   insertPrivateRoom = function (room, pass) {
-      var newRoom = {
-         _id : room,
-         pass : pass,
-         name : room,
-         bannedIP : [],
-      };
-      insert('room', newRoom);
-   },
 
+   // Insère un utilisateur dans la base de données
    insertUser = function (user, ip, room) {
       var newUser = {
            name : user,
@@ -87,32 +83,26 @@ module.exports.setOnMethods = function(socket, io) {
       insert('user', newUser);
    },
 
+   // Insertion d'un document dans la collection
    insert = function (collection, document) {
       var collection = db.collection(collection);
       collection.insert(document);
    },
    
-   setPass = function (room, pass) {
-      var collection = db.collection("room");
-      collection.update({name:room},{$set:{pass:pass}})
-      get("room");
-   },
-   
+   // Ajoute l'IP d'un utilisateur banni
    addBannedIP = function(room, ip) {
       var collection = db.collection("room");
       //console.log("addBannedIP");
       collection.update({_id:room}, {$push:{bannedIP:ip}})
    }
    
+   // Vérifie le mot de passe et ajoute l'ip à la liste des bannis
    banIP = function(room, usernameToBan, passAdmin) {
-      console.log('on banIP ' + room + ' ' + usernameToBan + ' ' + passAdmin);
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, function(err, item) {
-         console.log('passAdmin ' + item.passAdmin + '=?=' + passAdmin);
          if (item.passAdmin == passAdmin) {
             var collectionUser = db.collection("user");
             var docUser = collectionUser.findOne({name:usernameToBan, room_id:room}, function(err, item) {
-               console.log('find user to ban ' + item.ip);
                addBannedIP(socket.room, item.ip);
                //Ask who is the user with item.ip
                io.sockets.in(room).emit('amITheUser', item.ip);
@@ -121,8 +111,8 @@ module.exports.setOnMethods = function(socket, io) {
      });
    }
    
+   // Controle si le username est unique dans la room
    isUnique = function(username, room, balise) {
-      console.log('user ' + username + ' room ' + room);
       var collection = db.collection("user");
       var doc = collection.find({room_id:room});
       doc.toArray(function(err, item) {
@@ -136,22 +126,22 @@ module.exports.setOnMethods = function(socket, io) {
      });
    }
    
+   // Vérifie le mot de passe et envoie le signal de la décision
    createJoinOrReject = function(room, passPrivate, numClients) {
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1}, function(err, item) {
-         console.log(item.passPrivate + " =?= " + passPrivate);
          if (item.passPrivate == passPrivate) {
-            io.sockets.in(room).emit('join', room);
-			   socket.join(room);
-			   socket.room = room;
-			   if (numClients == 0) {
-			      console.log("created");
+			   if (numClients == 0) {  
+			      io.sockets.in(room).emit('join', room);
+			      socket.join(room);
+			      socket.room = room;
 			      socket.emit('created', room);
 			   } else if (numClients < nbClientMax){
+			      io.sockets.in(room).emit('join', room);
+			      socket.join(room);
+			      socket.room = room;
 			      socket.emit('joined', room);
-			      console.log("joined");
 			   } else {
-			      console.log("full");
 			      deleteUser(socket.username, room);
 			      socket.emit('full', room);
 			   }
@@ -161,22 +151,8 @@ module.exports.setOnMethods = function(socket, io) {
          }
      });
    }
-   
-   /*joinOrReject = function(room, passPrivate) {
-      var collection = db.collection("room");
-      var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1}, function(err, item) {
-         console.log(item.passPrivate + " =?= " + passPrivate);
-         if (item.passPrivate == passPrivate) {
-            io.sockets.in(room).emit('join', room);
-			   socket.join(room);
-			   socket.room = room;
-			   socket.emit('joined', room);
-         } else {
-            socket.emit('wrongPass', room);
-         }
-     });
-   }*/
 
+   // Insère un fichier dans la base de données
    insertFile = function (room, fileName, originName, owner, date) {
       var newFile = {
            filename : fileName,
@@ -188,6 +164,7 @@ module.exports.setOnMethods = function(socket, io) {
       insert('file', newFile);
    }
    
+   // Renvoie la liste des fichiers de la room
    getFiles = function (room) {
       var collection = db.collection("file");
       var result = collection.find({room_id:room}, {_id:0, room_id:0});
@@ -202,6 +179,7 @@ module.exports.setOnMethods = function(socket, io) {
       });
    }
    
+   // Download le fichier situé dans files/foldername/filename
    download = function(foldername, filename, res){
       if (socket.room == foldername) {
          res.download(__dirname + '/files/'+foldername+'/'+filename);
@@ -210,6 +188,7 @@ module.exports.setOnMethods = function(socket, io) {
       }
    },
    
+   // Renvoie le type de page suivant le cas, room existante, public, privée
    typePage = function(room) {
       var collection = db.collection("room");
       var doc = collection.findOne({_id:room}, {_id:0, passPrivate:1, bannedIP:1},function(err, item) {
@@ -225,31 +204,9 @@ module.exports.setOnMethods = function(socket, io) {
      });
    }
    
+   // Supprime username de la room de la base de données
    deleteUser = function (username, room) {
-      console.log("delete " + username);
       var collection = db.collection('user');
       collection.remove({name : username, room_id:room});
-   },
-
-   deleteAll = function (collection) {
-      var collection = db.collection(collection);
-      collection.remove({});
-   },
-
-   get = function (collection) {
-      var collection = db.collection(collection);
-      var result = collection.find();
-      result.toArray(function (err, results) {
-         if (err) {
-            throw err;
-         }
-         if (results.length === 0) {
-            //res.statusCode = 404;
-            //return res.send('Error 404: No users found');
-            console.log('Error 404: No users found');
-         }
-         var users = JSON.stringify(results);
-         console.log('plop ' + users);
-      });
    }
 }
