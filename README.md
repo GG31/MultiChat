@@ -17,9 +17,11 @@ To access a room :
 http://localhost:8080/roomname
 
 ------------------------------
-A FAIRE
+OBJECTIFS ATTEINTS
 
-Si new privateroom/nom -> renvoyer une alerte avec enregistrement d'un nouveau mot de passe
-Sinon si privateroom/nom déjà existant, demander le mot de passe
-Sinon comme avant
-Benjamin: changement dans le html des commentaires
+- public et salles privées
+- connection n/n
+- historique
+- banissement par le mot de passe administrateur
+- chat
+- transfer de fichiers n/n avec upload par drag and drop
