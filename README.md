@@ -1,18 +1,17 @@
 # MultiChat
 
-To install a dependency named XYZ, you have to type on the console :
+First install mongodb.
+
+Second install the dependencies, go to the folder and type on the console :
 ```
-[sudo] npm install XYZ [-g]
+npm install
 ```
 
-Dependencies to install :
-
-express
-mongodb
-socket.io
-body-parser
-
+Third start the server :
+```
+node server.js
+```
 
 To access a room : 
-http://localhost:8080/roomname
+http://localhost:8080/room
 
