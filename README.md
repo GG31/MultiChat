@@ -16,10 +16,3 @@ body-parser
 To access a room : 
 http://localhost:8080/roomname
 
-------------------------------
-A FAIRE
-
-Si new privateroom/nom -> renvoyer une alerte avec enregistrement d'un nouveau mot de passe
-Sinon si privateroom/nom déjà existant, demander le mot de passe
-Sinon comme avant
-Benjamin: changement dans le html des commentaires

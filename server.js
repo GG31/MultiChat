@@ -38,28 +38,19 @@ io.sockets.on('connection', function (socket){
 		socket.broadcast.to(socket.room).emit('message',message);
 	});
 	
+	//Création d'un nouvelle room
 	socket.on('createRoom', function (room, passAdmin, passPrivate) {
 		insertRoom(room, passAdmin, passPrivate);	
 		socket.room = room;
 	});
 
+   //Demande de join à la room room
 	socket.on('create or join', function (room, passAdmin, passPrivate) {
 		var numClients = io.sockets.clients(room).length;
-		console.log("on create or join");
-		//if (numClients == 0){
-		   createJoinOrReject(room, passPrivate, numClients);
-		/*} else if (numClients < nbClientMax) {
-		   joinOrReject(room, passPrivate);
-		} else { // max nbClientMax clients
-			socket.emit('full', room);
-		}*/
-	});
-	
-	socket.on('set pass room', function (room, pass) {
-		setPass(room, pass);
+	   createJoinOrReject(room, passPrivate, numClients);
 	});
 
-   // when the client emits 'adduser', this listens and executes
+   // Add a user
 	socket.on('adduser', function(room, username, ip){
 	   socket.username = username;
 	   insertUser(username, ip, room);
@@ -69,10 +60,12 @@ io.sockets.on('connection', function (socket){
       insertMessage(username, room, date, text);
 	});
 	
+	// Verify if username is unique in the room
 	socket.on('isUniqueName', function(username, room, balise) {
 	   isUnique(username, room, balise);
 	});
 	
+	// Un nouveau message de chat est envoyé à la room 
 	socket.on('newMessage', function(text){
 	   // echo to room 1 the message of username
 		io.sockets.in(socket.room).emit('updatechat', socket.username, text);
@@ -80,11 +73,13 @@ io.sockets.on('connection', function (socket){
       insertMessage(socket.username, socket.room, date, text);
 	});
 	
+	// Message de connexion envoyé à toute la room
 	socket.on('newMessageConnexion', function(text){
 	   // echo to room 1 the message of username
 		io.sockets.in(socket.room).emit('updateChatConnexion', socket.username, text);
 	});
 	
+	// Nouveau log dans l'historique
 	socket.on('newLog', function(text){
 	   // echo to room 1 the message of username
 	   io.sockets.in(socket.room).emit('updateHistory', text);
@@ -92,29 +87,31 @@ io.sockets.on('connection', function (socket){
       insertLog(socket.room, date, text);
 	});
 	
+	// Renvoie l'historique de la room
 	socket.on('getFullHistory', function(){
 	   // emit the history of the room to the client connected
 	   getLog(socket.room);
 	});
 	
+	// Renvoie la liste des files de la room
 	socket.on('getFullFiles', function(){
 	   // emit the files of the room to the client connected
 	   getFiles(socket.room);
 	});
 	
+	// Bannit l'IP du username si le mot de passe est correct
 	socket.on('banIP', function(username, passAdmin){
 	   // add banned ip to db if the creator emit banIP
 	   banIP(socket.room, username, passAdmin);
 	});
 	
+	// Si est appelé alors déconnecter le client
 	socket.on('iAmTheUser', function(){
-	   // add banned ip to db if the creator emit banIP
-	   //banIP(socket.room, socket.handshake.address.address, "127.0.0.1");
-	   //console.log('I am the user');
 	   deleteUser(socket.username, socket.room);
 	   socket.leave(socket.room);
 	});
 	
+	// Renvoie le type de page, logRoom si la room demandé est public, logPrivateRoom, si privée, newRoom si elle n'existe pas.
 	socket.on('typePage', function(room){
 	   typePage(room);
 	});

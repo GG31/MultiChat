@@ -13,7 +13,6 @@
 
 <title>WebRTC client</title>
 
-<!-- <link rel='stylesheet' href='css/main.css' /> -->
 <script src='js/lib/jquery-1.11.2.min.js'></script>
 
 <script src='/socket.io/socket.io.js'></script>
@@ -28,12 +27,11 @@
 </script>
 </head>
 <body ondragenter="dragEnterHandler(event)">
-<!-- juste un bouton rapide qui appel le prompt perso
-<input type="button" onclick="myPrompt();" value="open my prompt"/> -->
+<!-- Page Creation nouvelle salle de chat -->
 <div class='container' id="containerNewRoom">
    <div class="row-top">
       <div id="log-header">
-         <h1>Nouvelle salle<span class="roomRoom"></span></h1>
+         <h1>Nouvelle salle <span class="roomRoom"></span></h1>
       </div>
    </div>
    <div class="row-body">
@@ -50,7 +48,7 @@
       </div>
    </div>
 </div>
-
+<!-- Page Login dans une salle de chat public -->
 <div class='container' id="containerLogRoom">
    <div class="row-top">
       <div id="log-header">
@@ -69,7 +67,7 @@
       </div>
    </div>
 </div>
-
+<!-- Page Login dans une salle de chat privee -->
 <div class='container' id="containerLogPrivateRoom">
    <div class="row-top">
       <div id="log-header">
@@ -90,7 +88,7 @@
       </div>
    </div>
 </div>
-
+<!-- Page de la salle de Chat -->
 <div class='container' id="containerIndex">
    <div id="col-left">   
       <!-- liste de tous les utilisateurs connectes -->
@@ -108,10 +106,6 @@
          <h3>Historique</h3>
          <div id="historical-container-area">
             <!--
-               <div class="date">dd/mm/yy hh:mm</div>
-               <div class="transfer">User send the file "file.txt"</div>
-		         <div class="date">dd/mm/yy hh:mm</div>
-		         <div class="connect">User has connected to this room</div>
 		         <div class="date">dd/mm/yy hh:mm</div>
 		         <div class="disconnect">User has disconnected to this room</div>
             -->
@@ -123,11 +117,13 @@
          <h1> Bienvenue dans la salle <span class="roomRoom"></span></h1>
          <script>setInfoToDom(".roomRoom",getRoom());</script>
       </div>
+      <!-- Video active, par default la video du deuxieme connecte ou celui de la video selectionnee -->
       <div id='active-video'>
-         <h4 id='video-left'><!--pseudoActif--></h4>
+         <h4 id='video-left'></h4>
          <video id='activeVideo' autoplay></video>
          <div id='video-right'></div>
       </div>
+      <!-- Video local et map -->
       <div id="col-center-bottom">
          <div id="map-container">
             <div id="map_canvas"></div>            
@@ -138,16 +134,17 @@
       </div>
    </div>
    <div id="col-right">
+      <!-- Repertoire commun -->
       <div id="common-repository">
          <h3>Répertoire</h3>
          <div id="common-repository-area">       
             <ul id="common-repository-ul">
             <!--      
                <li><a href="#">file.txt</a></li>
-               <li><a href="#">file.txt</a></li>
             -->
             </ul>
          </div>
+         <!-- Zone de drag and drop -->
          <div id="droppableZone" ondrop="dropHandler(event)" ondragover="return false;">
             <div class="titlebox">Drop zone :</div>
             <div id="droppableZone-container">
@@ -155,13 +152,10 @@
             </div>
          </div>
       </div>
+      <!-- Chat -->
       <div id="chat-container">
          <h3>Chat</h3>
          <div id='textareas'>
-		      <!-- <textarea id="dataChannelReceive" disabled></textarea> 
-		         // ne peut pas mettre de style dans un textarea...
-		      -->
-		      <!-- <div id="dataChannelReceive" disabled></div> Attention, ne reçoit plus de message-->
 		      <div id="dataChannelReceive" disabled>
 		            <!--
 		               <div class="color4"> <!-- Pseudo sur une ligne et en dessous le commentaire
@@ -197,10 +191,10 @@
         if (latitude && longitude) return "" + latitude + ";;" + longitude;
     }
     
-      // Default position
+    // Initialisation de la position avec une valeur par defaut
     var centerpos = new google.maps.LatLng(48.579400,7.7519);
 
-    // default options for the google map
+    // options par defaut pour la google map
     var optionsGmaps = {
         center:centerpos,
         navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
@@ -208,7 +202,7 @@
         zoom: 13
     };
 
-    // Init map
+    // Initialisation de la map
     map = new google.maps.Map(document.getElementById("map_canvas"), optionsGmaps);
 
     if(navigator.geolocation) {
@@ -220,7 +214,6 @@
             infopos += "Lat : "+position.coords.latitude + ", ";
             infopos += "Long: "+position.coords.longitude+", ";
             infopos += "Alt : "+position.coords.altitude +"<br>";
-            //document.getElementById("address").innerHTML = infopos;
 
             // Make new object LatLng for Google Maps
             var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -255,7 +248,6 @@
                     info += "Unknown error";
                     break;
             }
-            //document.getElementById("address").innerHTML = info;
         }
 
         navigator.geolocation.getCurrentPosition(drawPosition,errorPosition);
@@ -287,16 +279,6 @@
     <script src='js/size.js'></script>
     <script src='js/globalManagement.js'></script>
     <script src='js/drag_drop.js'></script>
-
-<script>
-      /*$(document).ready( function(){
-        $(document).keypress(function( event ) {
-            if ( event.which == 13 ) {
-                sendNewChat();
-            }
-        });
-      });*/
-</script>
 
 </body>
 </html>

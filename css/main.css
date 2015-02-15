@@ -51,7 +51,7 @@ video, img{
    margin: 0 auto;
 }
 #activeVideo{
-   width: 65%;
+   width: 68%;
    display: block;
    margin: 0 auto;
    padding-bottom:10px;
@@ -60,9 +60,6 @@ video, img{
    padding:2px;
    cursor: pointer;
    border-radius:20px;
-}
-#activeVideo{
-   height: 300px;
 }
 #map_canvas{
    width : 95%;
@@ -140,9 +137,6 @@ video, img{
 #video-left, #video-right{
    width : 8%;
    float: left;
-}
-#active-video video{
-   width: 80%;
 }
 /** Style text */
 .color1{
