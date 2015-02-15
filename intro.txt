@@ -1,0 +1,21 @@
+Morgane Perron --> html, css
+Genevieve Cirrera --> server side
+Benjamin Vella --> communication (socket, ajout au DOM, peer)
+
+Repartition
+ 	--> Morgane : Un peu de JS
+	--> Genevieve : DOM
+	--> Benjamin : Server
+
+Philosophie : simplicité pour le client !
+	--> Room persistantes + Mirroir
+
+	--> Pas de compte MAIS Ban par IP & Pseudo UNIQUE
+
+	--> URL courte MAIS Room privée avec mdp admin
+				mdp entrée dans la room
+
+	--> Room publique simple
+
+Démo : Genevieve, room publique, Morgane, room privée
+

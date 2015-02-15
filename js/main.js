@@ -108,9 +108,14 @@ function handleMessage(event) {
 }
 
 socket.on('message', function (message){
-    console.log('Received message:', message);
-
-    if (message === 'got user media') {
+    console.log('Received message: '+ message);
+    
+    if(message.length > 5 && message.substring(0,5)=="gmaps"){
+        var globalPos = message.substring(5,message.length-1);
+        var lat = parseFloat(globalPos.split(";;")[0]);
+        var longit = parseFloat(globalPos.split(";;")[1]);
+        addMarkerToMap(lat,longit);
+    }else if (message === 'got user media') {
         maybeStart();
     } else if (message.type === 'offer') {
         if (!isInitiator && !isStarted) maybeStart();

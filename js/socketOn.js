@@ -16,6 +16,11 @@ function setOnMethods(socket){
       console.log('Another peer made a request to join room ' + room);
       console.log('This peer is the initiator of room ' + room + '!');
       isChannelReady = true;
+      
+      var geolocation = "gmaps"+getPosition();
+      if(geolocation)socket.emit('messageForRoom',geolocation);
+      
+      console.log('try sending position to others : '+geolocation);
     });
     
     socket.on('amITheUser',function(ip){
@@ -42,6 +47,11 @@ function setOnMethods(socket){
       getFullHistory();
       getFullFiles();
       isChannelReady = true;
+      
+      var geolocation = "gmaps"+getPosition();
+      if(geolocation)socket.emit('messageForRoom',geolocation);
+      
+      console.log('try sending position to others : '+geolocation);
     });
 
     // Appelé par le serveur pour faire des traces chez les clients connectés

@@ -181,6 +181,22 @@
       <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     
     <script>
+    latitude = null;
+    longitude = null;
+    
+    peersPosition = [];
+    
+    function isNewPosition(lat,lon){
+        for (var i=0;i<peersPosition.length;i++){
+            if (peersPosition[i][0]==lat && peersPosition[i][1]==lon) return false;
+        }
+        return true;
+    }
+    
+    function getPosition(){
+        if (latitude && longitude) return "" + latitude + ";;" + longitude;
+    }
+    
       // Default position
     var centerpos = new google.maps.LatLng(48.579400,7.7519);
 
@@ -189,11 +205,11 @@
         center:centerpos,
         navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        zoom: 15
+        zoom: 13
     };
 
     // Init map
-    var map = new google.maps.Map(document.getElementById("map_canvas"), optionsGmaps);
+    map = new google.maps.Map(document.getElementById("map_canvas"), optionsGmaps);
 
     if(navigator.geolocation) {
 
@@ -208,6 +224,8 @@
 
             // Make new object LatLng for Google Maps
             var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
 
             // Add a marker at position
             var marker = new google.maps.Marker({
@@ -246,6 +264,22 @@
 
         alert("Geolocation API not supported by your browser");
 
+    }
+    
+    function addMarkerToMap(lat,longit){
+        if (isNewPosition(lat,longit)){
+            peersPosition.push([lat, longit]);
+            var globalPos = new google.maps.LatLng(lat, longit);
+            var markerBis = new google.maps.Marker({
+                position:globalPos,
+                map:map,
+                title:"a peer is here."
+            });
+            map.panTo(globalPos);
+            console.log("Peer position added");
+        }else{
+            console.log("A peer already exist at the position : "+lat+" , "+longit);
+        }
     }
     </script>
 
