@@ -1,3 +1,5 @@
+// This script is used to initalize variables for the main to be functional.
+
 var username = "";
 function getUsername(){
     return username;
@@ -6,7 +8,7 @@ function getUsername(){
 
 var room = location.pathname.split('/')[1];
 function getRoom(){
-    return location.pathname.split('/')[1]; //Allez savoir pourquoi room devient undefined...
+    return location.pathname.split('/')[1];
 }
 function setRoom(r){
     room = r;
@@ -61,14 +63,7 @@ function initRoomCheck(){
     socket.emit('typePage', room);
     
     console.log("In room " + room);
-    /*if (room != '') {
-      console.log('Create or join room', room);
-      socket.emit('create or join', room, "", "");
-      //socket.emit('sendMsg', username, room, "MESSAGE");
-    } else {
-       room = prompt('Enter room name:');
-       socket.emit('create or join', room, "", "");
-    }*/
+
     
     setRoom(room);
 }

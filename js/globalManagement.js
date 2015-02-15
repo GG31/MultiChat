@@ -1,8 +1,8 @@
 /* ******************************************************
-REQUIRED VARIABLE
+REQUIRED VARIABLES
 ****************************************************** */
 
-//Chat
+//Chat. 4 people max in the room, 4 colors according to their arrival order.
 var chatClasses = ["color1","color2","color3","color4"];
 var chatClassIndex = 0;
 var chatUsernameClass = {}
@@ -17,6 +17,7 @@ var Name;
 CHAT MANAGEMENT
 ****************************************************** */
 
+//Get the text in the #dataChannelSend input, and emit 'newMessage' so it could be broadcasted to the room. Then empty it.
 function sendNewChat(){
     if ($("#dataChannelSend").val().length > 0){
         getSocket().emit('newMessage',$('#dataChannelSend').val());
@@ -24,6 +25,7 @@ function sendNewChat(){
     }
 }
 
+// When a chat newMessage from the user "user" is received, we check if a color has been attributed to the user (if no, we pick one), and then append message to the chat.
 function appendNewChat(user,newMessage){
     var chatClassToUse = "";
 
@@ -37,6 +39,7 @@ function appendNewChat(user,newMessage){
     $('#dataChannelReceive').append("<div class='"+chatClassToUse+"'>"+user+"&nbsp;:</div>"+"<div class='"+chatClassToUse+"-paragraph'>"+newMessage+"</div>");
 }
 
+// Same as appendNewChat.
 function appendConnexionChat(user,newMessage){
     var chatClassToUse = "";
 
@@ -50,6 +53,7 @@ function appendConnexionChat(user,newMessage){
     $('#dataChannelReceive').append("<div><span class='"+chatClassToUse+"'>"+user+"&nbsp;:</span>"+"<span class='"+chatClassToUse+"-paragraph'>"+newMessage+"</span></div>");
 }
 
+// This method appends global Server messages to the chat.
 function appendServerMessage(user,newMessage,className){
     $('#chat-table').append("<div class='"+className+"'>"+user+"&nbsp;:&nbsp;"+newMessage+"</div>");
 }
@@ -58,38 +62,42 @@ function appendServerMessage(user,newMessage,className){
 HISTORY MANAGEMENT
 ****************************************************** */
 
+//History is based on logs. This method ask the server to store a log for a room.
 function storeLog(text,room){
     socket.emit('newLog',getHTMLToday() + text);
     console.log("new log emit");
 }
 
+//roomCreationLog, appendDisconnect, and roomJoinedLog are methods that specifies which message send to storeLog
 function roomCreationLog(room){
     var text = "<div class='connect'>" + getUsername() + " has initated room "+ room + "</div>";
     storeLog(text,room);
 }
 function appendDisconnect(user, room){
-    var text = user + " has disconnected room "+ room;
+    var text = user + " has disconnected from room "+ room;
     storeLog("<div class='disconnect'>"+text+"</div>", room);
 }
+function roomJoinedLog(room){
+    getSocket().emit('newMessageConnexion', " has joined the room");
+    var text = "<div class='connect'>" + getUsername() + " has joined room "+ room + "</div>";
+    storeLog(text,room);
+}
 
+// This method simply adds a log to the history container on index.html. It is used when a new log is stored in the server
 function appendNewElementToHistory(text){
     $('#historical-container-area').append(text);
 }
 
+// Called when a new user enters the room, get all the room logs from its creation.
 function getFullHistory(){
     console.log("ask for full history");
     socket.emit('getFullHistory');
     console.log("asked");
 }
 
+// Same as full history, but to get all the files that have been uploaded to the room
 function getFullFiles() {
    socket.emit('getFullFiles');
-}
-
-function roomJoinedLog(room){
-    getSocket().emit('newMessageConnexion', " has joined the room");
-    var text = "<div class='connect'>" + getUsername() + " has joined room "+ room + "</div>";
-    storeLog(text,room);
 }
 
 function uploadFileLog(fileName){
@@ -100,6 +108,7 @@ function roomDisconnectLog(fileName){
     var text = "<div class='disconnect'>" + getUsername() + " has disconnected</div>";
 }
 
+// When getFullHistory() is called, server send back the json of the history elements. It then must ben parsed into an array, and used to create the HTML
 function createHistory(arrayHistory){
     var historyToCreate = jQuery.parseJSON(arrayHistory);
     var htmlHistory = "";
@@ -165,6 +174,7 @@ getSocket().on('MoreData', function (data){
        FReader.readAsBinaryString(NewFile);
    });
 
+// Append a new uploaded file to the list
 function appendFile(fileName) {
    var newFile = $('<li class="common-repository-li" onclick="downloadFile(\''+fileName+'\')">'+fileName+'</li>');
    //var newFile = $('<li class="common-repository-li" ><a href="#" onclick="downloadFile(\''+fileName+'\')">'+fileName+'</a></li>');

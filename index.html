@@ -175,11 +175,14 @@
       <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     
     <script>
+    //Latitude and longitude are declared as global so they can be user in other scripts.
     latitude = null;
     longitude = null;
     
+    // To avoid multiple markers on the same position, each new position is pushed, and each new request in compared.
     peersPosition = [];
     
+    // Comparison function, take a latitude and a longitude (floats), and check if the couple has not already been pushed in peersPosition.
     function isNewPosition(lat,lon){
         for (var i=0;i<peersPosition.length;i++){
             if (peersPosition[i][0]==lat && peersPosition[i][1]==lon) return false;
@@ -187,6 +190,7 @@
         return true;
     }
     
+    // Sort of a toString function, with specific separators to fit the split pattern used in other scripts.
     function getPosition(){
         if (latitude && longitude) return "" + latitude + ";;" + longitude;
     }
@@ -199,7 +203,7 @@
         center:centerpos,
         navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        zoom: 13
+        zoom: 11
     };
 
     // Initialisation de la map
@@ -258,8 +262,13 @@
 
     }
     
+    // This method add a marker to the map, according to the given latitude and longitude.
     function addMarkerToMap(lat,longit){
+    
+        //If there is no marker at the given position :
         if (isNewPosition(lat,longit)){
+        
+            // The new position is pushed, and the marker is added.
             peersPosition.push([lat, longit]);
             var globalPos = new google.maps.LatLng(lat, longit);
             var markerBis = new google.maps.Marker({

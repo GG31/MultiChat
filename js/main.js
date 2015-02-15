@@ -49,12 +49,14 @@ getLocalStream();
 Main functions
 **************************************************************** */
 
+// This method is used to get local stream
 function getLocalStream(){
     getUserMedia({audio:true, video:true}, gotLocalStream, function(error) {
         trace("getUserMedia error: ", error);
     });
 }
 
+// when local stream has been gotten, attach it to the right div
 function gotLocalStream(stream){
     localStream = stream;
     attachMediaStream(localVideo,stream);
@@ -64,10 +66,12 @@ function gotLocalStream(stream){
     if (isInitiator) maybeStart();
 }
 
+// Attach the video to the main page.
 function makeVideoActive(videoStream){
     attachMediaStream(activeVideo,videoStream);
 }
 
+// When a stream is caught, append it to the streamList, and attach it on index.html
 function gotRemoteStream(event){
     streamList[idVid] = event.stream;
     console.log("Got remote stream !");
@@ -78,6 +82,7 @@ function gotRemoteStream(event){
     $('#profils-container').append(text);
 }
 
+// Check if a new Peer Connection is required and can be done.
 function maybeStart() {
   if (!isStarted && localStream && isChannelReady) {
     createPeerConnection();
@@ -89,6 +94,7 @@ function maybeStart() {
   }
 }
 
+// Response to doCall() : create an answer
 function doAnswer() {
   console.log('Sending answer to peer.');
   pc.createAnswer(setLocalAndSendMessage, null, sdpConstraints);
@@ -107,26 +113,33 @@ function handleMessage(event) {
   receiveTextarea.value = event.data;
 }
 
+//message is a generic content for ...messages.
 socket.on('message', function (message){
     console.log('Received message: '+ message);
     
+    // If the message is the position
     if(message.length > 5 && message.substring(0,5)=="gmaps"){
         var globalPos = message.substring(5,message.length-1);
         var lat = parseFloat(globalPos.split(";;")[0]);
         var longit = parseFloat(globalPos.split(";;")[1]);
         addMarkerToMap(lat,longit);
+    // Or if it is a new local user media gotten by a peer
     }else if (message === 'got user media') {
         maybeStart();
+    // Or if it is an offer from a peer
     } else if (message.type === 'offer') {
         if (!isInitiator && !isStarted) maybeStart();
         pc.setRemoteDescription(new RTCSessionDescription(message));
         doAnswer();
+    // Or if it is an answer to an offer
     } else if (message.type === 'answer' && isStarted) {
         pc.setRemoteDescription(new RTCSessionDescription(message));
+    // Or if it is a candidate for the offer
     } else if (message.type === 'candidate' && isStarted) {
         lastUsername = message.username;
         var candidate = new RTCIceCandidate({sdpMLineIndex:message.label,candidate:message.candidate});
         pc.addIceCandidate(candidate);
+    // Or if a peer is leaving
     } else if (message === 'bye' && isStarted) {
         handleRemoteHangup();
     }
@@ -145,6 +158,7 @@ function mergeConstraints(cons1, cons2) {
   return merged;
 }
 
+// Create offer taking care of the constraints of communication
 function doCall() {
   var constraints = {'optional': [], 'mandatory': {'MozDontOfferDataChannel': true}};
   // temporary measure to remove Moz* constraints in Chrome
@@ -182,7 +196,7 @@ function handleIceCandidate(event) {
     console.log('End of candidates.');
   }
 }
-
+// Handling functions mainly simply trace the evolution of the communication
 function handleRemoteStreamRemoved(event) {
   console.log('Remote stream removed. Event: ', event);
 }
@@ -198,6 +212,7 @@ function handleReceiveChannelStateChange() {
   trace('Receive channel state is: ' + readyState);
 }
 
+// Try to create a peer connection, and a DataChannel.
 function createPeerConnection() {
   try {
     pc = new RTCPeerConnection(pc_config, pc_constraints);
@@ -232,6 +247,7 @@ function createPeerConnection() {
   }
 }
 
+// TO SIMULATE N-N !!! Can be called from the console, add a local stream as if it was a remote sream.
 function localCall(){
     if (localStream.getVideoTracks().length > 0)trace('Using video device: ' + localStream.getVideoTracks()[0].label);
     if (localStream.getAudioTracks().length > 0)trace('Using audio device: ' + localStream.getAudioTracks()[0].label);
